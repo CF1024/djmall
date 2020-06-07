@@ -2,6 +2,9 @@ package com.dj.mall.auth.api.user;
 
 import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.model.base.BusinessException;
+import com.dj.mall.model.base.PageResult;
+
+import java.util.List;
 
 /**
  * @author chengf
@@ -42,4 +45,13 @@ public interface UserApi {
      * @throws BusinessException
      */
     void updateUserStatus(Integer id) throws Exception, BusinessException;
+
+    /**
+     * 展示用户 分页 模糊查 查询
+     * @param userDTO
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    PageResult findAll(UserDTO userDTO) throws Exception, BusinessException;
 }

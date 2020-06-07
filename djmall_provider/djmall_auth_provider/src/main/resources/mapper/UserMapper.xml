@@ -2,4 +2,75 @@
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dj.mall.auth.mapper.user.UserMapper">
 
-</mapper>   
+    <select id="findAll" resultType="com.dj.mall.auth.bo.user.UserBO">
+        SELECT
+            au.id AS userId,
+            au.user_name,
+            au.nick_name,
+            au.user_phone,
+            au.user_email,
+            au.user_status,
+            au.user_sex,
+            au.create_time,
+            au.is_del,
+            ar.role_name AS roleName,
+            llt.last_login_time AS lastLoginTime,
+            (
+                CASE
+                WHEN au.user_sex = 'MAN' THEN
+                    '男'
+                WHEN au.user_sex = 'WOMAN' THEN
+                    '女'
+                ELSE
+                    '保密'
+                END
+            ) AS userSexShow,
+            (
+                CASE
+                WHEN au.user_status = 'HAVE_ACTIVATE' THEN
+                    '已激活'
+                ELSE
+                    '未激活'
+                END
+            ) AS userStatusShow
+        FROM
+            djmall_auth_user au
+        LEFT JOIN djmall_auth_user_role aur ON au.id = aur.user_id
+        LEFT JOIN djmall_auth_role ar ON aur.role_id = ar.id
+        LEFT JOIN (
+            SELECT
+                llt.user_id,
+                MAX(llt.last_login_time) AS last_login_time
+            FROM
+                djmall_last_login_time llt
+            GROUP BY
+                llt.user_id
+        ) AS llt ON au.id = llt.user_id
+        <where>
+            <if test="user.userName != null and user.userName != ''">
+                <bind name="userNameLike" value="'%' + user.userName + '%'"/>
+                (au.user_name LIKE "%"#{userNameLike}"%"
+                    OR au.nick_name LIKE "%"#{userNameLike}"%"
+                    OR au.user_phone LIKE "%"#{userNameLike}"%"
+                    OR au.user_email LIKE "%"#{userNameLike}"%")
+            </if>
+            <if test="user.userRoleList != null">
+                AND ar.id IN
+                <foreach collection="user.userRoleList" item="userRole" open="(" close=")" separator=",">
+                    #{userRole}
+                </foreach>
+            </if>
+            <if test="user.userSexList != null and user.userSexList != ''">
+                AND au.user_sex IN
+                <foreach collection="user.userSexList" item="userSex" open="(" close=")" separator=",">
+                    #{userSex}
+                </foreach>
+            </if>
+            <if test="user.userStatus != null and user.userStatus != '' and user.userStatus != '-1'">
+                AND au.user_status = #{user.userStatus}
+            </if>
+            AND au.is_del = #{user.isDel}
+        </where>
+        ORDER BY au.id DESC
+    </select>
+</mapper>

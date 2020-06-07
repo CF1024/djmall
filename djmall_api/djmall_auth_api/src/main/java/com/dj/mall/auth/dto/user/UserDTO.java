@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author chengf
@@ -93,7 +94,7 @@ public class UserDTO implements Serializable {
     /**
      * 每页条数
      */
-    private Integer pageSize = 10;
+    private Integer pageSize = 5;
 
     /**
      * 非此表字段 角色名
@@ -116,4 +117,12 @@ public class UserDTO implements Serializable {
      * 非此表字段 激活状态
      */
     private String userStatusShow;
+    /**
+     * 非此表字段 用户角色集合
+     */
+    private List<Integer> userRoleList;
+    /**
+     * 非此表字段 用户性别集合
+     */
+    private List<String> userSexList;
 }

@@ -3,9 +3,12 @@ package com.dj.mall.auth.pro.user;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dj.mall.auth.api.user.MailBoxApi;
 import com.dj.mall.auth.api.user.UserApi;
+import com.dj.mall.auth.bo.user.UserBO;
 import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.auth.entity.user.User;
 import com.dj.mall.auth.entity.user.LastLoginTime;
@@ -14,6 +17,7 @@ import com.dj.mall.auth.mapper.user.UserMapper;
 import com.dj.mall.auth.service.user.LastLoginTimeService;
 import com.dj.mall.auth.service.user.UserRoleService;
 import com.dj.mall.model.base.BusinessException;
+import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.util.DozerUtil;
@@ -23,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author chengf
@@ -155,7 +160,31 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
     @Override
     public void updateUserStatus(Integer id) throws Exception, BusinessException {
         //修改激活状态：已激活
-        getBaseMapper().updateById(getBaseMapper().selectOne(new QueryWrapper<User>().eq("id", id))
-                .toBuilder().userStatus(DictConstant.HAVE_ACTIVATE).build());
+        User user = getBaseMapper().selectById(id);
+        if (DictConstant.HAVE_ACTIVATE.equals(user.getUserStatus())) {
+            throw new BusinessException("该用户已激活、请激活未激活的用户");
+        }else {
+            user.setUserStatus(DictConstant.HAVE_ACTIVATE);
+        }
+        getBaseMapper().updateById(user);
+    }
+
+    /**
+     * 展示用户 分页 模糊查 查询
+     *
+     * @param userDTO
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public PageResult findAll(UserDTO userDTO) throws Exception, BusinessException {
+        //用户状态：未删除
+        userDTO.setIsDel(DictConstant.NOT_DEL);
+        IPage<UserBO> iPage = getBaseMapper().findAll(
+                new Page<>(userDTO.getPageNo(), userDTO.getPageSize()),
+                DozerUtil.map(userDTO, UserBO.class));
+        return new PageResult().toBuilder().pages(iPage.getPages()).
+                list(DozerUtil.mapList(iPage.getRecords(), UserDTO.class)).build();
     }
 }

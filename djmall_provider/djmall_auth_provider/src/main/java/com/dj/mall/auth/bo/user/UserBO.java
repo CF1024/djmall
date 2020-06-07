@@ -1,5 +1,4 @@
-package com.dj.mall.admin.vo.auth.user;
-
+package com.dj.mall.auth.bo.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,15 +11,14 @@ import java.util.List;
 
 /**
  * @author chengf
- * @date 2020/6/3 14:35
- * 用户视图对象req
+ * @date 2020/6/3 14:19
+ * 用户bo
  */
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserVOReq implements Serializable {
-
+public class UserBO implements Serializable {
     /**
      * 用户id
      */
@@ -37,24 +35,9 @@ public class UserVOReq implements Serializable {
     private String nickName;
 
     /**
-     * 密码
-     */
-    private String userPwd;
-
-    /**
-     * 盐
-     */
-    private String salt;
-
-    /**
      * 手机号
      */
     private String userPhone;
-
-    /**
-     * 手机验证码
-     */
-    private String verifyCode;
 
     /**
      * 邮箱
@@ -74,33 +57,31 @@ public class UserVOReq implements Serializable {
      * 创建时间
      */
     private LocalDateTime createTime;
-
     /**
-     * 修改时间
-     */
-    private LocalDateTime updateTime;
-
-    /**
-     * 验证码失效时间
-     */
-    private LocalDateTime invalidateTime;
-    /**
-     * 用户状态 2：未删除 3 已删除
+     * 用户状态
      */
     private String isDel;
+    /**
+     * 非此表字段 角色名
+     */
+    private String roleName;
 
     /**
-     * 当前页
-     */
-    private Integer pageNo = 1;
-    /**
-     * 每页条数
-     */
-    private Integer pageSize = 5;
-    /**
-     * 非此表字段 用户角色
+     * 非此表字段 用户角色关联表
      */
     private Integer userRole;
+    /**
+     * 非此表字段 用户性别
+     */
+    private String userSexShow;
+    /**
+     * 非此表字段 最后登录时间
+     */
+    private LocalDateTime lastLoginTime;
+    /**
+     * 非此表字段 激活状态
+     */
+    private String userStatusShow;
     /**
      * 非此表字段 用户角色集合
      */
@@ -109,5 +90,4 @@ public class UserVOReq implements Serializable {
      * 非此表字段 用户性别集合
      */
     private List<String> userSexList;
-
 }

@@ -232,7 +232,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">性别</label>
                         <div class="layui-input-block">
-                            <input type="radio" name="userSex"  value="CECRECY" title="保密" checked>
+                            <input type="radio" name="userSex"  value="SECRECY" title="保密" checked>
                             <input type="radio" name="userSex"  value="MAN" title="男">
                             <input type="radio" name="userSex" value="WOMAN" title="女">
                         </div>

@@ -5,6 +5,7 @@ import com.dj.mall.admin.vo.auth.user.UserVOReq;
 import com.dj.mall.admin.vo.auth.user.UserVOResp;
 import com.dj.mall.auth.api.user.UserApi;
 import com.dj.mall.auth.dto.user.UserDTO;
+import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.base.ResultModel;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.util.DozerUtil;
@@ -58,5 +59,12 @@ public class UserController {
     public ResultModel<Object> addUser(UserVOReq userVOReq) throws Exception {
         userApi.addUser(DozerUtil.map(userVOReq, UserDTO.class));
         return new ResultModel<>().success("新增成功，如果你是商家请注意您所填写的邮箱信息，前往邮箱激活账户，如果不是商家请忽略哟😊");
+    }
+
+    @PostMapping("show")
+    public ResultModel<Object> show(UserVOReq userVOReq) throws Exception {
+        PageResult pageResult = userApi.findAll(DozerUtil.map(userVOReq, UserDTO.class));
+        pageResult.toBuilder().list(DozerUtil.mapList(pageResult.getList(), UserVOResp.class));
+        return new ResultModel<>().success(pageResult);
     }
 }

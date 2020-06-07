@@ -116,7 +116,6 @@
     </script>
     <body>
         <form class="layui-form" id="fm">
-            <input type="hidden" name="_method" value="POST"/>
             <div class="layui-btn-group">
                 <input type="button" value="新增" onclick="toAdd()" class="layui-btn">
                 <input type="button" value="修改" onclick="toUpdate()" class="layui-btn">

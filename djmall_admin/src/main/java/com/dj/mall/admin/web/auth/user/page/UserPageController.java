@@ -77,4 +77,11 @@ public class UserPageController {
         return "auth/user/login";
     }
 
+    @GetMapping("toShow")
+    public String toShow(ModelMap model) throws Exception {
+        //查询角色
+        model.put("roleList", DozerUtil.mapList(roleApi.findAll(DozerUtil.map(RoleVOReq.class, RoleDTO.class)).getList(), RoleVOResp.class));
+        return "auth/user/show";
+    }
+
 }

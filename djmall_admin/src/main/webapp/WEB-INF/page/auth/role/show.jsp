@@ -131,11 +131,10 @@
 
     </script>
     <body>
-        <form id="fm">
-            <input type="hidden" name="_method" value="POST"/>
+        <form class="layui-form" id="fm">
             <input type="hidden" value="1" name="pageNo" id="pageNo">
         </form>
-        <input type="button" value="新增" onclick="toAdd()" class="layui-btn layui-btn-radius">
+        <input type="button" value="新增" onclick="toAdd()" class="layui-btn layui-btn-normal">
         <table border="0px" class="layui-table" >
             <colgroup>
                 <col width="100">
