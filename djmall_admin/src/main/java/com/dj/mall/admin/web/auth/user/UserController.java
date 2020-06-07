@@ -61,6 +61,12 @@ public class UserController {
         return new ResultModel<>().success("新增成功，如果你是商家请注意您所填写的邮箱信息，前往邮箱激活账户，如果不是商家请忽略哟😊");
     }
 
+    /**
+     * 用户展示
+     * @param userVOReq
+     * @return
+     * @throws Exception
+     */
     @PostMapping("show")
     public ResultModel<Object> show(UserVOReq userVOReq) throws Exception {
         PageResult pageResult = userApi.findAll(DozerUtil.map(userVOReq, UserDTO.class));
