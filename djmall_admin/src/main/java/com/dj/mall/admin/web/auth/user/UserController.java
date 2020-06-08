@@ -1,18 +1,24 @@
 package com.dj.mall.admin.web.auth.user;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.dj.mall.admin.vo.auth.user.UserRoleVOReq;
 import com.dj.mall.admin.vo.auth.user.UserVOReq;
 import com.dj.mall.admin.vo.auth.user.UserVOResp;
 import com.dj.mall.auth.api.user.UserApi;
+import com.dj.mall.auth.api.user.UserRoleApi;
 import com.dj.mall.auth.dto.user.UserDTO;
+import com.dj.mall.auth.dto.user.UserRoleDTO;
 import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.base.ResultModel;
 import com.dj.mall.model.contant.AuthConstant;
+import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.util.DozerUtil;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author chengf
@@ -24,6 +30,8 @@ import javax.servlet.http.HttpSession;
 public class UserController {
     @Reference
     private UserApi userApi;
+    @Reference
+    private UserRoleApi userRoleApi;
 
     @GetMapping("login")
     public ResultModel<Object> login(String userName, String userPwd, HttpSession session) throws Exception {
@@ -116,4 +124,22 @@ public class UserController {
         userApi.forceUpdatePwd(DozerUtil.map(userVOReq, UserDTO.class));
         return new ResultModel<>().success("修改密码成功，请使用新密码进行登录");
     }
+
+    /**
+     * 批量删除
+     * @param ids
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("removeUser")
+    public ResultModel<Object> removeUser(@RequestParam("ids[]") ArrayList<Integer> ids) throws Exception {
+        userApi.removeUser(ids, DictConstant.HAVE_DEL);
+        return new ResultModel<>().success("删除成功");
+    }
+    @PutMapping("auth")
+    public ResultModel<Object> auth(UserRoleVOReq userRoleVOReq) throws Exception {
+        userRoleApi.updateUserRole(DozerUtil.map(userRoleVOReq, UserRoleDTO.class));
+        return new ResultModel<>().success("授权成功");
+    }
+
 }

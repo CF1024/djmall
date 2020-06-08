@@ -3,10 +3,13 @@ package com.dj.mall.admin.web.auth.user.page;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.dj.mall.admin.vo.auth.role.RoleVOReq;
 import com.dj.mall.admin.vo.auth.role.RoleVOResp;
+import com.dj.mall.admin.vo.auth.user.UserRoleVOResp;
 import com.dj.mall.admin.vo.auth.user.UserVOResp;
 import com.dj.mall.auth.api.role.RoleApi;
 import com.dj.mall.auth.api.user.UserApi;
+import com.dj.mall.auth.api.user.UserRoleApi;
 import com.dj.mall.auth.dto.role.RoleDTO;
+import com.dj.mall.auth.dto.user.UserRoleDTO;
 import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.util.DozerUtil;
@@ -31,6 +34,8 @@ public class UserPageController {
     private RoleApi roleApi;
     @Reference
     private UserApi userApi;
+    @Reference
+    private UserRoleApi userRoleApi;
     /**
      * 去登录
      * @return
@@ -117,5 +122,19 @@ public class UserPageController {
         return "auth/user/force_update_pwd";
     }
 
-
+    /**
+     * 去授权
+     * @param userId
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("toAuthUserRole/{userId}")
+    public String toAuthUserRole(@PathVariable("userId") Integer userId, ModelMap model) throws Exception {
+        //用户角色数据
+        model.put("userRole", DozerUtil.map(userRoleApi.findUserRoleById(userId), UserRoleVOResp.class));
+        //查询角色
+        model.put("roleList", DozerUtil.mapList(roleApi.findAll(DozerUtil.map(RoleVOReq.class, RoleDTO.class)).getList(), RoleVOResp.class));
+        return "auth/user/auth";
+    }
 }

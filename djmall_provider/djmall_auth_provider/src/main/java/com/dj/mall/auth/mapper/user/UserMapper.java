@@ -8,6 +8,8 @@ import com.dj.mall.auth.entity.user.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataAccessException;
 
+import java.util.ArrayList;
+
 /**
  * @author chengf
  * @date 2020/6/3 13:57
@@ -23,4 +25,14 @@ public interface UserMapper extends BaseMapper<User> {
      * @throws DataAccessException
      */
     IPage<UserBO> findAll(@Param("page") Page<?> page, @Param("user") UserBO userBO) throws Exception, DataAccessException;
+
+    /**
+     * 批量删除
+     * @param ids
+     * @param isDel
+     * @return
+     * @throws Exception
+     * @throws DataAccessException
+     */
+    void removeUser(@Param("ids") ArrayList<Integer> ids, @Param("isDel") String isDel) throws Exception, DataAccessException;
 }

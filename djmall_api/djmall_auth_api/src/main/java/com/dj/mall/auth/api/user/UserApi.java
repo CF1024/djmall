@@ -4,6 +4,7 @@ import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,4 +97,13 @@ public interface UserApi {
      * @throws BusinessException
      */
     void forceUpdatePwd(UserDTO userDTO) throws Exception, BusinessException;
+
+    /**
+     * 批量删除
+     * @param ids
+     * @param isDel
+     * @throws Exception
+     * @throws BusinessException
+     */
+    void removeUser(ArrayList<Integer> ids, String isDel) throws Exception, BusinessException;
 }

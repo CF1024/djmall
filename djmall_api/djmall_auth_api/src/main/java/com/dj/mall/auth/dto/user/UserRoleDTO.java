@@ -12,6 +12,7 @@ import java.io.Serializable;
  * @date 2020/6/3 15:06
  * 用户角色DTOReq 接收实体
  */
+@Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor

@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -241,8 +242,6 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
                 + "</body>"
                 + "</html>";
         mailBoxApi.sendMailHTML(user.getUserEmail(), AuthConstant.RESET_PWD, mailHTML);
-
-
     }
 
     /**
@@ -256,6 +255,7 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
     public UserDTO findUserByName(String userName) throws Exception, BusinessException {
         return DozerUtil.map(getBaseMapper().selectOne(new QueryWrapper<User>().eq("user_name", userName)), UserDTO.class);
     }
+
     /**
      * 强制修改密码
      * @param userDTO
@@ -264,7 +264,21 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
      */
     @Override
     public void forceUpdatePwd(UserDTO userDTO) throws Exception, BusinessException {
-        //用户状态：未删除
+        //修改用户状态：未删除 密码
         getBaseMapper().updateById(DozerUtil.map(userDTO.toBuilder().isDel(DictConstant.NOT_DEL).build(), User.class));
+    }
+
+    /**
+     * 批量删除
+     * @param ids
+     * @param isDel
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public void removeUser(ArrayList<Integer> ids, String isDel) throws Exception, BusinessException {
+        getBaseMapper().removeUser(ids, isDel);
+        //删除对应用户角色
+        userRoleService.remove(new QueryWrapper<UserRole>().in("user_id", ids));
     }
 }
