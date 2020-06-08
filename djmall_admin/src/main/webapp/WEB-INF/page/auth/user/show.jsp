@@ -91,6 +91,65 @@
             });
         });
 
+        //获取id
+        function getIds() {
+            var ids=new Array();
+            $(":checkbox[name='ids']:checked").each(function () {
+                ids.push($(this).val());
+            });
+            return ids;
+        }
+        //修改
+        function toUpdateUser() {
+            var ids = getIds();
+            if (ids.length < 1){
+                layer.msg("请选择一条数据进行修改", {icon:6});
+                return;
+            }
+            if (ids.length > 1) {
+                layer.msg("只能选择一条数据进行修改！", {icon:6});
+                return;
+            }
+            //iframe层
+            layer.open({
+                type: 2,
+                title: '修改',
+                shadeClose: true,
+                maxmin: true, //开启最大化最小化按钮
+                shade: 0.8,
+                area: ['500px', '60%'],
+                content: '<%=request.getContextPath()%>/auth/user/toUpdateUser/'+ids[0]
+            });
+        }
+        //激活
+        function activationUser() {
+            var ids = getIds();
+            if (ids.length < 1){
+                layer.msg("请选择一条数据进行激活", {icon:6});
+                return;
+            }
+            if (ids.length > 1) {
+                layer.msg("只能选择一条数据进行激活！", {icon:6});
+                return;
+            }
+            layer.confirm('确认激活用户吗？', {icon: 3, title:'提示'}, function(index){
+                $.post(
+                    "<%=request.getContextPath()%>/auth/user/activationUser",
+                    {"id":ids[0]},
+                    function (data) {
+                        if(data.code != 200) {
+                            layer.msg(data.msg, {icon:5,time:2000});
+                            return;
+                        }
+                        layer.msg(data.msg, {icon: 6, time: 2000},
+                            function() {
+                                window.location.href = "<%=request.getContextPath()%>/auth/user/toShow";
+                            });
+                    }
+                );
+                layer.close(index);
+            });
+        }
     </script>
     <body>
         <form class="layui-form" id="fm">
@@ -134,11 +193,11 @@
                 </div>
             </div>
         </form>
-        <input type="button" value="修改" onclick="toUpdate()" class="layui-btn layui-btn-radius layui-btn-primary">
-        <input type="button" value="激活" onclick="activation()" class="layui-btn layui-btn-radius">
+        <input type="button" value="修改" onclick="toUpdateUser()" class="layui-btn layui-btn-radius layui-btn-primary">
+        <input type="button" value="激活" onclick="activationUser()" class="layui-btn layui-btn-radius">
         <input type="button" value="重置密码" onclick="resetPwd()" class="layui-btn layui-btn-radius layui-btn-normal">
-        <input type="button" value="删除" onclick="remove()" class="layui-btn layui-btn-radius layui-btn-danger">
-        <input type="button" value="授权" onclick="auth()" class="layui-btn layui-btn-radius layui-btn-warm">
+        <input type="button" value="删除" onclick="removeUser()" class="layui-btn layui-btn-radius layui-btn-danger">
+        <input type="button" value="授权" onclick="authRole()" class="layui-btn layui-btn-radius layui-btn-warm">
         <table border="0px" class="layui-table" >
             <colgroup>
                 <col width="100">

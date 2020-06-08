@@ -10,10 +10,7 @@ import com.dj.mall.model.base.ResultModel;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.util.DozerUtil;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -72,5 +69,29 @@ public class UserController {
         PageResult pageResult = userApi.findAll(DozerUtil.map(userVOReq, UserDTO.class));
         pageResult.toBuilder().list(DozerUtil.mapList(pageResult.getList(), UserVOResp.class));
         return new ResultModel<>().success(pageResult);
+    }
+
+    /**
+     * 修改用户
+     * @param userVOReq
+     * @return
+     * @throws Exception
+     */
+    @PutMapping("updateUser")
+    public ResultModel<Object> updateUser(UserVOReq userVOReq) throws Exception {
+        userApi.updateUser(DozerUtil.map(userVOReq, UserDTO.class));
+        return new ResultModel<>().success("修改成功");
+    }
+
+    /**
+     * 用户激活
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("activationUser")
+    public ResultModel<Object> activationUser(Integer id) throws Exception {
+        userApi.updateUserStatus(id);
+        return new ResultModel<>().success("激活成功");
     }
 }

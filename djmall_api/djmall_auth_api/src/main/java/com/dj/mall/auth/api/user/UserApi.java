@@ -54,4 +54,21 @@ public interface UserApi {
      * @throws BusinessException
      */
     PageResult findAll(UserDTO userDTO) throws Exception, BusinessException;
+
+    /**
+     * 根局id查用户信息
+     * @param userId
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    UserDTO findUserById(Integer userId) throws Exception, BusinessException;
+
+    /**
+     * 修改
+     * @param userDTO
+     * @throws Exception
+     * @throws BusinessException
+     */
+    void updateUser(UserDTO userDTO) throws Exception, BusinessException;
 }

@@ -25,9 +25,7 @@ import com.dj.mall.model.util.PasswordSecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * @author chengf
@@ -186,5 +184,29 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
                 DozerUtil.map(userDTO, UserBO.class));
         return new PageResult().toBuilder().pages(iPage.getPages()).
                 list(DozerUtil.mapList(iPage.getRecords(), UserDTO.class)).build();
+    }
+
+    /**
+     * 根局id查用户信息
+     *
+     * @param userId
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public UserDTO findUserById(Integer userId) throws Exception, BusinessException {
+        return DozerUtil.map(getBaseMapper().selectById(userId), UserDTO.class);
+    }
+
+    /**
+     * 修改
+     * @param userDTO
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public void updateUser(UserDTO userDTO) throws Exception, BusinessException {
+        getBaseMapper().updateById(DozerUtil.map(userDTO, User.class));
     }
 }

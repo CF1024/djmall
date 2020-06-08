@@ -3,6 +3,7 @@ package com.dj.mall.admin.web.auth.user.page;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.dj.mall.admin.vo.auth.role.RoleVOReq;
 import com.dj.mall.admin.vo.auth.role.RoleVOResp;
+import com.dj.mall.admin.vo.auth.user.UserVOResp;
 import com.dj.mall.auth.api.role.RoleApi;
 import com.dj.mall.auth.api.user.UserApi;
 import com.dj.mall.auth.dto.role.RoleDTO;
@@ -77,11 +78,30 @@ public class UserPageController {
         return "auth/user/login";
     }
 
+    /**
+     * 去展示用户页面
+     * @param model
+     * @return
+     * @throws Exception
+     */
     @GetMapping("toShow")
     public String toShow(ModelMap model) throws Exception {
         //查询角色
         model.put("roleList", DozerUtil.mapList(roleApi.findAll(DozerUtil.map(RoleVOReq.class, RoleDTO.class)).getList(), RoleVOResp.class));
         return "auth/user/show";
+    }
+
+    /**
+     * 去修改 根据id查
+     * @param userId
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("toUpdateUser/{userId}")
+    public String toUpdateUser(@PathVariable("userId") Integer userId, ModelMap model) throws Exception {
+        model.put("user", DozerUtil.map( userApi.findUserById(userId), UserVOResp.class));
+        return "auth/user/update";
     }
 
 }
