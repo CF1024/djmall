@@ -24,9 +24,13 @@ public interface AuthConstant {
     /**
      * 验证邮箱激活
      */
-    String SUBJECT = "验证邮箱激活";
+    String ACTIVATE = "验证邮箱激活";
     /**
      * 密码重置
      */
     String RESET_PWD = "密码重置";
+    /**
+     * 6位随机数
+     */
+    Integer RANDOM_SIX = 6;
 }

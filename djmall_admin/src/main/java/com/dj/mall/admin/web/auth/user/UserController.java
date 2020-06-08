@@ -94,4 +94,26 @@ public class UserController {
         userApi.updateUserStatus(id);
         return new ResultModel<>().success("激活成功");
     }
+
+    /**
+     * 重置密码
+     * @param userVOReq
+     * @param session
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("resetPwd")
+    public ResultModel<Object> resetPwd(UserVOReq userVOReq, HttpSession session) throws Exception {
+        //当前登录人
+        UserDTO USER = (UserDTO) session.getAttribute(AuthConstant.SESSION_USER);
+        userVOReq.setSessionUser(USER.getNickName());
+        userApi.resetPwd(DozerUtil.map(userVOReq, UserDTO.class));
+        return new ResultModel<>().success("重置密码成功");
+    }
+
+    @PutMapping("forceUpdatePwd")
+    public ResultModel<Object> forceUpdatePwd(UserVOReq userVOReq) throws Exception {
+        userApi.forceUpdatePwd(DozerUtil.map(userVOReq, UserDTO.class));
+        return new ResultModel<>().success("修改密码成功，请使用新密码进行登录");
+    }
 }

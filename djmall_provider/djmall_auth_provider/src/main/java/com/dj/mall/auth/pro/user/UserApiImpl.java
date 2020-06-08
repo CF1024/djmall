@@ -26,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 /**
  * @author chengf
@@ -131,18 +133,18 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         }
         getBaseMapper().insert(user);
         //如果激活状态为：未激活 并且是商家 则发送邮件
-            if (DictConstant.NOT_ACTIVATE.equals(user.getUserStatus()) && AuthConstant.BUSINESS.equals(userDTO.getUserRole())) {
-                //邮箱验证
-                String mailHTML = "<html>"
-                        + "<META http-equiv=Content-Type content='text/html; charset=UTF-8'>"
-                        + "<body>"
-                        + "<a href='http://127.0.0.1:8081/admin/auth/user/toValidate/"+user.getId()+"'>马上验证邮箱</a><br />"
-                        + "如果您无法点击以上链接，请复制以下网址到浏览器里直接打开：<br />"
-                        + "http://127.0.0.1:8081/admin/auth/user/toValidate/"+user.getId()+"<br />"
-                        + "如果您没有注册，请忽略此邮件"
-                        + "</body>"
-                        + "</html>";
-            mailBoxApi.sendMailHTML(user.getUserEmail(), AuthConstant.SUBJECT, mailHTML);
+        if (DictConstant.NOT_ACTIVATE.equals(user.getUserStatus()) && AuthConstant.BUSINESS.equals(userDTO.getUserRole())) {
+            //邮箱验证
+            String mailHTML = "<html>"
+                    + "<META http-equiv=Content-Type content='text/html; charset=UTF-8'>"
+                    + "<body>"
+                    + "<a href='http://127.0.0.1:8081/admin/auth/user/toValidate/"+user.getId()+"'>马上验证邮箱</a><br />"
+                    + "如果您无法点击以上链接，请复制以下网址到浏览器里直接打开：<br />"
+                    + "http://127.0.0.1:8081/admin/auth/user/toValidate/"+user.getId()+"<br />"
+                    + "如果您没有注册，请忽略此邮件"
+                    + "</body>"
+                    + "</html>";
+            mailBoxApi.sendMailHTML(user.getUserEmail(), AuthConstant.ACTIVATE, mailHTML);
         }
         //新增用户角色id
         UserRole userRole = new UserRole().toBuilder().roleId(userDTO.getUserRole()).userId(user.getId()).build();
@@ -208,5 +210,61 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
     @Override
     public void updateUser(UserDTO userDTO) throws Exception, BusinessException {
         getBaseMapper().updateById(DozerUtil.map(userDTO, User.class));
+    }
+
+    /**
+     * 重置密码
+     * @param userDTO
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public void resetPwd(UserDTO userDTO) throws Exception, BusinessException {
+        //生成6位随机数
+        String random = PasswordSecurityUtil.generateRandom(AuthConstant.RANDOM_SIX);
+        //生成密码盐 （时间毫秒值+随机数[6位]）
+        String salt = PasswordSecurityUtil.generateSalt();
+        //获取用户信息 并修改密码 盐 以及用户状态：强制修改密码
+        User user = getBaseMapper().selectById(userDTO.getUserId()).toBuilder()
+                .userPwd(PasswordSecurityUtil.generatePassword(PasswordSecurityUtil.enCode32(random), salt))
+                .salt(salt).isDel(DictConstant.FORCE_UPDATE_PWD).build();
+        getBaseMapper().updateById(user);
+        //时间格式转换
+        String dateTime = DateTimeFormatter.ofPattern("yyyy年MM月dd日HH时mm分ss秒").format(LocalDateTime.now());
+        //重置密码
+        String mailHTML = "<html>"
+                + "<META http-equiv=Content-Type content='text/html; charset=UTF-8'>"
+                + "<body>"
+                + "尊敬的"+user.getNickName()+"，您的密码已被管理员"+userDTO.getSessionUser()+"，<br />"
+                + "于"+dateTime+"重置为"+random+"。为了您的账户安全，请及时修改。<br />"
+                + "<a href='http://127.0.0.1:8081/admin/auth/user/toLogin'>点我去登录</a><br />"
+                + "</body>"
+                + "</html>";
+        mailBoxApi.sendMailHTML(user.getUserEmail(), AuthConstant.RESET_PWD, mailHTML);
+
+
+    }
+
+    /**
+     * 强制修改密码 根据账号查
+     * @param userName
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public UserDTO findUserByName(String userName) throws Exception, BusinessException {
+        return DozerUtil.map(getBaseMapper().selectOne(new QueryWrapper<User>().eq("user_name", userName)), UserDTO.class);
+    }
+    /**
+     * 强制修改密码
+     * @param userDTO
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public void forceUpdatePwd(UserDTO userDTO) throws Exception, BusinessException {
+        //用户状态：未删除
+        getBaseMapper().updateById(DozerUtil.map(userDTO.toBuilder().isDel(DictConstant.NOT_DEL).build(), User.class));
     }
 }

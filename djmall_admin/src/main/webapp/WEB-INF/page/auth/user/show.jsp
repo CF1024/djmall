@@ -150,6 +150,39 @@
                 layer.close(index);
             });
         }
+
+        //重置密码
+        function resetPwd() {
+
+            var ids = getIds();
+            if (ids.length < 1){
+                layer.msg("请选择一条数据进行重置密码操作", {icon:6});
+                return;
+            }
+            if (ids.length > 1) {
+                layer.msg("只能选择一条数据进行重置密码操作！", {icon:6});
+                return;
+            }
+            layer.confirm('确认重置密码操作吗？', {icon: 3, title:'提示'}, function(index){
+                layer.load(0, {shade:0.5});
+                $.post(
+                    "<%=request.getContextPath()%>/auth/user/resetPwd",
+                    {"userId":ids[0]},
+                    function (data) {
+                        if(data.code != 200) {
+                            layer.msg(data.msg, {icon:5,time:2000});
+                            return;
+                        }
+                        layer.msg(data.msg, {icon: 6, time: 2000},
+                            function() {
+                                window.location.href = "<%=request.getContextPath()%>/auth/user/toShow";
+                            });
+                    }
+                );
+                layer.close(index);
+            });
+        }
+
     </script>
     <body>
         <form class="layui-form" id="fm">

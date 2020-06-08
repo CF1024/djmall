@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * @author chengf
  * @date 2020/4/4 23:43
- * 时间转换
+ * 前后台时间转换格式
  */
 @Configuration
 public class LocalDateTimeSerializerConfig {

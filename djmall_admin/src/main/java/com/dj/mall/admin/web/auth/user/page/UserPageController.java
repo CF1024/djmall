@@ -35,7 +35,7 @@ public class UserPageController {
      * 去登录
      * @return
      */
-    @RequestMapping("toLogin")
+    @GetMapping("toLogin")
     public String toLogin() {
         return "auth/user/login";
     }
@@ -45,7 +45,7 @@ public class UserPageController {
      * @param session
      * @return
      */
-    @RequestMapping("logout")
+    @GetMapping("logout")
     public String logout(HttpSession session) {
         session.removeAttribute(AuthConstant.SESSION_USER);
         return "auth/user/login";
@@ -103,5 +103,19 @@ public class UserPageController {
         model.put("user", DozerUtil.map( userApi.findUserById(userId), UserVOResp.class));
         return "auth/user/update";
     }
+
+    /**
+     * 去强制修改页面 根据账号查
+     * @param userName
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("toForceUpdatePwd")
+    public String toForceUpdatePwd(String userName, ModelMap model) throws Exception {
+        model.put("user", DozerUtil.map( userApi.findUserByName(userName), UserVOResp.class));
+        return "auth/user/force_update_pwd";
+    }
+
 
 }

@@ -200,13 +200,13 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">密码</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="userPwd" id="userPwd" placeholder="请输入密码" class="layui-input">
+                            <input type="password" name="userPwd" id="userPwd" placeholder="请输入密码" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">确认密码</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="userPwd1" id="userPwd1" placeholder="请输入确认密码" class="layui-input">
+                            <input type="password" name="userPwd1" id="userPwd1" placeholder="请输入确认密码" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">

@@ -125,4 +125,8 @@ public class UserDTO implements Serializable {
      * 非此表字段 用户性别集合
      */
     private List<String> userSexList;
+    /**
+     * 当前登录人
+     */
+    private String sessionUser;
 }

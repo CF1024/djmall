@@ -71,4 +71,29 @@ public interface UserApi {
      * @throws BusinessException
      */
     void updateUser(UserDTO userDTO) throws Exception, BusinessException;
+
+    /**
+     * 重置密码
+     * @param userDTO
+     * @throws Exception
+     * @throws BusinessException
+     */
+    void resetPwd(UserDTO userDTO) throws Exception, BusinessException;
+
+    /**
+     * 强制修改密码 根据账号查
+     * @param userName
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    UserDTO findUserByName(String userName) throws Exception, BusinessException;
+
+    /**
+     * 强制修改密码
+     * @param userDTO
+     * @throws Exception
+     * @throws BusinessException
+     */
+    void forceUpdatePwd(UserDTO userDTO) throws Exception, BusinessException;
 }
