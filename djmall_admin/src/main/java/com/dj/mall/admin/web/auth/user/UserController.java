@@ -119,6 +119,12 @@ public class UserController {
         return new ResultModel<>().success("重置密码成功");
     }
 
+    /**
+     * 强制修改密码
+     * @param userVOReq
+     * @return
+     * @throws Exception
+     */
     @PutMapping("forceUpdatePwd")
     public ResultModel<Object> forceUpdatePwd(UserVOReq userVOReq) throws Exception {
         userApi.forceUpdatePwd(DozerUtil.map(userVOReq, UserDTO.class));
@@ -136,6 +142,13 @@ public class UserController {
         userApi.removeUser(ids, DictConstant.HAVE_DEL);
         return new ResultModel<>().success("删除成功");
     }
+
+    /**
+     * 用户授权角色
+     * @param userRoleVOReq
+     * @return
+     * @throws Exception
+     */
     @PutMapping("auth")
     public ResultModel<Object> auth(UserRoleVOReq userRoleVOReq) throws Exception {
         userRoleApi.updateUserRole(DozerUtil.map(userRoleVOReq, UserRoleDTO.class));
