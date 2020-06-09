@@ -43,9 +43,10 @@ public class UserRoleApiImpl extends ServiceImpl<UserRoleMapper, UserRole> imple
      */
     @Override
     public void updateUserRole(UserRoleDTO userRoleDTO) throws Exception, BusinessException {
+        //根据用户id查用户角色的数据
         QueryWrapper<UserRole> queryWrapper = new QueryWrapper<UserRole>().eq("user_id", userRoleDTO.getUserId());
-        UserRole userRole = getBaseMapper().selectOne(queryWrapper);
-        userRole.setRoleId(userRoleDTO.getRoleId());
+        //将角色id更新为前台传过来的角色id
+        UserRole userRole = getBaseMapper().selectOne(queryWrapper).toBuilder().roleId(userRoleDTO.getRoleId()).build();
         userRoleService.update(userRole, queryWrapper);
     }
 }

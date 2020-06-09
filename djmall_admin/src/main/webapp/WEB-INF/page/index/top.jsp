@@ -22,12 +22,12 @@
     <body class="layui-layout-body" style="overflow: hidden">
         <div class="layui-layout layui-layout-admin">
             <div class="layui-header">
-                <div class="layui-logo">点金商城</div>
+                <div class="layui-logo" style="color: coral">点金商城</div>
                 <ul class="layui-nav layui-layout-left">
-                    <li class="layui-nav-item"><a href="<%=request.getContextPath()%>/auth/user/logout">退出登录</a></li>
+                    <li class="layui-nav-item"><a href="<%=request.getContextPath()%>/auth/user/logout" style="color: aqua">退出登录</a></li>
                 </ul>
                 <ul class="layui-nav layui-layout-right">
-                    <li class="layui-nav-item">欢迎${USER.nickName}登录</li>
+                    <li class="layui-nav-item">欢迎<span style="color: hotpink">${USER.nickName}</span>登录</li>
                 </ul>
             </div>
         </div>
