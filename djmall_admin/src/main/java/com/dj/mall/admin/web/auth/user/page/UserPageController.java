@@ -137,4 +137,13 @@ public class UserPageController {
         model.put("roleList", DozerUtil.mapList(roleApi.findAll(DozerUtil.map(RoleVOReq.class, RoleDTO.class)).getList(), RoleVOResp.class));
         return "auth/user/auth";
     }
+
+    /**
+     * 去手机号登录
+     * @return
+     */
+    @GetMapping("toPhoneLogin")
+    public String toPhoneLogin() {
+        return "auth/user/phone_login";
+    }
 }

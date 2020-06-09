@@ -33,4 +33,8 @@ public interface AuthConstant {
      * 6位随机数
      */
     Integer RANDOM_SIX = 6;
+    /**
+     * 验证码失效时间 5分钟
+     */
+    Integer FAILURE_TIME = 5;
 }

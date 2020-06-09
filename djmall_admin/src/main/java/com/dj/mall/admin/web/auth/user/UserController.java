@@ -28,8 +28,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/auth/user/")
 public class UserController {
+    /**
+     * 用户api
+     */
     @Reference
     private UserApi userApi;
+    /**
+     * 用户角色api
+     */
     @Reference
     private UserRoleApi userRoleApi;
 
@@ -62,6 +68,12 @@ public class UserController {
      */
     @PostMapping("addUser")
     public ResultModel<Object> addUser(UserVOReq userVOReq) throws Exception {
+        //非空判断
+        Assert.hasText(userVOReq.getUserName(), "请输入账号");
+        Assert.hasText(userVOReq.getNickName(), "请输入昵称");
+        Assert.hasText(userVOReq.getUserPhone(), "请输入手机号");
+        Assert.hasText(userVOReq.getUserEmail(), "请输入邮箱");
+        Assert.hasText(userVOReq.getUserPwd(), "请输入密码");
         userApi.addUser(DozerUtil.map(userVOReq, UserDTO.class));
         return new ResultModel<>().success("新增成功，如果你是商家请注意您所填写的邮箱信息，前往邮箱激活账户，如果不是商家请忽略哟😊");
     }
@@ -87,6 +99,11 @@ public class UserController {
      */
     @PutMapping("updateUser")
     public ResultModel<Object> updateUser(UserVOReq userVOReq) throws Exception {
+        //非空判断
+        Assert.hasText(userVOReq.getUserName(), "请输入账号");
+        Assert.hasText(userVOReq.getNickName(), "请输入昵称");
+        Assert.hasText(userVOReq.getUserPhone(), "请输入手机号");
+        Assert.hasText(userVOReq.getUserEmail(), "请输入邮箱");
         userApi.updateUser(DozerUtil.map(userVOReq, UserDTO.class));
         return new ResultModel<>().success("修改成功");
     }
@@ -127,6 +144,7 @@ public class UserController {
      */
     @PutMapping("forceUpdatePwd")
     public ResultModel<Object> forceUpdatePwd(UserVOReq userVOReq) throws Exception {
+        Assert.hasText(userVOReq.getUserPwd(), "请输入密码");
         userApi.forceUpdatePwd(DozerUtil.map(userVOReq, UserDTO.class));
         return new ResultModel<>().success("修改密码成功，请使用新密码进行登录");
     }
@@ -155,4 +173,32 @@ public class UserController {
         return new ResultModel<>().success("授权成功");
     }
 
+    /**
+     * 获取验证码
+     * @param userPhone
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("sendCode")
+    public ResultModel<Object> sendCode(String userPhone) throws Exception {
+        userApi.sendCode(userPhone);
+        return new ResultModel<>().success("发送成功，请注意查收信息");
+    }
+
+    /**
+     * 手机号登录
+     * @param userPhone 手机号
+     * @param verifyCode 验证码
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("phoneLogin")
+    public ResultModel<Object> phoneLogin(String userPhone, String verifyCode, HttpSession session) throws Exception {
+        //非空判断
+        Assert.hasText(userPhone, "请输入手机号");
+        Assert.hasText(verifyCode, "请输入验证码");
+        UserDTO USER = userApi.findUserByPhoneAndCode(userPhone, verifyCode);
+        session.setAttribute(AuthConstant.SESSION_USER, USER);
+        return new ResultModel<>().success("登录成功");
+    }
 }

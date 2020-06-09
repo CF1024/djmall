@@ -21,12 +21,15 @@ import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.util.DozerUtil;
+import com.dj.mall.model.util.LocalDateTimeUtils;
+import com.dj.mall.model.util.MessageVerifyUtils;
 import com.dj.mall.model.util.PasswordSecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -280,5 +283,54 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         getBaseMapper().removeUser(ids, isDel);
         //删除对应用户角色
         userRoleService.remove(new QueryWrapper<UserRole>().in("user_id", ids));
+    }
+
+    /**
+     * 获取验证码
+     * @param userPhone
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public void sendCode(String userPhone) throws Exception, BusinessException {
+        User user = getBaseMapper().selectOne(new QueryWrapper<User>().eq("user_phone", userPhone));
+        if (StringUtils.isEmpty(user)) {
+            throw new BusinessException("该用户不存在，请检查手机号后重新获取验证码");
+        }
+        //6位随机数
+        String code = MessageVerifyUtils.getNewCode();
+        //失效时间5分钟
+        LocalDateTime failureTime = LocalDateTimeUtils.plus(LocalDateTime.now(), AuthConstant.FAILURE_TIME, ChronoUnit.MINUTES);
+        //发送短信
+        MessageVerifyUtils.sendSms(userPhone, code);
+        user.setVerifyCode(code);
+        user.setInvalidateTime(failureTime);
+        getBaseMapper().updateById(user);
+    }
+
+    /**
+     * 根据手机号验证码 查用户信息
+     * @param userPhone 手机号
+     * @param verifyCode 验证码
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public UserDTO findUserByPhoneAndCode(String userPhone, String verifyCode) throws Exception, BusinessException {
+        User user = getBaseMapper().selectOne(new QueryWrapper<User>().eq("user_phone", userPhone));
+        if (StringUtils.isEmpty(user)) {
+            throw new BusinessException("用户不存在");
+        }
+        if (!user.getVerifyCode().equals(verifyCode)) {
+            throw new BusinessException("验证码不正确,请检查验证码是否输入有误");
+        }
+        if (user.getInvalidateTime().isBefore(LocalDateTime.now())) {
+            throw new BusinessException("验证码已失效,请重新获取验证码");
+        }
+        UserDTO userDTO = DozerUtil.map(user, UserDTO.class);
+        //最后登录时间
+        lastLoginTimeService.save(new LastLoginTime().toBuilder().userId(userDTO.getUserId()).lastLoginTime(LocalDateTime.now()).build());
+        return userDTO;
     }
 }

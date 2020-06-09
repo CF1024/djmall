@@ -106,4 +106,22 @@ public interface UserApi {
      * @throws BusinessException
      */
     void removeUser(ArrayList<Integer> ids, String isDel) throws Exception, BusinessException;
+
+    /**
+     * 获取验证码
+     * @param userPhone
+     * @throws Exception
+     * @throws BusinessException
+     */
+    void sendCode(String userPhone) throws Exception, BusinessException;
+
+    /**
+     * 根据手机号验证码 查用户信息
+     * @param userPhone 手机号
+     * @param verifyCode 验证码
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    UserDTO findUserByPhoneAndCode(String userPhone, String verifyCode) throws Exception, BusinessException;
 }

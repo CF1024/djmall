@@ -42,5 +42,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         interceptorRegistration.excludePathPatterns("/auth/user/toForceUpdatePwd");
         //强制修改密码
         interceptorRegistration.excludePathPatterns("/auth/user/forceUpdatePwd");
+        //去手机号登录
+        interceptorRegistration.excludePathPatterns("/auth/user/toPhoneLogin");
+        //获取验证码
+        interceptorRegistration.excludePathPatterns("/auth/user/sendCode");
+        //去手机号登录
+        interceptorRegistration.excludePathPatterns("/auth/user/phoneLogin");
     }
 }
