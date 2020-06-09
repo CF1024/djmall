@@ -35,6 +35,9 @@
             margin-left:-150px;
             margin-top:-80px;
         }
+        .layui-form-label{
+            white-space:nowrap!important;
+        }
         .error{
             color: red;
         }

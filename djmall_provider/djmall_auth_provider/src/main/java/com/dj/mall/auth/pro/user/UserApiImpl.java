@@ -333,4 +333,33 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         lastLoginTimeService.save(new LastLoginTime().toBuilder().userId(userDTO.getUserId()).lastLoginTime(LocalDateTime.now()).build());
         return userDTO;
     }
+
+    /**
+     * 根据手机号更改密码
+     * @param userDTO 用户dto对象
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public void updatePwdByPhone(UserDTO userDTO) throws Exception, BusinessException {
+        User user = getBaseMapper().selectOne(new QueryWrapper<User>().eq("user_phone", userDTO.getUserPhone()));
+        if (StringUtils.isEmpty(user)) {
+            throw new BusinessException("用户不存在");
+        }
+        if (!user.getVerifyCode().equals(userDTO.getVerifyCode())) {
+            throw new BusinessException("验证码不正确,请检查验证码是否输入有误");
+        }
+        if (user.getInvalidateTime().isBefore(LocalDateTime.now())) {
+            throw new BusinessException("验证码已失效,请重新获取验证码");
+        }
+        //修改密码 盐
+        user.setUserPwd(userDTO.getUserPwd());
+        user.setSalt(userDTO.getSalt());
+        getBaseMapper().updateById(user);
+        //时间转换
+        String dateTime = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒").format(LocalDateTime.now());
+        //忘记密码邮件
+        String sendMail = "您的账户"+user.getUserName()+"，于"+dateTime+"进行密码修改成功。";
+        mailBoxApi.sendMail(user.getUserEmail(), AuthConstant.FORGET_PWD, sendMail);
+    }
 }

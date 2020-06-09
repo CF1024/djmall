@@ -68,7 +68,7 @@
                         }
                         layer.msg(data.msg, {icon: 6, time: 2000},
                             function(){
-                                parent.window.location.href = "<%=request.getContextPath()%>/index/toIndex";
+                                window.location.href = "<%=request.getContextPath()%>/index/toIndex";
                             });
                     });
             }

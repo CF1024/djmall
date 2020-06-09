@@ -37,4 +37,8 @@ public interface AuthConstant {
      * 验证码失效时间 5分钟
      */
     Integer FAILURE_TIME = 5;
+    /**
+     * 忘记密码
+     */
+    String FORGET_PWD = "忘记密码";
 }

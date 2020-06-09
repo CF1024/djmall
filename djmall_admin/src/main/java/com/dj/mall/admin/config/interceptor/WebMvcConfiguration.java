@@ -48,5 +48,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         interceptorRegistration.excludePathPatterns("/auth/user/sendCode");
         //去手机号登录
         interceptorRegistration.excludePathPatterns("/auth/user/phoneLogin");
+        //去忘记密码
+        interceptorRegistration.excludePathPatterns("/auth/user/toForgetPwd");
+        //忘记密码
+        interceptorRegistration.excludePathPatterns("/auth/user/forgetPwd");
     }
 }

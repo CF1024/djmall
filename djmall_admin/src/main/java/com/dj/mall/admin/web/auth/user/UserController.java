@@ -201,4 +201,20 @@ public class UserController {
         session.setAttribute(AuthConstant.SESSION_USER, USER);
         return new ResultModel<>().success("登录成功");
     }
+
+    /**
+     * 忘记密码
+     * @param userVOReq
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("forgetPwd")
+    public ResultModel<Object> forgetPwd(UserVOReq userVOReq) throws Exception {
+        //非空判断
+        Assert.hasText(userVOReq.getUserPhone(), "请输入手机号");
+        Assert.hasText(userVOReq.getVerifyCode(), "请输入验证码");
+        Assert.hasText(userVOReq.getUserPwd(), "请输入密码");
+        userApi.updatePwdByPhone(DozerUtil.map(userVOReq, UserDTO.class));
+        return new ResultModel<>().success("修改成功，请使用新密码进行登录");
+    }
 }

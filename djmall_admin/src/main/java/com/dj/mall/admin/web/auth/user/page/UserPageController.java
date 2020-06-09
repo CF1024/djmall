@@ -146,4 +146,13 @@ public class UserPageController {
     public String toPhoneLogin() {
         return "auth/user/phone_login";
     }
+
+    /**
+     * 去忘记密码
+     * @return
+     */
+    @GetMapping("toForgetPwd")
+    public String toForgetPwd() {
+        return "auth/user/forget_pwd";
+    }
 }

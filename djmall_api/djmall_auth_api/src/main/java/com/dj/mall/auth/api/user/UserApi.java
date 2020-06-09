@@ -124,4 +124,12 @@ public interface UserApi {
      * @throws BusinessException
      */
     UserDTO findUserByPhoneAndCode(String userPhone, String verifyCode) throws Exception, BusinessException;
+
+    /**
+     * 根据手机号更改密码
+     * @param userDTO 用户dto对象
+     * @throws Exception
+     * @throws BusinessException
+     */
+    void updatePwdByPhone(UserDTO userDTO) throws Exception, BusinessException;
 }
