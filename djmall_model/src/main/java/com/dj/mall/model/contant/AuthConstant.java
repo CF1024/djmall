@@ -41,4 +41,9 @@ public interface AuthConstant {
      * 忘记密码
      */
     String FORGET_PWD = "忘记密码";
+
+    /**
+     * 用户已关联资源session
+     */
+    String USER_RESOURCE = "USER_RESOURCE";
 }

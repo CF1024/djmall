@@ -1,5 +1,7 @@
 package com.dj.mall.auth.api.user;
 
+import com.dj.mall.auth.dto.resource.ResourceDTO;
+import com.dj.mall.auth.dto.role.RoleResourceDTO;
 import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
@@ -132,4 +134,5 @@ public interface UserApi {
      * @throws BusinessException
      */
     void updatePwdByPhone(UserDTO userDTO) throws Exception, BusinessException;
+
 }

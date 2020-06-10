@@ -1,11 +1,13 @@
 package com.dj.mall.admin.web.auth.user;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.dj.mall.admin.vo.auth.resource.ResourceVOResp;
 import com.dj.mall.admin.vo.auth.user.UserRoleVOReq;
 import com.dj.mall.admin.vo.auth.user.UserVOReq;
 import com.dj.mall.admin.vo.auth.user.UserVOResp;
 import com.dj.mall.auth.api.user.UserApi;
 import com.dj.mall.auth.api.user.UserRoleApi;
+import com.dj.mall.auth.dto.resource.ResourceDTO;
 import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.auth.dto.user.UserRoleDTO;
 import com.dj.mall.model.base.PageResult;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author chengf
@@ -39,6 +42,14 @@ public class UserController {
     @Reference
     private UserRoleApi userRoleApi;
 
+    /**
+     * 用户登录
+     * @param userName
+     * @param userPwd
+     * @param session
+     * @return
+     * @throws Exception
+     */
     @GetMapping("login")
     public ResultModel<Object> login(String userName, String userPwd, HttpSession session) throws Exception {
         //非空判断
@@ -216,5 +227,20 @@ public class UserController {
         Assert.hasText(userVOReq.getUserPwd(), "请输入密码");
         userApi.updatePwdByPhone(DozerUtil.map(userVOReq, UserDTO.class));
         return new ResultModel<>().success("修改成功，请使用新密码进行登录");
+    }
+
+    /**
+     * 展示左侧菜单
+     * @param session
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("showMenu")
+    public ResultModel<Object> showMenu(HttpSession session) throws Exception {
+        //从session中取出用户已关联资源
+         UserDTO USER = (UserDTO) session.getAttribute(AuthConstant.SESSION_USER);
+        //区分按钮和菜单
+        List<ResourceDTO> resourceList = USER.getPermissionList().stream().filter(resource -> resource.getResourceType().equals(DictConstant.MENU)).collect(Collectors.toList());
+        return new ResultModel<>().success(DozerUtil.mapList(resourceList, ResourceVOResp.class));
     }
 }

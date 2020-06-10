@@ -9,7 +9,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dj.mall.auth.api.user.MailBoxApi;
 import com.dj.mall.auth.api.user.UserApi;
 import com.dj.mall.auth.bo.user.UserBO;
+import com.dj.mall.auth.dto.resource.ResourceDTO;
+import com.dj.mall.auth.dto.role.RoleResourceDTO;
 import com.dj.mall.auth.dto.user.UserDTO;
+import com.dj.mall.auth.entity.resource.Resource;
 import com.dj.mall.auth.entity.user.User;
 import com.dj.mall.auth.entity.user.LastLoginTime;
 import com.dj.mall.auth.entity.user.UserRole;
@@ -31,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -86,6 +90,13 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         UserDTO userDTO = DozerUtil.map(user, UserDTO.class);
         //最后登录时间
         lastLoginTimeService.save(new LastLoginTime().toBuilder().userId(userDTO.getUserId()).lastLoginTime(LocalDateTime.now()).build());
+        //获取当前登录用户的角色
+        UserRole userRole = userRoleService.getOne(new QueryWrapper<UserRole>().eq("user_id", userDTO.getUserId()));
+        userDTO.setUserRole(userRole.getRoleId());
+        //用户已关联资源
+        List<Resource> resourceList = getBaseMapper().findUserResourceByUserId(userDTO.getUserId());
+        //将用户已关联资源放入权限集合中
+        userDTO.setPermissionList(DozerUtil.mapList(resourceList, ResourceDTO.class));
         return userDTO;
     }
 
@@ -362,4 +373,6 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         String sendMail = "您的账户"+user.getUserName()+"，于"+dateTime+"进行密码修改成功。";
         mailBoxApi.sendMail(user.getUserEmail(), AuthConstant.FORGET_PWD, sendMail);
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.dj.mall.auth.dto.user;
 
+import com.dj.mall.auth.dto.resource.ResourceDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -129,4 +130,9 @@ public class UserDTO implements Serializable {
      * 当前登录人
      */
     private String sessionUser;
+    /**
+     * 非此表字段 用户权限集合
+     */
+    private List<ResourceDTO> permissionList;
+
 }

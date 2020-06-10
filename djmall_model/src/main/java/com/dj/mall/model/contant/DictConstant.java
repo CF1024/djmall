@@ -67,4 +67,13 @@ public interface DictConstant {
      * 是否默认 不默认
      */
     String NOT_DEFAULT = "NOT_DEFAULT";
+    /**
+     * 菜单
+     */
+    String MENU = "MENU";
+
+    /**
+     * 按钮
+     */
+    String BUTTON = "BUTTON";
 }

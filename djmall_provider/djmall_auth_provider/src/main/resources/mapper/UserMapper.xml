@@ -86,4 +86,22 @@
             #{id}
         </foreach>
     </update>
+
+    <!--左侧菜单-->
+    <select id="findUserResourceByUserId" resultType="com.dj.mall.auth.entity.resource.Resource">
+        SELECT
+            ar.id,
+            ar.resource_name,
+            ar.url,
+            ar.parent_id,
+            ar.is_del,
+            ar.resource_type,
+            ar.resource_code
+        FROM
+            djmall_auth_user_role aur
+        LEFT JOIN djmall_auth_role_resource arr ON aur.role_id = arr.role_id
+        LEFT JOIN djmall_auth_resource ar ON arr.resource_id = ar.id
+        WHERE
+	        aur.user_id = #{userId}
+    </select>
 </mapper>

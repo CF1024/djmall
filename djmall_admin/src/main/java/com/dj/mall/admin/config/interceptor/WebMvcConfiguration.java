@@ -13,44 +13,53 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * 自定义拦截器
  */
 @Configuration
-@DependsOn("myInterceptor")
+@DependsOn({"authInterceptor", "loginInterceptor"})
 public class WebMvcConfiguration implements WebMvcConfigurer {
+
     @Autowired
-    private MyInterceptor myInterceptor;
+    private AuthInterceptor authInterceptor;
+    @Autowired
+    private LoginInterceptor loginInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //将spring注册到容器中
-        InterceptorRegistration interceptorRegistration = registry.addInterceptor(myInterceptor);
+        InterceptorRegistration authInterceptorRegistration = registry.addInterceptor(authInterceptor);
+        authInterceptorRegistration.addPathPatterns("/auth/user/toShow");
+        authInterceptorRegistration.addPathPatterns("/auth/role/toShow");
+        authInterceptorRegistration.addPathPatterns("/auth/resource/toShow");
+        //将spring注册到容器中
+        InterceptorRegistration loginInterceptorRegistration = registry.addInterceptor(loginInterceptor);
         //拦截的请求
-        interceptorRegistration.addPathPatterns("/**");
-        //放过的请求
+        loginInterceptorRegistration.addPathPatterns("/**");
+        //403拦截页面
+        loginInterceptorRegistration.excludePathPatterns("/index/toDisplay");
         //js
-        interceptorRegistration.excludePathPatterns("/static/**");
+        loginInterceptorRegistration.excludePathPatterns("/static/**");
         //去登陆
-        interceptorRegistration.excludePathPatterns("/auth/user/toLogin");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/toLogin");
         //登录
-        interceptorRegistration.excludePathPatterns("/auth/user/login");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/login");
         //去注册
-        interceptorRegistration.excludePathPatterns("/auth/user/toAddUser");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/toAddUser");
         //注册
-        interceptorRegistration.excludePathPatterns("/auth/user/addUser");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/addUser");
         //去重
-        interceptorRegistration.excludePathPatterns("/auth/user/deDuplicate");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/deDuplicate");
         //邮箱激活
-        interceptorRegistration.excludePathPatterns("/auth/user/toValidate/**");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/toValidate/**");
         //去强制修改密码
-        interceptorRegistration.excludePathPatterns("/auth/user/toForceUpdatePwd");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/toForceUpdatePwd");
         //强制修改密码
-        interceptorRegistration.excludePathPatterns("/auth/user/forceUpdatePwd");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/forceUpdatePwd");
         //去手机号登录
-        interceptorRegistration.excludePathPatterns("/auth/user/toPhoneLogin");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/toPhoneLogin");
         //获取验证码
-        interceptorRegistration.excludePathPatterns("/auth/user/sendCode");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/sendCode");
         //去手机号登录
-        interceptorRegistration.excludePathPatterns("/auth/user/phoneLogin");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/phoneLogin");
         //去忘记密码
-        interceptorRegistration.excludePathPatterns("/auth/user/toForgetPwd");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/toForgetPwd");
         //忘记密码
-        interceptorRegistration.excludePathPatterns("/auth/user/forgetPwd");
+        loginInterceptorRegistration.excludePathPatterns("/auth/user/forgetPwd");
     }
 }
