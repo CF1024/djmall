@@ -90,13 +90,8 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         UserDTO userDTO = DozerUtil.map(user, UserDTO.class);
         //最后登录时间
         lastLoginTimeService.save(new LastLoginTime().toBuilder().userId(userDTO.getUserId()).lastLoginTime(LocalDateTime.now()).build());
-        //获取当前登录用户的角色
-        UserRole userRole = userRoleService.getOne(new QueryWrapper<UserRole>().eq("user_id", userDTO.getUserId()));
-        userDTO.setUserRole(userRole.getRoleId());
-        //用户已关联资源
-        List<Resource> resourceList = getBaseMapper().findUserResourceByUserId(userDTO.getUserId());
         //将用户已关联资源放入权限集合中
-        userDTO.setPermissionList(DozerUtil.mapList(resourceList, ResourceDTO.class));
+        userDTO.setPermissionList(DozerUtil.mapList(getBaseMapper().findUserResourceByUserId(userDTO.getUserId()), ResourceDTO.class));
         return userDTO;
     }
 
@@ -161,9 +156,8 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
                     + "</html>";
             mailBoxApi.sendMailHTML(user.getUserEmail(), AuthConstant.ACTIVATE, mailHTML);
         }
-        //新增用户角色id
-        UserRole userRole = new UserRole().toBuilder().roleId(userDTO.getUserRole()).userId(user.getId()).build();
-        userRoleService.save(userRole);
+        //新增用户角色表用户以及角色的ID
+        userRoleService.save(new UserRole().toBuilder().roleId(userDTO.getUserRole()).userId(user.getId()).build());
     }
 
     /**

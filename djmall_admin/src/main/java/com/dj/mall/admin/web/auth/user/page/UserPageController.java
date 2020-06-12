@@ -9,11 +9,10 @@ import com.dj.mall.auth.api.role.RoleApi;
 import com.dj.mall.auth.api.user.UserApi;
 import com.dj.mall.auth.api.user.UserRoleApi;
 import com.dj.mall.auth.dto.role.RoleDTO;
-import com.dj.mall.auth.dto.user.UserRoleDTO;
-import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.contant.AuthConstant;
+import com.dj.mall.model.contant.PermissionsCode;
 import com.dj.mall.model.util.DozerUtil;
-import org.omg.PortableInterceptor.INACTIVE;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,12 +29,22 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/auth/user/")
 public class UserPageController {
+    /**
+     * 角色api
+     */
     @Reference
     private RoleApi roleApi;
+    /**
+     * 用户api
+     */
     @Reference
     private UserApi userApi;
+    /**
+     * 用户角色api
+     */
     @Reference
     private UserRoleApi userRoleApi;
+
     /**
      * 去登录
      * @return
@@ -90,6 +99,7 @@ public class UserPageController {
      * @throws Exception
      */
     @GetMapping("toShow")
+    @RequiresPermissions(value = PermissionsCode.USER_MANAGE)
     public String toShow(ModelMap model) throws Exception {
         //查询角色
         model.put("roleList", DozerUtil.mapList(roleApi.findAll(DozerUtil.map(RoleVOReq.class, RoleDTO.class)).getList(), RoleVOResp.class));
@@ -104,6 +114,7 @@ public class UserPageController {
      * @throws Exception
      */
     @GetMapping("toUpdateUser/{userId}")
+    @RequiresPermissions(value = PermissionsCode.USER_UPDATE_BTN)
     public String toUpdateUser(@PathVariable("userId") Integer userId, ModelMap model) throws Exception {
         model.put("user", DozerUtil.map( userApi.findUserById(userId), UserVOResp.class));
         return "auth/user/update";
@@ -130,6 +141,7 @@ public class UserPageController {
      * @throws Exception
      */
     @GetMapping("toAuthUserRole/{userId}")
+    @RequiresPermissions(value = PermissionsCode.USER_AUTH_BTN)
     public String toAuthUserRole(@PathVariable("userId") Integer userId, ModelMap model) throws Exception {
         //用户角色数据
         model.put("userRole", DozerUtil.map(userRoleApi.findUserRoleById(userId), UserRoleVOResp.class));

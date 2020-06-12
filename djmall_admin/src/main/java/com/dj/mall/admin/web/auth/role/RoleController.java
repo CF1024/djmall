@@ -8,7 +8,9 @@ import com.dj.mall.auth.dto.resource.TreeData;
 import com.dj.mall.auth.dto.role.RoleDTO;
 import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.base.ResultModel;
+import com.dj.mall.model.contant.PermissionsCode;
 import com.dj.mall.model.util.DozerUtil;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +33,7 @@ public class RoleController {
      * @throws Exception
      */
     @PostMapping("show")
+    @RequiresPermissions(value = PermissionsCode.ROLE_MANAGE)
     public ResultModel<Object> show(RoleVOReq roleVOReq) throws Exception {
         PageResult pageResult = roleApi.findAll(DozerUtil.map(roleVOReq, RoleDTO.class));
         pageResult.setList(DozerUtil.mapList(pageResult.getList(), RoleVOResp.class));
@@ -57,6 +60,7 @@ public class RoleController {
      * @throws Exception
      */
     @PostMapping("add")
+    @RequiresPermissions(value = PermissionsCode.ROLE_ADD_BTN)
     public ResultModel<Object> add(RoleVOReq roleVOReq) throws Exception {
         roleApi.insertRole(DozerUtil.map(roleVOReq, RoleDTO.class));
         return new ResultModel<>().success("新增成功");
@@ -69,6 +73,7 @@ public class RoleController {
      * @throws Exception
      */
     @PutMapping("update")
+    @RequiresPermissions(value = PermissionsCode.ROLE_UPDATE_BTN)
     public ResultModel<Object> update(RoleVOReq roleVOReq) throws Exception {
         roleApi.updateRole(DozerUtil.map(roleVOReq, RoleDTO.class));
         return new ResultModel<>().success("修改成功");
@@ -81,6 +86,7 @@ public class RoleController {
      * @throws Exception
      */
     @PostMapping("remove")
+    @RequiresPermissions(value = PermissionsCode.ROLE_DELETE_BTN)
     public ResultModel<Object> remove(Integer roleId) throws Exception {
         roleApi.removeRole(roleId);
         return new ResultModel<>().success("删除成功");
@@ -93,6 +99,7 @@ public class RoleController {
      * @throws Exception
      */
     @GetMapping("getRelatedResource/{roleId}")
+    @RequiresPermissions(value = PermissionsCode.ROLE_RELATED_RESOURCE_BTN)
     public ResultModel<Object> getRelatedResource(@PathVariable("roleId") Integer roleId) throws Exception {
         return new ResultModel<>().success(roleApi.getRelatedResource(roleId));
     }
@@ -104,6 +111,7 @@ public class RoleController {
      * @throws Exception
      */
     @PostMapping("saveRelevance")
+    @RequiresPermissions(value = PermissionsCode.ROLE_RELATED_RESOURCE_BTN)
     public ResultModel<Object> saveRelevance(RoleVOReq roleVOReq) throws Exception {
         roleApi.saveRelevance(DozerUtil.map(roleVOReq, RoleDTO.class));
         return new ResultModel<>().success(true);

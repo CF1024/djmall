@@ -5,6 +5,7 @@ import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.ResultModel;
 /*import com.dj.mall.model.contant.SystemConstant;
 import org.apache.shiro.authz.UnauthorizedException;*/
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -70,11 +71,11 @@ public class CustomExceptionHandler {
      * @param response
      * @param ex
      */
-    /*@ExceptionHandler(UnauthorizedException.class)
+    @ExceptionHandler(UnauthorizedException.class)
     public void unauthorizedExceptionHandler(HttpServletRequest request, HttpServletResponse response, UnauthorizedException ex) {
         ex.printStackTrace();
         try {
-            if (request.getHeader(SystemConstant.X_REQUESTED_WITH) != null && request.getHeader(SystemConstant.X_REQUESTED_WITH).equalsIgnoreCase(SystemConstant.XMLHTTP)) {
+            if (request.getHeader("x-requested-with") != null && request.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest")) {
                 response.setStatus(HttpStatus.OK.value());
                 response.setContentType("text/json;charset=UTF-8");
                 response.getWriter().print(JSONObject.toJSON(new ResultModel().error(403, "403")));
@@ -84,7 +85,7 @@ public class CustomExceptionHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
     /**
      * 未知异常处理

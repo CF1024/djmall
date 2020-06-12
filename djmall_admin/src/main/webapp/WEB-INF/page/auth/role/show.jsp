@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html>
     <head>
         <title>角色展示</title>
@@ -37,9 +38,9 @@
                         html += "<td>" + role.roleId +"</td>";
                         html += "<td>" + role.roleName +"</td>";
                         html += "<td>";
-                        html += "<a class='layui-btn layui-btn-normal layui-btn-xs' href='javascript:toRelatedResource("+role.roleId+")'>关联资源</a>";
-                        html += "<a class='layui-btn layui-btn-xs' href='javascript:toUpdate("+role.roleId+")'>编辑</a>";
-                        html += "<a class='layui-btn layui-btn-danger layui-btn-xs' href='javascript:remove("+role.roleId+")'>删除</a>";
+                        html += "<shiro:hasPermission name='ROLE_RELATED_RESOURCE_BTN'><a class='layui-btn layui-btn-normal layui-btn-xs' href='javascript:toRelatedResource("+role.roleId+")'>关联资源</a></shiro:hasPermission>";
+                        html += "<shiro:hasPermission name='ROLE_UPDATE_BTN'><a class='layui-btn layui-btn-xs' href='javascript:toUpdate("+role.roleId+")'>编辑</a></shiro:hasPermission>";
+                        html += "<shiro:hasPermission name='ROLE_DELETE_BTN'><a class='layui-btn layui-btn-danger layui-btn-xs' href='javascript:remove("+role.roleId+")'>删除</a></shiro:hasPermission>";
                         html += "</td>";
                         html += "</tr>";
                     }
@@ -134,7 +135,9 @@
         <form class="layui-form" id="fm">
             <input type="hidden" value="1" name="pageNo" id="pageNo">
         </form>
-        <input type="button" value="新增" onclick="toAdd()" class="layui-btn layui-btn-normal">
+        <shiro:hasPermission name="ROLE_ADD_BTN">
+            <input type="button" value="新增" onclick="toAdd()" class="layui-btn layui-btn-normal">
+        </shiro:hasPermission>
         <table border="0px" class="layui-table" >
             <colgroup>
                 <col width="100">

@@ -14,7 +14,12 @@ import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.base.ResultModel;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.contant.DictConstant;
+import com.dj.mall.model.contant.PermissionsCode;
 import com.dj.mall.model.util.DozerUtil;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.subject.Subject;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,6 +62,9 @@ public class UserController {
         Assert.hasText(userPwd, "请输入密码");
         UserDTO USER = userApi.findUserByNameAndPwd(userName, userPwd);
         session.setAttribute(AuthConstant.SESSION_USER, USER);
+        Subject subject = SecurityUtils.getSubject();
+        UsernamePasswordToken token = new UsernamePasswordToken(userName, userPwd);
+        subject.login(token);
         return new ResultModel<>().success("登录成功");
     }
 
@@ -96,6 +104,7 @@ public class UserController {
      * @throws Exception
      */
     @PostMapping("show")
+    @RequiresPermissions(value = PermissionsCode.USER_MANAGE)
     public ResultModel<Object> show(UserVOReq userVOReq) throws Exception {
         PageResult pageResult = userApi.findAll(DozerUtil.map(userVOReq, UserDTO.class));
         pageResult.toBuilder().list(DozerUtil.mapList(pageResult.getList(), UserVOResp.class));
@@ -109,6 +118,7 @@ public class UserController {
      * @throws Exception
      */
     @PutMapping("updateUser")
+    @RequiresPermissions(value = PermissionsCode.USER_UPDATE_BTN)
     public ResultModel<Object> updateUser(UserVOReq userVOReq) throws Exception {
         //非空判断
         Assert.hasText(userVOReq.getUserName(), "请输入账号");
@@ -126,6 +136,7 @@ public class UserController {
      * @throws Exception
      */
     @PostMapping("activationUser")
+    @RequiresPermissions(value = PermissionsCode.USER_ACTIVATION_BTN)
     public ResultModel<Object> activationUser(Integer id) throws Exception {
         userApi.updateUserStatus(id);
         return new ResultModel<>().success("激活成功");
@@ -139,6 +150,7 @@ public class UserController {
      * @throws Exception
      */
     @PostMapping("resetPwd")
+    @RequiresPermissions(value = PermissionsCode.USER_RESET_PASSWORD_BTN)
     public ResultModel<Object> resetPwd(UserVOReq userVOReq, HttpSession session) throws Exception {
         //当前登录人
         UserDTO USER = (UserDTO) session.getAttribute(AuthConstant.SESSION_USER);
@@ -167,6 +179,7 @@ public class UserController {
      * @throws Exception
      */
     @PostMapping("removeUser")
+    @RequiresPermissions(value = PermissionsCode.USER_DELETE_BTN)
     public ResultModel<Object> removeUser(@RequestParam("ids[]") ArrayList<Integer> ids) throws Exception {
         userApi.removeUser(ids, DictConstant.HAVE_DEL);
         return new ResultModel<>().success("删除成功");
@@ -179,6 +192,7 @@ public class UserController {
      * @throws Exception
      */
     @PutMapping("auth")
+    @RequiresPermissions(value = PermissionsCode.USER_AUTH_BTN)
     public ResultModel<Object> auth(UserRoleVOReq userRoleVOReq) throws Exception {
         userRoleApi.updateUserRole(DozerUtil.map(userRoleVOReq, UserRoleDTO.class));
         return new ResultModel<>().success("授权成功");
@@ -240,7 +254,7 @@ public class UserController {
         //从session中取出用户已关联资源
          UserDTO USER = (UserDTO) session.getAttribute(AuthConstant.SESSION_USER);
         //区分按钮和菜单
-        List<ResourceDTO> resourceList = USER.getPermissionList().stream().filter(resource -> resource.getResourceType().equals(DictConstant.MENU)).collect(Collectors.toList());
+        List<ResourceDTO> resourceList = USER.getPermissionList().stream().filter(resource -> DictConstant.MENU.equals(resource.getResourceType())).collect(Collectors.toList());
         return new ResultModel<>().success(DozerUtil.mapList(resourceList, ResourceVOResp.class));
     }
 }

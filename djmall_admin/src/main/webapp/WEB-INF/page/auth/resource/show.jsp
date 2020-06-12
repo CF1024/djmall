@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html>
     <head>
         <title>Title</title>
@@ -117,9 +118,15 @@
     <body>
         <form class="layui-form" id="fm">
             <div class="layui-btn-group">
-                <input type="button" value="新增" onclick="toAdd()" class="layui-btn">
-                <input type="button" value="修改" onclick="toUpdate()" class="layui-btn">
-                <input type="button" value="删除" onclick="remove()" class="layui-btn">
+                <shiro:hasPermission name="RESOURCE_ADD_BTN">
+                    <input type="button" value="新增" onclick="toAdd()" class="layui-btn">
+                </shiro:hasPermission>
+                <shiro:hasPermission name="RESOURCE_UPDATE_BTN">
+                    <input type="button" value="修改" onclick="toUpdate()" class="layui-btn">
+                </shiro:hasPermission>
+                <shiro:hasPermission name="RESOURCE_DELETE_BTN">
+                    <input type="button" value="删除" onclick="remove()" class="layui-btn">
+                </shiro:hasPermission>
             </div>
             <div id="resourceTree" class="ztree"></div>
         </form>

@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html>
     <head>
         <title>Title</title>
@@ -273,11 +274,21 @@
                 </div>
             </div>
         </form>
-        <input type="button" value="修改" onclick="toUpdateUser()" class="layui-btn layui-btn-radius layui-btn-primary">
-        <input type="button" value="激活" onclick="activationUser()" class="layui-btn layui-btn-radius">
-        <input type="button" value="重置密码" onclick="resetPwd()" class="layui-btn layui-btn-radius layui-btn-normal">
-        <input type="button" value="删除" onclick="removeUser()" class="layui-btn layui-btn-radius layui-btn-danger">
-        <input type="button" value="授权" onclick="toAuthUserRole()" class="layui-btn layui-btn-radius layui-btn-warm">
+        <shiro:hasPermission name="USER_UPDATE_BTN">
+            <input type="button" value="修改" onclick="toUpdateUser()" class="layui-btn layui-btn-radius layui-btn-primary">
+        </shiro:hasPermission>
+        <shiro:hasPermission name="USER_ACTIVATION_BTN">
+            <input type="button" value="激活" onclick="activationUser()" class="layui-btn layui-btn-radius">
+        </shiro:hasPermission>
+        <shiro:hasPermission name="USER_RESET_PASSWORD_BTN">
+            <input type="button" value="重置密码" onclick="resetPwd()" class="layui-btn layui-btn-radius layui-btn-normal">
+        </shiro:hasPermission>
+        <shiro:hasPermission name="USER_DELETE_BTN">
+            <input type="button" value="删除" onclick="removeUser()" class="layui-btn layui-btn-radius layui-btn-danger">
+        </shiro:hasPermission>
+        <shiro:hasPermission name="USER_AUTH_BTN">
+            <input type="button" value="授权" onclick="toAuthUserRole()" class="layui-btn layui-btn-radius layui-btn-warm">
+        </shiro:hasPermission>
         <table border="0px" class="layui-table" >
             <colgroup>
                 <col width="100">
