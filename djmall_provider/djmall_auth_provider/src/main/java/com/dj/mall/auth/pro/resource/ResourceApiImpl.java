@@ -6,14 +6,18 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dj.mall.auth.api.resource.ResourceApi;
 import com.dj.mall.auth.dto.resource.ResourceDTO;
 import com.dj.mall.auth.entity.resource.Resource;
+import com.dj.mall.auth.entity.role.RoleResource;
 import com.dj.mall.auth.mapper.resource.ResourceMapper;
+import com.dj.mall.auth.service.role.RoleResourceService;
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.util.DozerUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +28,8 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class ResourceApiImpl extends ServiceImpl<ResourceMapper, Resource> implements ResourceApi {
+    @Autowired
+    private RoleResourceService roleResourceService;
     /**
      * 展示资源
      * @return
@@ -104,6 +110,7 @@ public class ResourceApiImpl extends ServiceImpl<ResourceMapper, Resource> imple
     public ResourceDTO findResourceByResourceId(Integer resourceId) throws Exception, BusinessException {
         return DozerUtil.map(getBaseMapper().selectById(resourceId), ResourceDTO.class);
     }
+
     /**
      * 修改
      * @param resourceDTO
@@ -114,5 +121,38 @@ public class ResourceApiImpl extends ServiceImpl<ResourceMapper, Resource> imple
     public void updateResource(ResourceDTO resourceDTO) throws Exception, BusinessException {
         getBaseMapper().updateById(DozerUtil.map(resourceDTO.toBuilder()
                 .resourceCode(resourceDTO.getResourceCode().toUpperCase()).build(), Resource.class));
+    }
+
+    /**
+     * 修改资源状态 已删除
+     *
+     * @param id
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public void updateResourceIsDel(Integer id) throws Exception, BusinessException {
+        List<Integer> ids = new ArrayList<>();
+        ids.add(id);
+        getIds(id, ids);
+        getBaseMapper().updateResourceIsDelByIds(ids, DictConstant.HAVE_DEL);
+        //删除对应角色资源表中的资源id数据
+        roleResourceService.remove(new QueryWrapper<RoleResource>().in("resource_id", ids));
+    }
+
+    /**
+     * 遍历资源id集合
+     * @param id
+     * @param ids
+     */
+    public void getIds(Integer id, List<Integer> ids) {
+        //查询父级id
+        List<Resource> resourceList = getBaseMapper().selectList(new QueryWrapper<Resource>().eq("parent_id", id));
+        if (resourceList != null && resourceList.size() > AuthConstant.ZERO) {
+            resourceList.forEach(resource -> {
+                ids.add(resource.getId());
+                getIds(resource.getId(), ids);
+            });
+        }
     }
 }

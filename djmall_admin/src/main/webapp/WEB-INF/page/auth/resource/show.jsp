@@ -88,7 +88,7 @@
         }
 
         //删除
-        function remove() {
+        function deleteResource() {
             var zTree = $.fn.zTree.getZTreeObj("resourceTree"),
                 nodes = zTree.getSelectedNodes(),
                 treeNode = nodes[0];
@@ -96,9 +96,9 @@
                 layer.msg("请先选择一个节点再进行删除");
                 return;
             }
-            layer.confirm('确认删除？', {icon: 3, title:'提示'}, function(index){
+            layer.confirm('确认删除吗？', {icon: 3, title:'提示'}, function(index){
                 $.post(
-                    "<%=request.getContextPath()%>/auth/resource/remove",
+                    "<%=request.getContextPath()%>/auth/resource/deleteResource",
                     {"id":treeNode.resourceId},
                     function (data) {
                         if(data.code != 200) {
@@ -125,7 +125,7 @@
                     <input type="button" value="修改" onclick="toUpdate()" class="layui-btn">
                 </shiro:hasPermission>
                 <shiro:hasPermission name="RESOURCE_DELETE_BTN">
-                    <input type="button" value="删除" onclick="remove()" class="layui-btn">
+                    <input type="button" value="删除" onclick=" deleteResource()" class="layui-btn">
                 </shiro:hasPermission>
             </div>
             <div id="resourceTree" class="ztree"></div>

@@ -46,4 +46,8 @@ public interface AuthConstant {
      * 用户已关联资源session
      */
     String USER_RESOURCE = "USER_RESOURCE";
+    /**
+     * 长度为0
+     */
+    Integer ZERO = 0;
 }

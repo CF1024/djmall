@@ -70,4 +70,16 @@ public class ResourceController {
         return new ResultModel<>().success("修改资源成功");
     }
 
+    /**
+     * 级联删除
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("deleteResource")
+    @RequiresPermissions(value = PermissionsCode.RESOURCE_DELETE_BTN)
+    public ResultModel<Object> deleteResource(Integer id) throws Exception {
+        resourceApi.updateResourceIsDel(id);
+        return new ResultModel<>().success("删除资源成功");
+    }
 }

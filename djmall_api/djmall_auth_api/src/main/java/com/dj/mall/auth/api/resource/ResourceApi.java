@@ -61,4 +61,12 @@ public interface ResourceApi {
      * @throws BusinessException
      */
     void updateResource(ResourceDTO resourceDTO) throws Exception, BusinessException;
+
+    /**
+     * 修改资源状态 已删除
+     * @param id
+     * @throws Exception
+     * @throws BusinessException
+     */
+    void updateResourceIsDel(Integer id) throws Exception, BusinessException;
 }
