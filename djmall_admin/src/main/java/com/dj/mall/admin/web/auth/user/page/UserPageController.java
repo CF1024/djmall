@@ -5,11 +5,14 @@ import com.dj.mall.admin.vo.auth.role.RoleVOReq;
 import com.dj.mall.admin.vo.auth.role.RoleVOResp;
 import com.dj.mall.admin.vo.auth.user.UserRoleVOResp;
 import com.dj.mall.admin.vo.auth.user.UserVOResp;
+import com.dj.mall.admin.vo.dict.dict.BaseDataVOResp;
 import com.dj.mall.auth.api.role.RoleApi;
 import com.dj.mall.auth.api.user.UserApi;
 import com.dj.mall.auth.api.user.UserRoleApi;
 import com.dj.mall.auth.dto.role.RoleDTO;
+import com.dj.mall.dict.api.dict.BaseDataApi;
 import com.dj.mall.model.contant.AuthConstant;
+import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.contant.PermissionsCode;
 import com.dj.mall.model.util.DozerUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -44,6 +47,11 @@ public class UserPageController {
      */
     @Reference
     private UserRoleApi userRoleApi;
+    /**
+     * 字典数据
+     */
+    @Reference
+    private BaseDataApi baseDataApi;
 
     /**
      * 去登录
@@ -75,6 +83,7 @@ public class UserPageController {
     public String toAddUser(ModelMap model) throws Exception {
         //查询角色
         model.put("roleList", DozerUtil.mapList(roleApi.findAll(DozerUtil.map(RoleVOReq.class, RoleDTO.class)).getList(), RoleVOResp.class));
+        model.put("sexList", DozerUtil.mapList(baseDataApi.findBaseDataByParentCode(DictConstant.USER_SEX), BaseDataVOResp.class));
         return "auth/user/add";
     }
 
@@ -103,6 +112,8 @@ public class UserPageController {
     public String toShow(ModelMap model) throws Exception {
         //查询角色
         model.put("roleList", DozerUtil.mapList(roleApi.findAll(DozerUtil.map(RoleVOReq.class, RoleDTO.class)).getList(), RoleVOResp.class));
+        model.put("sexList", DozerUtil.mapList(baseDataApi.findBaseDataByParentCode(DictConstant.USER_SEX), BaseDataVOResp.class));
+        model.put("statusList", DozerUtil.mapList(baseDataApi.findBaseDataByParentCode(DictConstant.ACTIVATE_STATUS), BaseDataVOResp.class));
         return "auth/user/show";
     }
 
@@ -117,6 +128,7 @@ public class UserPageController {
     @RequiresPermissions(value = PermissionsCode.USER_UPDATE_BTN)
     public String toUpdateUser(@PathVariable("userId") Integer userId, ModelMap model) throws Exception {
         model.put("user", DozerUtil.map( userApi.findUserById(userId), UserVOResp.class));
+        model.put("sexList", DozerUtil.mapList(baseDataApi.findBaseDataByParentCode(DictConstant.USER_SEX), BaseDataVOResp.class));
         return "auth/user/update";
     }
 

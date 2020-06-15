@@ -232,9 +232,9 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">性别</label>
                         <div class="layui-input-block">
-                            <input type="radio" name="userSex"  value="SECRECY" title="保密" checked>
-                            <input type="radio" name="userSex"  value="MAN" title="男">
-                            <input type="radio" name="userSex" value="WOMAN" title="女">
+                            <c:forEach items="${sexList}" var="sex">
+                                <input type="radio" name="userSex" value="${sex.baseCode}" title="${sex.baseName}" <c:if test="${sex.baseCode == 'SECRECY'}">checked</c:if>>
+                            </c:forEach>
                         </div>
                     </div>
 

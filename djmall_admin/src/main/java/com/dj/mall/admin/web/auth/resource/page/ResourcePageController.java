@@ -2,7 +2,10 @@ package com.dj.mall.admin.web.auth.resource.page;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.dj.mall.admin.vo.auth.resource.ResourceVOResp;
+import com.dj.mall.admin.vo.dict.dict.BaseDataVOResp;
 import com.dj.mall.auth.api.resource.ResourceApi;
+import com.dj.mall.dict.api.dict.BaseDataApi;
+import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.contant.PermissionsCode;
 import com.dj.mall.model.util.DozerUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -25,6 +28,12 @@ public class ResourcePageController {
     @Reference
     private ResourceApi resourceApi;
     /**
+     * 字典数据
+     */
+    @Reference
+    private BaseDataApi baseDataApi;
+
+    /**
      * 去展示
      * @return
      */
@@ -46,6 +55,7 @@ public class ResourcePageController {
     public String toAdd(@PathVariable Integer parentId, Model model) throws Exception {
         model.addAttribute("parentId", parentId);
         model.addAttribute("resource", DozerUtil.map(resourceApi.findResourceByParentId(parentId), ResourceVOResp.class));
+        model.addAttribute("typeList", DozerUtil.mapList(baseDataApi.findBaseDataByParentCode(DictConstant.RESOURCE_TYPE), BaseDataVOResp.class));
         return "auth/resource/add";
     }
 
@@ -60,6 +70,7 @@ public class ResourcePageController {
     @RequiresPermissions(value = PermissionsCode.RESOURCE_UPDATE_BTN)
     public String toUpdate(@PathVariable Integer resourceId, Model model) throws Exception {
         model.addAttribute("resource", DozerUtil.map(resourceApi.findResourceByResourceId(resourceId), ResourceVOResp.class));
+        model.addAttribute("typeList", DozerUtil.mapList(baseDataApi.findBaseDataByParentCode(DictConstant.RESOURCE_TYPE), BaseDataVOResp.class));
         return "auth/resource/update";
     }
 }

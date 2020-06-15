@@ -76,5 +76,19 @@ public interface PermissionsCode {
      */
     String RESOURCE_DELETE_BTN = "RESOURCE_DELETE_BTN";
 
+    //==============================字典==================================//
+    /**
+     * 资源管理 菜单
+     */
+    String DICT_MANAGE = "DICT_MANAGE";
+    /**
+     * 资源新增 按钮
+     */
+    String DICT_ADD_BTN = "DICT_ADD_BTN";
+    /**
+     * 资源修改 按钮
+     */
+    String DICT_UPDATE_BTN = "DICT_UPDATE_BTN";
 
+    //==============================运费==================================//
 }

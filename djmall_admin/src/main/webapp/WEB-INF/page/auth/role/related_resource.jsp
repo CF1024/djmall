@@ -45,9 +45,9 @@
         function saveRelevance() {
             var index = layer.load(0,{shade:0.5});
             //获取树对象
-            var zTree = $.fn.zTree.getZTreeObj("resourceTree"),
-                checkedNodes = zTree.getCheckedNodes(),
-                resourceIdList = "";
+            var zTree = $.fn.zTree.getZTreeObj("resourceTree");
+            var checkedNodes = zTree.getCheckedNodes();
+            var resourceIdList = "";
             for (var i = 0; i < checkedNodes.length; i++) {
                 resourceIdList += checkedNodes[i].id + ",";
             }

@@ -63,8 +63,8 @@ public class ShiroConfiguration {
         filters.put("/auth/user/toPhoneLogin", "anon");
         filters.put("/auth/user/sendCode", "anon");
         filters.put("/auth/user/phoneLogin", "anon");
-        filters.put("/auth/user/toForgetPwd", "anon");
-        filters.put("/auth/user/forgetPwd", "anon");
+        /*filters.put("/auth/user/toForgetPwd", "anon");
+        filters.put("/auth/user/forgetPwd", "anon");*/
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filters);
         return shiroFilterFactoryBean;
     }

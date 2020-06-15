@@ -135,14 +135,15 @@
                 <label class="layui-form-label">类型</label>
                 <div class="layui-input-inline">
                     <select name="resourceType" id="resourceType">
-                        <option value="MENU">菜单</option>
-                        <option value="BUTTON">按钮</option>
+                        <c:forEach items="${typeList}" var="type">
+                            <option value="${type.baseCode}">${type.baseName}</option>
+                        </c:forEach>
                     </select>
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-input-block">
-                    <input type="submit" value="新增" class="layui-btn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="submit" value="新增" class="layui-btn">
                 </div>
             </div>
         </form>

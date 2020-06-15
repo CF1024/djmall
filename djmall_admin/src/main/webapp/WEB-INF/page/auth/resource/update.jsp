@@ -141,8 +141,9 @@
                 <label class="layui-form-label">类型</label>
                 <div class="layui-input-inline">
                     <select name="resourceType" id="resourceType">
-                        <option value="MENU" <c:if test="${resource.resourceType == 'MENU'}">selected</c:if>>菜单</option>
-                        <option value="BUTTON" <c:if test="${resource.resourceType == 'BUTTON'}">selected</c:if>>按钮</option>
+                        <c:forEach items="${typeList}" var="type">
+                            <option value="${type.baseCode}" <c:if test="${resource.resourceType == type.baseCode}">selected</c:if>>${type.baseName}</option>
+                        </c:forEach>
                     </select>
                 </div>
             </div>

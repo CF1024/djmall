@@ -16,28 +16,14 @@
             au.is_del,
             ar.role_name AS roleName,
             llt.last_login_time AS lastLoginTime,
-            (
-                CASE
-                WHEN au.user_sex = 'MAN' THEN
-                    '男'
-                WHEN au.user_sex = 'WOMAN' THEN
-                    '女'
-                ELSE
-                    '保密'
-                END
-            ) AS userSexShow,
-            (
-                CASE
-                WHEN au.user_status = 'HAVE_ACTIVATE' THEN
-                    '已激活'
-                ELSE
-                    '未激活'
-                END
-            ) AS userStatusShow
+            bd.base_name AS userSexShow,
+            bd2.base_name AS userStatusShow
         FROM
             djmall_auth_user au
         LEFT JOIN djmall_auth_user_role aur ON au.id = aur.user_id
         LEFT JOIN djmall_auth_role ar ON aur.role_id = ar.id
+        LEFT JOIN djmall_dict_base_data bd ON bd.base_code = au.user_sex
+        LEFT JOIN djmall_dict_base_data bd2 ON bd2.base_code = au.user_status
         LEFT JOIN (
             SELECT
                 llt.user_id,

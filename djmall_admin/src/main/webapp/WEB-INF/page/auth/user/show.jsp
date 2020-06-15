@@ -257,9 +257,9 @@
             <div class="layui-form-item">
                 <label class="layui-form-label" >性别</label>
                 <div class="layui-input-block" >
-                    <input type="checkbox" name="userSexList" lay-filter="sex" value="SECRECY" title="保密">&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="checkbox" name="userSexList" lay-filter="sex" value="MAN" title="男">&nbsp;&nbsp;&nbsp;
-                    <input type="checkbox" name="userSexList" lay-filter="sex" value="WOMAN" title="女">
+                    <c:forEach items="${sexList}" var="sex">
+                        <input type="checkbox" name="userSexList" lay-filter="sex" value="${sex.baseCode}" title="${sex.baseName}">
+                    </c:forEach>
                 </div>
             </div>
 
@@ -268,8 +268,9 @@
                 <div class="layui-input-inline">
                     <select name="userStatus" lay-filter="status">
                         <option value="-1">请选择</option>
-                        <option value="HAVE_ACTIVATE">已激活</option>
-                        <option value="NOT_ACTIVATE">未激活</option>
+                        <c:forEach items="${statusList}" var="status">
+                            <option value="${status.baseCode}">${status.baseName}</option>
+                        </c:forEach>
                     </select>
                 </div>
             </div>
