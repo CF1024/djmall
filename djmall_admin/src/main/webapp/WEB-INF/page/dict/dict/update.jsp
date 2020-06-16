@@ -27,7 +27,7 @@
             submitHandler : function() {
                 var index = layer.load(0,{shade:0.5});
                 $.post(
-                    "<%=request.getContextPath()%>/dict/base/updateBase",
+                    "<%=request.getContextPath()%>/dict/base/",
                     $("#fm").serialize(),
                     function (data) {
                         layer.close(index);

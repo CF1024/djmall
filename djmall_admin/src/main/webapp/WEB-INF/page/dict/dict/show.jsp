@@ -30,8 +30,8 @@
 
         function show() {
             var index = layer.load(0, {shade:0.5});
-            $.post(
-                "<%=request.getContextPath()%>/dict/base/show",
+            $.get(
+                "<%=request.getContextPath()%>/dict/base/",
                 $("#fm").serialize(),
                 function (data) {
                     layer.close(index);
@@ -85,7 +85,7 @@
                 maxmin: true, //开启最大化最小化按钮
                 shade: 0.8,
                 area: ['500px', '40%'],
-                content: '<%=request.getContextPath()%>/dict/base/toUpdate/'+baseCode
+                content: '<%=request.getContextPath()%>/dict/base/'+baseCode
             });
         }
 
@@ -94,7 +94,7 @@
             submitHandler : function() {
                 var index = layer.load(0,{shade:0.5});
                 $.post(
-                    "<%=request.getContextPath()%>/dict/base/addBase",
+                    "<%=request.getContextPath()%>/dict/base/",
                     $("#fm").serialize(),
                     function (data) {
                         layer.close(index);

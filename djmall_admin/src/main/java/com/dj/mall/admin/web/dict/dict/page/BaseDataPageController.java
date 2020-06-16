@@ -45,7 +45,7 @@ public class BaseDataPageController {
      * @return
      * @throws Exception
      */
-    @GetMapping("toUpdate/{baseCode}")
+    @GetMapping("{baseCode}")
     @RequiresPermissions(value = PermissionsCode.DICT_UPDATE_BTN)
     public String toUpdate(@PathVariable("baseCode") String baseCode, ModelMap model) throws Exception {
         model.put("baseData", DozerUtil.map(baseDataApi.findBaseDataByBaseCode(baseCode), BaseDataVOResp.class));

@@ -11,7 +11,6 @@ import com.dj.mall.dict.entity.dict.BaseDataEntity;
 import com.dj.mall.dict.mapper.dict.BaseDataMapper;
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
-import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.util.DozerUtil;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;

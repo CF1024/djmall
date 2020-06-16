@@ -32,7 +32,7 @@ public class BaseDataController {
      * @return
      * @throws Exception
      */
-    @PostMapping("show")
+    @GetMapping
     @RequiresPermissions(value = PermissionsCode.DICT_MANAGE)
     public ResultModel<Object> show(BaseDataVOReq baseDataVOReq) throws Exception {
         PageResult pageResult = baseDataApi.findAll(DozerUtil.map(baseDataVOReq, BaseDataDTO.class));
@@ -56,7 +56,7 @@ public class BaseDataController {
      * @return
      * @throws Exception
      */
-    @PostMapping("addBase")
+    @PostMapping
     @RequiresPermissions(value = PermissionsCode.DICT_ADD_BTN)
     public ResultModel<Object> addBase(BaseDataVOReq baseDataVOReq) throws Exception {
         baseDataApi.addBase(DozerUtil.map(baseDataVOReq, BaseDataDTO.class));
@@ -69,7 +69,7 @@ public class BaseDataController {
      * @return
      * @throws Exception
      */
-    @PutMapping("updateBase")
+    @PutMapping
     @RequiresPermissions(value = PermissionsCode.DICT_UPDATE_BTN)
     public ResultModel<Object> updateBase(BaseDataVOReq baseDataVOReq) throws Exception {
         baseDataApi.updateBase(DozerUtil.map(baseDataVOReq, BaseDataDTO.class));
