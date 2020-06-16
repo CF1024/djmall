@@ -47,11 +47,11 @@
             //获取树对象
             var zTree = $.fn.zTree.getZTreeObj("resourceTree");
             var checkedNodes = zTree.getCheckedNodes();
-            var resourceIdList = "";
+            var resourceIds = "";
             for (var i = 0; i < checkedNodes.length; i++) {
-                resourceIdList += checkedNodes[i].id + ",";
+                resourceIds += checkedNodes[i].id + ",";
             }
-            resourceIdList.substring(0, resourceIdList.length - 1);
+            var resourceIdList = resourceIds.substring(0, resourceIds.length - 1);
             $.post("<%=request.getContextPath()%>/auth/role/saveRelevance",
                 {"roleId" : ${roleId}, "resourceIdList" : resourceIdList},
                 function (data) {

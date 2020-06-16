@@ -27,7 +27,7 @@
             submitHandler : function() {
                 var index = layer.load(0,{shade:0.5});
                 $.post(
-                    "<%=request.getContextPath()%>/dict/base/",
+                    "<%=request.getContextPath()%>/dict/freight/",
                     $("#fm").serialize(),
                     function (data) {
                         layer.close(index);
@@ -37,50 +37,42 @@
                         }
                         layer.msg(data.msg, {icon: 6, time: 2000},
                             function() {
-                                parent.window.location.href = "<%=request.getContextPath()%>/dict/base/toShow";
+                                parent.window.location.href = "<%=request.getContextPath()%>/dict/freight/toShow";
                             });
                     });
             }
         });
 
+
+        //自定义validate验证输入的数字小数点位数不能大于两位
+        jQuery.validator.addMethod("minNumber",function(value, element){
+            var returnVal = true;
+            inputZ=value;
+            var ArrMen= inputZ.split(".");    //截取字符串
+            if(ArrMen.length==2){
+                if(ArrMen[1].length>2){    //判断小数点后面的字符串长度
+                    returnVal = false;
+                    return false;
+                }
+            }
+            return returnVal;
+        },"小数点后最多为两位");         //验证错误信息
         $(function(){
             $("#fm").validate({
                 rules:{
-                    baseName:{
-                        required:true,//必输字段
-                        remote: {
-                            type: 'GET',
-                            url: "<%=request.getContextPath()%>/dict/base/deDuplicate",
-                            data:{
-                                parentCode:function() {
-                                    return $("#parentCode").val();
-                                },
-                                dataType:"json"
-                            }
-                        }
-                    },
-                    baseCode:{
-                        required:true,//必输字段
-                        remote: {
-                            type: 'GET',
-                            url: "<%=request.getContextPath()%>/dict/base/deDuplicate",
-                            data:{
-                                parentCode:function() {
-                                    return $("#parentCode").val();
-                                },
-                                dataType:"json"
-                            }
-                        }
+                    freight:{
+                        required: true,    //要求输入不能为空
+                        number: true,     //输入必须是数字
+                        min: 0,          //输入的数字最小值为0.01，不能为0或者负数
+                        minNumber: $("#freight").val()  //调用自定义验证
                     }
                 },
                 messages:{
-                    baseName:{
-                        required:"字典名不能为空",//必输字段
-                        remote:"字典名称已存在~"
-                    },
-                    baseCode:{
-                        required:"不能为空",//必输字段
-                        remote:"字典Code已存在~"
+                    freight:{
+                        required: "请填写运费金额",
+                        number: "请正确输入金额",
+                        min: "输入最小金额为0元（包邮）",
+                        length: "输入数字最多小数点后两位"
                     }
                 }
             })
@@ -89,12 +81,11 @@
     <body>
         <form id="fm" class="layui-form" id="fm">
             <input type="hidden" name="_method" value="PUT"/>
-            <input type="hidden" name="baseCode" value="${baseData.baseCode}" id="baseCode">
-            <input type="hidden" name="parentCode" value="${baseData.parentCode}" id="parentCode">
+            <input type="hidden" name="freightId" value="${freight.freightId}" id="freightId">
             <div class="layui-form-item">
-                <label class="layui-form-label">字典名称</label>
+                <label class="layui-form-label">运费</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="baseName" id="baseName" value="${baseData.baseName}" placeholder="请输入字典名称" class="layui-input">
+                    <input type="text" name="freight" id="freight" value="${freight.freight}" placeholder="请输入运费" class="layui-input">
                 </div>
                 <div class="layui-word-aux">
                     <input type="submit" value="修改" class="layui-btn">

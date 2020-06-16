@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dj.mall.dict.mapper.freight.FreightMapper">
+
+    <select id="findAll" resultType="com.dj.mall.dict.bo.freight.FreightBO">
+        SELECT
+            pf.id AS freightId,
+            pf.freight,
+            bd.base_name AS company
+        FROM
+            djmall_dict_product_freight pf
+        LEFT JOIN djmall_dict_base_data bd ON pf.company = bd.base_code
+        GROUP BY pf.id DESC
+    </select>
+</mapper>

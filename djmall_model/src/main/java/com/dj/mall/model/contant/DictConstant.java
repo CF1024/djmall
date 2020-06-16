@@ -47,6 +47,16 @@ public interface DictConstant {
      */
     String RESOURCE_TYPE = "RESOURCE_TYPE";
     /**
+     * 菜单
+     */
+    String MENU = "MENU";
+
+    /**
+     * 物流公司
+     */
+    String LOGISTICS_COMPANY = "LOGISTICS_COMPANY";
+
+    /**
      * 商品属性
      */
     String PRODUCT_TYPE = "PRODUCT_TYPE";
@@ -67,13 +77,8 @@ public interface DictConstant {
      * 是否默认 不默认
      */
     String NOT_DEFAULT = "NOT_DEFAULT";
-    /**
-     * 菜单
-     */
-    String MENU = "MENU";
 
-    /**
-     * 按钮
-     */
-    String BUTTON = "BUTTON";
+
+    //==============================运费==================================//
+
 }

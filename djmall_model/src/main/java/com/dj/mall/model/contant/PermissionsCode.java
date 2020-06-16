@@ -78,17 +78,32 @@ public interface PermissionsCode {
 
     //==============================字典==================================//
     /**
-     * 资源管理 菜单
+     * 字典管理 菜单
      */
     String DICT_MANAGE = "DICT_MANAGE";
     /**
-     * 资源新增 按钮
+     * 字典新增 按钮
      */
     String DICT_ADD_BTN = "DICT_ADD_BTN";
     /**
-     * 资源修改 按钮
+     * 字典修改 按钮
      */
     String DICT_UPDATE_BTN = "DICT_UPDATE_BTN";
 
     //==============================运费==================================//
+
+    /**
+     * 运费管理 菜单
+     */
+    String FREIGHT_MANAGE = "FREIGHT_MANAGE";
+    /**
+     * 运费新增 按钮
+     */
+    String FREIGHT_ADD_BTN = "FREIGHT_ADD_BTN";
+    /**
+     * 运费修改 按钮
+     */
+    String FREIGHT_UPDATE_BTN = "FREIGHT_UPDATE_BTN";
+
+    //==============================商品属性==================================//
 }
