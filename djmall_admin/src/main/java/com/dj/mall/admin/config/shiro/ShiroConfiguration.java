@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -48,9 +49,7 @@ public class ShiroConfiguration {
         shiroFilterFactoryBean.setLoginUrl("/auth/user/toLogin");
         shiroFilterFactoryBean.setSuccessUrl("/index/toIndex");
         shiroFilterFactoryBean.setUnauthorizedUrl("/index/toDisPlay");
-        Map<String, String> filters = new HashMap<>(16);
-        //拦截的请求
-        filters.put("/**", "authc");
+        Map<String, String> filters = new LinkedHashMap<>();
         //放过的请求 js 登录 去注册 注册 去重 去激活 去强制修改密码 强制修改密码 去手机号登录  手机号登录 获取验证码 去忘记密码 忘记密码
         filters.put("/static/**", "anon");
         filters.put("/auth/user/login", "anon");
@@ -63,8 +62,10 @@ public class ShiroConfiguration {
         filters.put("/auth/user/toPhoneLogin", "anon");
         filters.put("/auth/user/sendCode", "anon");
         filters.put("/auth/user/phoneLogin", "anon");
-        /*filters.put("/auth/user/toForgetPwd", "anon");
-        filters.put("/auth/user/forgetPwd", "anon");*/
+        filters.put("/auth/user/toForgetPwd", "anon");
+        filters.put("/auth/user/forgetPwd", "anon");
+        //拦截的请求
+        filters.put("/**", "authc");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filters);
         return shiroFilterFactoryBean;
     }
