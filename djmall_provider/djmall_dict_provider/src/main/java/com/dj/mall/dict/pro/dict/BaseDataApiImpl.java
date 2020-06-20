@@ -1,16 +1,19 @@
 package com.dj.mall.dict.pro.dict;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dj.mall.cmpt.RedisApi;
 import com.dj.mall.dict.api.dict.BaseDataApi;
 import com.dj.mall.dict.dto.dict.BaseDataDTO;
 import com.dj.mall.dict.entity.dict.BaseDataEntity;
 import com.dj.mall.dict.mapper.dict.BaseDataMapper;
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
+import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.util.DozerUtil;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -25,6 +28,8 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class BaseDataApiImpl extends ServiceImpl<BaseDataMapper, BaseDataEntity> implements BaseDataApi {
+    @Reference
+    private RedisApi redisApi;
     /**
      * 查询全部 分页
      * @param baseDataDTO
@@ -47,7 +52,12 @@ public class BaseDataApiImpl extends ServiceImpl<BaseDataMapper, BaseDataEntity>
      */
     @Override
     public List<BaseDataDTO> findBaseDataByParentCode(String parentCode) throws Exception, BusinessException {
-        return DozerUtil.mapList(getBaseMapper().selectList(new QueryWrapper<BaseDataEntity>().eq("parent_code", parentCode)), BaseDataDTO.class);
+        List<BaseDataDTO> baseDataList = redisApi.getHashValues(parentCode);
+        if (StringUtils.isEmpty(baseDataList) || AuthConstant.ZERO.equals(baseDataList.size())) {
+            baseDataList = DozerUtil.mapList(getBaseMapper().selectList(new QueryWrapper<BaseDataEntity>().eq("parent_code", parentCode)), BaseDataDTO.class);
+            baseDataList.forEach(baseData -> redisApi.pushHash(baseData.getParentCode(), baseData.getBaseCode(), baseData));
+        }
+        return baseDataList;
     }
 
     /**
@@ -81,7 +91,9 @@ public class BaseDataApiImpl extends ServiceImpl<BaseDataMapper, BaseDataEntity>
      */
     @Override
     public void addBase(BaseDataDTO baseDataDTO) throws Exception, BusinessException {
-        getBaseMapper().insert(DozerUtil.map(baseDataDTO.toBuilder().baseCode(baseDataDTO.getBaseCode().toUpperCase()).build(), BaseDataEntity.class));
+        BaseDataEntity baseData = DozerUtil.map(baseDataDTO, BaseDataEntity.class).toBuilder().baseCode(baseDataDTO.getBaseCode().toUpperCase()).build();
+        getBaseMapper().insert(baseData);
+        redisApi.pushHash(baseData.getParentCode(), baseData.getBaseCode(), baseData);
     }
 
     /**
@@ -105,5 +117,6 @@ public class BaseDataApiImpl extends ServiceImpl<BaseDataMapper, BaseDataEntity>
     @Override
     public void updateBase(BaseDataDTO baseDataDTO) throws Exception, BusinessException {
         getBaseMapper().update(DozerUtil.map(baseDataDTO, BaseDataEntity.class), new QueryWrapper<BaseDataEntity>().eq("base_code", baseDataDTO.getBaseCode()));
+        redisApi.pushHash(baseDataDTO.getParentCode(), baseDataDTO.getBaseCode(), baseDataDTO);
     }
 }

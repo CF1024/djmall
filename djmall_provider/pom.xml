@@ -32,5 +32,6 @@
     <modules>
         <module>djmall_auth_provider</module>
         <module>djmall_dict_provider</module>
+        <module>djmall_cmpt_provider</module>
     </modules>
 </project>

@@ -1,0 +1,27 @@
+#Redis单机版
+spring:
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+#    password: 19980905
+
+# Dubbo
+dubbo:
+  application:
+    name: cmpt-provider # 应用名
+    qos-enable: false # 关闭在线调试
+  registry:
+    address: zookeeper://localhost:2181 # 注册中心地址
+  protocol:
+    name: dubbo # 协议名
+    port: 20882 # 服务端口
+  consumer:
+    check: false
+    timeout: 60000
+  provider:
+    timeout: 60000
+#日志
+logging:
+  level:
+    com.dj.mall.mapper: debug
