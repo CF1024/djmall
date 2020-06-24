@@ -19,5 +19,12 @@
             <artifactId>djmall_auth_api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        <!--redis的api接口-->
+        <dependency>
+            <groupId>com.dj.mall</groupId>
+            <artifactId>djmall_cmpt_api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

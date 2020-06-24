@@ -88,10 +88,10 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
             throw new BusinessException(AuthConstant.FORCE_UPDATE_PWD_INT, "请修改密码后再进行登录");
         }
         UserDTO userDTO = DozerUtil.map(user, UserDTO.class);
+        //用户已关联角色
+        userDTO.setUserRole(userRoleService.getOne(new QueryWrapper<UserRole>().eq("user_id", userDTO.getUserId())).getRoleId());
         //最后登录时间
         lastLoginTimeService.save(new LastLoginTime().toBuilder().userId(userDTO.getUserId()).lastLoginTime(LocalDateTime.now()).build());
-        //将用户已关联资源放入权限集合中
-        userDTO.setPermissionList(DozerUtil.mapList(getBaseMapper().findUserResourceByUserId(userDTO.getUserId()), ResourceDTO.class));
         return userDTO;
     }
 

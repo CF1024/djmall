@@ -1,5 +1,6 @@
 package com.dj.mall.auth.pro.role;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -18,9 +19,12 @@ import com.dj.mall.auth.mapper.role.RoleMapper;
 import com.dj.mall.auth.mapper.role.RoleResourceMapper;
 import com.dj.mall.auth.mapper.user.UserRoleMapper;
 import com.dj.mall.auth.service.role.RoleResourceService;
+import com.dj.mall.auth.service.user.UserRoleService;
+import com.dj.mall.cmpt.RedisApi;
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.contant.DictConstant;
+import com.dj.mall.model.contant.RedisConstant;
 import com.dj.mall.model.util.DozerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,12 +40,26 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class RoleApiImpl extends ServiceImpl<RoleMapper, Role> implements RoleApi {
-    @Autowired
-    private UserRoleMapper userRoleMapper;
+    /**
+     * 资源api
+     */
     @Autowired
     private ResourceApi resourceApi;
+    /**
+     *用户角色service
+     */
+    @Autowired
+    private UserRoleService userRoleService;
+    /**
+     *角色资源service
+     */
     @Autowired
     private RoleResourceService roleResourceService;
+    /**
+     *redis的api
+     */
+    @Reference
+    private RedisApi redisApi;
     /**
      * 角色展示
      * @param roleDTO
@@ -122,12 +140,13 @@ public class RoleApiImpl extends ServiceImpl<RoleMapper, Role> implements RoleAp
     @Override
     public void removeRole(Integer roleId) throws Exception, BusinessException {
         //修改状态 已删除
-        getBaseMapper().updateById(getBaseMapper().selectOne(new QueryWrapper<Role>().eq("id", roleId))
-                .toBuilder().isDel(DictConstant.HAVE_DEL).build());
+        getBaseMapper().updateById(getBaseMapper().selectOne(new QueryWrapper<Role>().eq("id", roleId)).toBuilder().isDel(DictConstant.HAVE_DEL).build());
         //删除角色对应的用户角色关系表的数据
-        userRoleMapper.delete(new QueryWrapper<UserRole>().eq("role_id", roleId));
+        userRoleService.remove(new QueryWrapper<UserRole>().eq("role_id", roleId));
         //删除角色对应的角色资源关系表的数据
         roleResourceService.remove(new QueryWrapper<RoleResource>().eq("role_id", roleId));
+        //删除对应的缓存
+        redisApi.delHash(RedisConstant.ROLE_ALL_KEY, RedisConstant.ROLE_ID_KEY + roleId);
     }
 
     /**
@@ -182,6 +201,19 @@ public class RoleApiImpl extends ServiceImpl<RoleMapper, Role> implements RoleAp
         //先删后增
         roleResourceService.remove(new QueryWrapper<RoleResource>().eq("role_id", roleDTO.getRoleId()));
         roleResourceService.saveBatch(roleResourceList);
+        redisApi.pushHash(RedisConstant.ROLE_ALL_KEY, RedisConstant.ROLE_ID_KEY + roleDTO.getRoleId(), findRoleResourceBuRoleId(roleDTO.getRoleId()));
         return true;
+    }
+
+    /**
+     * 根据角色ID查角色已关联资源
+     * @param roleId 角色 ID
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public List<ResourceDTO> findRoleResourceBuRoleId(Integer roleId) throws Exception, BusinessException {
+        return DozerUtil.mapList(getBaseMapper().findRoleResourceBuRoleId(roleId), ResourceDTO.class);
     }
 }

@@ -1,8 +1,11 @@
 package com.dj.mall.admin.config.shiro;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.dj.mall.auth.dto.resource.ResourceDTO;
 import com.dj.mall.auth.dto.user.UserDTO;
+import com.dj.mall.cmpt.RedisApi;
 import com.dj.mall.model.contant.AuthConstant;
+import com.dj.mall.model.contant.RedisConstant;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -25,6 +28,11 @@ import java.util.List;
 @Component
 public class ShiroRealm extends AuthorizingRealm {
     /**
+     * redis的Api
+     */
+    @Reference
+    private RedisApi redisApi;
+    /**
      * 授权
      * @param principalCollection
      * @return
@@ -33,9 +41,9 @@ public class ShiroRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         Subject subject = SecurityUtils.getSubject();
-        UserDTO userDTO = (UserDTO) subject.getSession().getAttribute(AuthConstant.SESSION_USER);
-        List<ResourceDTO> resourceDTOList = userDTO.getPermissionList();
-        resourceDTOList.forEach(resource -> simpleAuthorizationInfo.addStringPermission(resource.getResourceCode()));
+        UserDTO USER = (UserDTO) subject.getSession().getAttribute(AuthConstant.SESSION_USER);
+        List<ResourceDTO> resourceList = redisApi.getHash(RedisConstant.ROLE_ALL_KEY, RedisConstant.ROLE_ID_KEY + USER.getUserRole());
+        resourceList.forEach(resource -> simpleAuthorizationInfo.addStringPermission(resource.getResourceCode()));
         return simpleAuthorizationInfo;
     }
 

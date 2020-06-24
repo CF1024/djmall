@@ -10,11 +10,13 @@ import com.dj.mall.auth.api.user.UserRoleApi;
 import com.dj.mall.auth.dto.resource.ResourceDTO;
 import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.auth.dto.user.UserRoleDTO;
+import com.dj.mall.cmpt.RedisApi;
 import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.base.ResultModel;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.contant.PermissionsCode;
+import com.dj.mall.model.contant.RedisConstant;
 import com.dj.mall.model.util.DozerUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -46,6 +48,11 @@ public class UserController {
      */
     @Reference
     private UserRoleApi userRoleApi;
+    /**
+     * redis的Api
+     */
+    @Reference
+    private RedisApi redisApi;
 
     /**
      * 用户登录
@@ -253,8 +260,10 @@ public class UserController {
     public ResultModel<Object> showMenu(HttpSession session) throws Exception {
         //从session中取出用户已关联资源
          UserDTO USER = (UserDTO) session.getAttribute(AuthConstant.SESSION_USER);
+        List<ResourceDTO> resourceList = redisApi.getHash(RedisConstant.ROLE_ALL_KEY, RedisConstant.ROLE_ID_KEY + USER.getUserRole());
         //区分按钮和菜单
-        List<ResourceDTO> resourceList = USER.getPermissionList().stream().filter(resource -> DictConstant.MENU.equals(resource.getResourceType())).collect(Collectors.toList());
-        return new ResultModel<>().success(DozerUtil.mapList(resourceList, ResourceVOResp.class));
+        List<ResourceDTO> menuList = resourceList.stream()
+                .filter(resource -> DictConstant.MENU.equals(resource.getResourceType())).collect(Collectors.toList());
+        return new ResultModel<>().success(DozerUtil.mapList(menuList, ResourceVOResp.class));
     }
 }

@@ -1,5 +1,6 @@
 package com.dj.mall.auth.api.role;
 
+import com.dj.mall.auth.dto.resource.ResourceDTO;
 import com.dj.mall.auth.dto.resource.TreeData;
 import com.dj.mall.auth.dto.role.RoleDTO;
 import com.dj.mall.model.base.BusinessException;
@@ -80,4 +81,12 @@ public interface RoleApi {
      */
     Boolean saveRelevance(RoleDTO roleDTO) throws Exception, BusinessException;
 
+    /**
+     * 根据角色ID查角色已关联资源
+     * @param roleId 角色 ID
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    List<ResourceDTO> findRoleResourceBuRoleId(Integer roleId) throws Exception, BusinessException;
 }
