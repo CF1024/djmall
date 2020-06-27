@@ -1,0 +1,31 @@
+package com.dj.mall.dict.dto.attr;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.io.Serializable;
+
+/**
+ * @author chengf
+ * @date 2020/6/27 20:40
+ * 商品属性
+ */
+@Data
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
+public class AttrDTO implements Serializable {
+    /**
+     * 商品属性id
+     */
+    private Integer attrId;
+    /**
+     *商品属性名
+     */
+    private String attrName;
+    /**
+     *商品属性值
+     */
+    private String attrValue;
+}
