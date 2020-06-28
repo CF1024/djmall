@@ -46,9 +46,7 @@
                         html += "<td>" + attr.attrId +"</td>";
                         html += "<td>" + attr.attrName +"</td>";
                         html += attr.attrValue == null ? "<td>暂无属性值</td>":"<td>" + attr.attrValue +"</td>";
-                        html += "<td>";
-                        html += "<shiro:hasPermission name='RELATED_ATTR_VALUE_BTN'><a class='layui-btn layui-btn-normal layui-btn-xs' href='javascript:toRelatedAttrValue("+attr.attrId+")'>关联属性值</a></shiro:hasPermission>";
-                        html += "</td>";
+                        html += "<shiro:hasPermission name='RELATED_ATTR_VALUE_BTN'><td><a class='layui-btn layui-btn-normal layui-btn-xs' href='javascript:toRelatedAttrValue("+attr.attrId+")'>关联属性值</a></td></shiro:hasPermission>";
                         html += "</tr>";
                     }
                     $("#tbd").html(html);
@@ -57,18 +55,9 @@
         }
 
 
-        //去修改
+        //去关联属性值
         function toRelatedAttrValue(attrId) {
-            //iframe层
-            layer.open({
-                type: 2,
-                title: '关联属性值',
-                shadeClose: true,
-                maxmin: true, //开启最大化最小化按钮
-                shade: 0.8,
-                area: ['500px', '40%'],
-                content: '<%=request.getContextPath()%>/dict/attr/'+attrId
-            });
+            window.location.href = "<%=request.getContextPath()%>/dict/attr/"+attrId;
         }
 
         //去新增
@@ -147,7 +136,9 @@
                 <th>编号</th>
                 <th>属性名</th>
                 <th>属性值</th>
+                <shiro:hasPermission name="RELATED_ATTR_VALUE_BTN">
                 <th>操作</th>
+                </shiro:hasPermission>
             </tr>
             </thead>
             <tbody id="tbd"></tbody>

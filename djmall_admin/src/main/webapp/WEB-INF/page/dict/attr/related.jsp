@@ -31,7 +31,7 @@
         function show() {
             var index = layer.load(0, {shade:0.5});
             $.get(
-                "<%=request.getContextPath()%>/dict/freight/",
+                "<%=request.getContextPath()%>/dict/attrValue/",
                 $("#fm").serialize(),
                 function (data) {
                     layer.close(index);
@@ -40,31 +40,56 @@
                         return;
                     }
                     var html = "";
-                    for (var i = 0; i < data.data.length; i++) {
-                        var freight = data.data[i];
+                    for (var i = 0; i < data.data.list.length; i++) {
+                        var attrValue = data.data.list[i];
                         html += "<tr>";
-                        html += "<td>" + freight.company +"</td>";
-                        html += freight.freight == 0 ? "<td>包邮</td>" : "<td>" + freight.freight +"元</td>";
-                        html += "<shiro:hasPermission name='FREIGHT_UPDATE_BTN'><td><a class='layui-btn layui-btn-xs' href='javascript:toUpdate("+freight.freightId+")'>修改</a></td></shiro:hasPermission>";
+                        html += "<td>" + attrValue.attrValueId +"</td>";
+                        html += "<td>" + attrValue.attrValue +"</td>";
+                        html += "<shiro:hasPermission name='ATTR_VALUE_DELETE_BTN'><td><a class='layui-btn layui-btn-danger layui-btn-xs' href='javascript:deleteAttrValue("+attrValue.attrValueId+")'>移除</a></td></shiro:hasPermission>";
                         html += "</tr>";
                     }
                     $("#tbd").html(html);
+                    var pageHtml = "";
+                    var pageNo = parseInt($("#pageNo").val());
+                    pageHtml += "<input type='button' value='上一页' onclick='page("+ data.data.pages + "," + (pageNo - 1)+")' class='layui-btn layui-btn-normal'/>";
+                    pageHtml += "<input type='button' value='下一页' onclick='page("+ data.data.pages + "," + (pageNo + 1)+")' class='layui-btn layui-btn-normal'/>";
+                    $("#pageInfo").html(pageHtml);
                 }
             );
         }
 
+        //分页
+        function page(pages, pageNo) {
+            if (pageNo < 1) {
+                layer.msg("已是第一页");
+                return;
+            }
+            if (pageNo > pages) {
+                layer.msg("已是最后一页");
+                return;
+            }
+            $("#pageNo").val(pageNo);
+            show();
+        }
 
-        //去修改
-        function toUpdate(freightId) {
-            //iframe层
-            layer.open({
-                type: 2,
-                title: '修改',
-                shadeClose: true,
-                maxmin: true, //开启最大化最小化按钮
-                shade: 0.8,
-                area: ['500px', '40%'],
-                content: '<%=request.getContextPath()%>/dict/freight/'+freightId
+        //移除
+        function deleteAttrValue(attrValueId) {
+            layer.confirm('确认删除吗？', {icon: 3, title:'提示'}, function(index){
+                $.post(
+                    "<%=request.getContextPath()%>/dict/attrValue/deleteAttrValue",
+                    {"attrValueId":attrValueId},
+                    function (data) {
+                        if(data.code != 200) {
+                            layer.msg(data.msg, {icon:5,time:2000});
+                            return;
+                        }
+                        layer.msg(data.msg, {icon: 6, time: 2000},
+                            function() {
+                               show();
+                            });
+                    }
+                );
+                layer.close(index);
             });
         }
 
@@ -73,7 +98,7 @@
             submitHandler : function() {
                 var index = layer.load(0,{shade:0.5});
                 $.post(
-                    "<%=request.getContextPath()%>/dict/freight/",
+                    "<%=request.getContextPath()%>/dict/attrValue/",
                     $("#fm").serialize(),
                     function (data) {
                         layer.close(index);
@@ -83,41 +108,30 @@
                         }
                         layer.msg(data.msg, {icon: 6, time: 2000},
                             function() {
-                                window.location.href = "<%=request.getContextPath()%>/dict/freight/toShow";
+                                show();
                             });
                     });
             }
         });
 
-        //自定义validate验证输入的数字小数点位数不能大于两位
-        jQuery.validator.addMethod("minNumber",function(value, element){
-            var returnVal = true;
-            inputZ=value;
-            var ArrMen= inputZ.split(".");    //截取字符串
-            if(ArrMen.length==2){
-                if(ArrMen[1].length>2){    //判断小数点后面的字符串长度
-                    returnVal = false;
-                    return false;
-                }
-            }
-            return returnVal;
-        },"小数点后最多为两位");         //验证错误信息
         $(function(){
             $("#fm").validate({
                 rules:{
-                    freight:{
+                    attrValue:{
                         required: true,    //要求输入不能为空
-                        number: true,     //输入必须是数字
-                        min: 0,          //输入的数字最小值为0.01，不能为0或者负数
-                        minNumber: $("#freight").val()  //调用自定义验证
+                        remote: {//ajax验证。server result:{"valid",true or false} 向服务发送当前input name值，获得一个json数据。例表示正确：{"valid",true}
+                            type: 'GET',
+                            url: "<%=request.getContextPath()%>/dict/attrValue/deDuplicate",
+                            data:{
+                                dataType:"json"
+                            }
+                        }
                     }
                 },
                 messages:{
-                    freight:{
-                        required: "请填写运费金额",
-                        number: "请正确输入金额",
-                        min: "输入最小金额为0元（包邮）",
-                        length: "输入数字最多小数点后两位"
+                    attrValue:{
+                        required: "请填写属性值",
+                        remote:"属性值已存在"
                     }
                 }
             })
@@ -131,33 +145,27 @@
     </script>
     <body>
         <form class="layui-form" id="fm">
+            <input type="hidden" value="1" name="pageNo" id="pageNo">
+            <input type="hidden" name="attrId" value="${attr.attrId}" id="attrId">
             <div class="layui-form-item">
-                <label class="layui-form-label">物流公司</label>
-                <div class="layui-input-inline">
-                    <select name="company">
-                        <c:forEach items="${freightList}" var="freight">
-                            <option value="${freight.baseCode}">${freight.baseName}</option>
-                        </c:forEach>
-                    </select>
+                <label class="layui-form-label">属性名</label>
+                <div class="layui-form-mid " style="color: red">
+                    ${attr.attrName}
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">运费</label>
+                <label class="layui-form-label">属性值</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="freight" id="freight" placeholder="请输入运费金额" class="layui-input">
+                    <input type="text" name="attrValue" id="attrValue" placeholder="请输入属性值" class="layui-input">
                 </div>
-                <div class="layui-form-mid" style="color:red;">包邮为：0</div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <shiro:hasPermission name="FREIGHT_ADD_BTN">
+                <div class="layui-word-aux">
+                    <shiro:hasPermission name="ATTR_VALUE_ADD_BTN">
                         <input type="submit" value="新增" class="layui-btn layui-btn-normal">
                     </shiro:hasPermission>
                 </div>
             </div>
-
-
         </form>
+
         <table border="0px" class="layui-table" >
             <colgroup>
                 <col width="100">
@@ -166,14 +174,15 @@
             </colgroup>
             <thead>
             <tr>
-                <th>物流公司</th>
-                <th>运费</th>
-                <shiro:hasPermission name="FREIGHT_UPDATE_BTN">
+                <th>编号</th>
+                <th>属性值</th>
+                <shiro:hasPermission name="ATTR_VALUE_DELETE_BTN">
                 <th>操作</th>
                 </shiro:hasPermission>
             </tr>
             </thead>
             <tbody id="tbd"></tbody>
         </table>
+        <div id="pageInfo"></div>
     </body>
 </html>

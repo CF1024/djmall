@@ -30,4 +30,12 @@ public class AttrValueDTO implements Serializable {
      *商品属性值
      */
     private String attrValue;
+    /**
+     * 当前页
+     */
+    private Integer pageNo = 1;
+    /**
+     * 每页条数
+     */
+    private Integer pageSize = 5;
 }

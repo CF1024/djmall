@@ -114,7 +114,7 @@ public class UserController {
     @RequiresPermissions(value = PermissionsCode.USER_MANAGE)
     public ResultModel<Object> show(UserVOReq userVOReq) throws Exception {
         PageResult pageResult = userApi.findAll(DozerUtil.map(userVOReq, UserDTO.class));
-        pageResult.toBuilder().list(DozerUtil.mapList(pageResult.getList(), UserVOResp.class));
+        pageResult.toBuilder().list(DozerUtil.mapList(pageResult.getList(), UserVOResp.class)).build();
         return new ResultModel<>().success(pageResult);
     }
 

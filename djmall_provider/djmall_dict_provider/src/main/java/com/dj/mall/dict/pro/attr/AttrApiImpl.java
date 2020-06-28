@@ -66,4 +66,17 @@ public class AttrApiImpl extends ServiceImpl<AttrMapper, AttrEntity> implements 
     public void addAttr(AttrDTO attrDTO) throws Exception, BusinessException {
         this.save(DozerUtil.map(attrDTO, AttrEntity.class));
     }
+
+    /**
+     * 根据id查 去关联属性值
+     *
+     * @param attrId
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public AttrDTO findAttrById(Integer attrId) throws Exception, BusinessException {
+        return DozerUtil.map(this.getById(attrId), AttrDTO.class);
+    }
 }

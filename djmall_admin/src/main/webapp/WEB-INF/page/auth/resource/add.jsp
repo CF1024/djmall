@@ -105,7 +105,6 @@
     </script>
     <body>
         <form class="layui-form" id="fm">
-            <input type="hidden" name="_method" value="POST"/>
             <input type="hidden" name="parentId" value="${parentId}" id="parentId">
             <div class="layui-form-item">
                 <label class="layui-form-label">上级</label>

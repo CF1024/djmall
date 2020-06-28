@@ -46,9 +46,7 @@
                         html += "<td>" + base.baseCode +"</td>";
                         html += "<td>" + base.baseName +"</td>";
                         html += "<td>" + base.parentCode +"</td>";
-                        html += "<td>";
-                        html += "<shiro:hasPermission name='DICT_UPDATE_BTN'><a class='layui-btn layui-btn-xs' href='javascript:toUpdate(\""+base.baseCode+"\")'>修改</a></shiro:hasPermission>";
-                        html += "</td>";
+                        html += "<shiro:hasPermission name='DICT_UPDATE_BTN'><td><a class='layui-btn layui-btn-xs' href='javascript:toUpdate(\""+base.baseCode+"\")'>修改</a></td></shiro:hasPermission>";
                         html += "</tr>";
                     }
                     $("#tbd").html(html);
@@ -198,7 +196,9 @@
                 <th>CODE</th>
                 <th>字典名</th>
                 <th>上级CODE</th>
+                <shiro:hasPermission name="DICT_UPDATE_BTN">
                 <th>操作</th>
+                </shiro:hasPermission>
             </tr>
             </thead>
             <tbody id="tbd"></tbody>
