@@ -8,7 +8,9 @@ import com.dj.mall.dict.api.attr.AttrValueApi;
 import com.dj.mall.dict.dto.attr.AttrValueDTO;
 import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.base.ResultModel;
+import com.dj.mall.model.contant.PermissionsCode;
 import com.dj.mall.model.util.DozerUtil;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -32,6 +34,7 @@ public class AttrValueController {
      * @throws Exception
      */
     @GetMapping
+    @RequiresPermissions(value = PermissionsCode.RELATED_ATTR_VALUE_BTN)
     public ResultModel show(AttrValueVOReq attrValueVOReq) throws Exception {
         PageResult pageResult = attrValueApi.findAll(DozerUtil.map(attrValueVOReq, AttrValueDTO.class));
         pageResult.toBuilder().list(DozerUtil.mapList(pageResult.getList(), AttrValueVOResp.class)).build();
@@ -56,6 +59,7 @@ public class AttrValueController {
      * @throws Exception
      */
     @PostMapping
+    @RequiresPermissions(value = PermissionsCode.ATTR_VALUE_ADD_BTN)
     public ResultModel addAttrValue(AttrValueVOReq attrValueVOReq) throws Exception {
         attrValueApi.addAttrValue(DozerUtil.map(attrValueVOReq, AttrValueDTO.class));
         return new ResultModel<>().success("新增成功");
@@ -68,6 +72,7 @@ public class AttrValueController {
      * @throws Exception
      */
     @PostMapping("deleteAttrValue")
+    @RequiresPermissions(value = PermissionsCode.ATTR_VALUE_DELETE_BTN)
     public ResultModel deleteAttrValue(Integer attrValueId) throws Exception {
         attrValueApi.deleteAttrValue(attrValueId);
         return new ResultModel<>().success("删除成功");

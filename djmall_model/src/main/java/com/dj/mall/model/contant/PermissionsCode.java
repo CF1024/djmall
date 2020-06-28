@@ -106,4 +106,43 @@ public interface PermissionsCode {
     String FREIGHT_UPDATE_BTN = "FREIGHT_UPDATE_BTN";
 
     //==============================商品属性==================================//
+
+    /**
+     * 属性管理 菜单
+     */
+    String ATTR_MANAGE = "ATTR_MANAGE";
+    /**
+     * 属性_新增 按钮
+     */
+    String ATTR_ADD_BTN = "ATTR_ADD_BTN";
+    /**
+     * 关联属性值 按钮
+     */
+    String RELATED_ATTR_VALUE_BTN = "RELATED_ATTR_VALUE_BTN";
+    /**
+     * 属性值_新增 按钮
+     */
+    String ATTR_VALUE_ADD_BTN = "ATTR_VALUE_ADD_BTN";
+    /**
+     * 属性值_删除 按钮
+     */
+    String ATTR_VALUE_DELETE_BTN = "ATTR_VALUE_DELETE_BTN";
+
+    //==============================sku==================================//
+
+    /**
+     * 通用SKU维护 菜单
+     */
+    String SKU_GM_MANAGE = "SKU_GM_MANAGE";
+    /**
+     * 通用SKU维护_新增 按钮
+     */
+    String SKU_GM_ADD_BTN = "SKU_GM_ADD_BTN";
+    /**
+     * 关联属性 按钮
+     */
+    String RELATED_ATTR_BTN = "RELATED_ATTR_BTN";
+
+    //==============================商品==================================//
+
 }

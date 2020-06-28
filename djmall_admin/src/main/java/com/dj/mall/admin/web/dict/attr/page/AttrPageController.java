@@ -3,7 +3,9 @@ package com.dj.mall.admin.web.dict.attr.page;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.dj.mall.admin.vo.dict.attr.AttrVOResp;
 import com.dj.mall.dict.api.attr.AttrApi;
+import com.dj.mall.model.contant.PermissionsCode;
 import com.dj.mall.model.util.DozerUtil;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,7 @@ public class AttrPageController {
      * @return
      */
     @GetMapping("toShow")
+    @RequiresPermissions(value = PermissionsCode.ATTR_MANAGE)
     public String toShow() {
         return "dict/attr/show";
     }
@@ -37,6 +40,7 @@ public class AttrPageController {
      * @throws Exception
      */
     @GetMapping("/{attrId}")
+    @RequiresPermissions(value = PermissionsCode.RELATED_ATTR_VALUE_BTN)
     public String toRelatedAttrValue(@PathVariable("attrId") Integer attrId, ModelMap model) throws Exception {
         model.put("attr", DozerUtil.map(attrApi.findAttrById(attrId), AttrVOResp.class));
         return "dict/attr/related";

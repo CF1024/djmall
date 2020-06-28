@@ -6,7 +6,9 @@ import com.dj.mall.admin.vo.dict.attr.AttrVOResp;
 import com.dj.mall.dict.api.attr.AttrApi;
 import com.dj.mall.dict.dto.attr.AttrDTO;
 import com.dj.mall.model.base.ResultModel;
+import com.dj.mall.model.contant.PermissionsCode;
 import com.dj.mall.model.util.DozerUtil;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +34,7 @@ public class AttrController {
      * @throws Exception
      */
     @GetMapping
+    @RequiresPermissions(value = PermissionsCode.ATTR_MANAGE)
     public ResultModel show() throws Exception {
         return new ResultModel().success(DozerUtil.mapList(attrApi.findAll(), AttrVOResp.class));
     }
@@ -55,6 +58,7 @@ public class AttrController {
      * @throws Exception
      */
     @PostMapping
+    @RequiresPermissions(value = PermissionsCode.ATTR_ADD_BTN)
     public ResultModel addAttr(AttrVOReq attrVOReq) throws Exception {
         attrApi.addAttr(DozerUtil.map(attrVOReq, AttrDTO.class));
         return new ResultModel().success("新增成功");
