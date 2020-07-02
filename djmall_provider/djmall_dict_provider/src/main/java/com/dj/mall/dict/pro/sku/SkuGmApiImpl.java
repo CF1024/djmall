@@ -42,7 +42,7 @@ public class SkuGmApiImpl extends ServiceImpl<SkuGmMapper, SkuGmEntity> implemen
     }
 
     /**
-     * 根据id查
+     * 根据商品类型查
      *
      * @param productType 商品类型
      * @return

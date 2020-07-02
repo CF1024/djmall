@@ -40,7 +40,7 @@ public class SkuGmPageController {
 
     /**
      * 去关联属性
-     * @param productType
+     * @param productType 商品类型
      * @param model
      * @return
      * @throws Exception

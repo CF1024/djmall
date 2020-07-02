@@ -20,12 +20,11 @@
         //已选中的复选框
         function selected() {
             var boxObj = $("input:checkbox[name='attrId']");    //获取所有的复选框
-            var expresslist = '${attrIds}';                     //用el表达式获取在控制层存放的复选框的值为字符串类型
-            var express = expresslist.split(',');               //去掉它们之间的分割符“，”
-            alert(express);
+            var attrIds = '${attrIds}';                     //用el表达式获取在控制层存放的复选框的值为字符串类型
+            var attrIdsList = attrIds.substring(0, attrIds.length - 1);             //去掉它们之间的分割符“，”
             for(i = 0; i < boxObj.length; i++){
-                for(j = 0; j < express.length; j++){            //如果值与修改前的值相等则选中
-                    if(boxObj[i].value == express[j]) {
+                for(j = 0; j < attrIdsList.length; j++){            //如果值与修改前的值相等则选中
+                    if(boxObj[i].value == attrIdsList[j]) {
                         boxObj[i].checked= true;
                         break;
                     }

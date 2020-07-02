@@ -22,8 +22,8 @@ public interface SkuGmApi {
     PageResult findAll(SkuGmDTO skuGmDTO) throws Exception, BusinessException;
 
     /**
-     * 根据id查
-     * @param  productType
+     * 根据商品类型查
+     * @param  productType 商品类型
      * @return
      * @throws Exception
      * @throws BusinessException
