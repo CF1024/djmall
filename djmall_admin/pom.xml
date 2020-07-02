@@ -59,24 +59,31 @@
         </dependency>
 
 <!--//=============================依赖API==================================//-->
-        <!--用户服务-->
+        <!--用户服务 20880-->
         <dependency>
             <groupId>com.dj.mall</groupId>
             <artifactId>djmall_auth_api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!--字典api接口-->
+        <!--字典api接口 20881-->
         <dependency>
             <groupId>com.dj.mall</groupId>
             <artifactId>djmall_dict_api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!--Redis的api接口-->
+        <!--Redis的api接口 20882-->
         <dependency>
             <groupId>com.dj.mall</groupId>
             <artifactId>djmall_cmpt_api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!--商品的api接口 20883-->
+        <dependency>
+            <groupId>com.dj.mall</groupId>
+            <artifactId>djmall_product_api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

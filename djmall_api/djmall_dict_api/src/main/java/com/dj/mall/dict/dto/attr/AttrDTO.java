@@ -28,4 +28,12 @@ public class AttrDTO implements Serializable {
      *商品属性值
      */
     private String attrValue;
+    /**
+     *商品属性值id
+     */
+    private String attrValueIds;
+    /**
+     *商品属性值
+     */
+    private String attrValues;
 }

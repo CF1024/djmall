@@ -45,4 +45,13 @@ public interface AttrApi {
      * @throws BusinessException
      */
     AttrDTO findAttrById(Integer attrId) throws Exception, BusinessException;
+
+    /**
+     * 加载通用sku已关联的商品属性
+     * @param productType 商品类型
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    List<AttrDTO> loadSkuGmRelatedAttr(String productType) throws Exception, BusinessException;
 }

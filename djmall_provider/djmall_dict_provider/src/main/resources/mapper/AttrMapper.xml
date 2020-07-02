@@ -13,4 +13,20 @@
         GROUP BY
             pa.id
     </select>
+    <!--加载通用sku已关联的商品属性根据商品类型查-->
+    <select id="loadSkuGmRelatedAttrByProductType" resultType="com.dj.mall.dict.bo.attr.AttrBO">
+        SELECT
+            pa.id AS attrId,
+            pa.attr_name,
+            GROUP_CONCAT(pav.id) attrValueIds,
+            GROUP_CONCAT(pav.attr_value) attrValues
+        FROM
+            djmall_dict_product_sku_gm psg
+        LEFT JOIN djmall_dict_product_attr pa ON pa.id = psg.attr_id
+        LEFT JOIN djmall_dict_product_attr_value pav ON pa.id = pav.attr_id
+        WHERE
+            psg.product_type = #{productType}
+        GROUP BY
+            pa.id
+    </select>
 </mapper>

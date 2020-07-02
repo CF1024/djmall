@@ -19,4 +19,12 @@ public interface AttrMapper extends BaseMapper<AttrEntity> {
      * @throws DataAccessException
      */
     List<AttrBO> findAll() throws DataAccessException;
+
+    /**
+     * 加载通用sku已关联的商品属性根据商品类型查
+     * @param productType 商品类型
+     * @return
+     * @throws DataAccessException
+     */
+    List<AttrBO> loadSkuGmRelatedAttrByProductType(String productType) throws DataAccessException;
 }

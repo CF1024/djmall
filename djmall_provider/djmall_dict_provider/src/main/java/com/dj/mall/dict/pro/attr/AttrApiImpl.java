@@ -79,4 +79,16 @@ public class AttrApiImpl extends ServiceImpl<AttrMapper, AttrEntity> implements 
     public AttrDTO findAttrById(Integer attrId) throws Exception, BusinessException {
         return DozerUtil.map(this.getById(attrId), AttrDTO.class);
     }
+
+    /**
+     * 加载通用sku已关联的商品属性根据商品类型查
+     * @param productType 商品类型
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public List<AttrDTO> loadSkuGmRelatedAttr(String productType) throws Exception, BusinessException {
+        return DozerUtil.mapList(getBaseMapper().loadSkuGmRelatedAttrByProductType(productType), AttrDTO.class);
+    }
 }
