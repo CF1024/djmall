@@ -77,6 +77,6 @@ public class SkuGmController {
     @RequiresPermissions(value = PermissionsCode.SKU_GM_ADD_BTN)
     public ResultModel<Object> addSkuGm(SkuGmVOReq skuGmVOReq) throws Exception {
         skuGmApi.addSkuGm(DozerUtil.map(skuGmVOReq, SkuGmDTO.class));
-        return new ResultModel<>().success("关联成功");
+        return new ResultModel<>().success("新增成功");
     }
 }
