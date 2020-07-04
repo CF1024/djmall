@@ -1,11 +1,13 @@
 package com.dj.mall.admin.vo.product.spu;
 
+import com.dj.mall.admin.vo.product.sku.SkuVOReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author chengf
@@ -65,4 +67,8 @@ public class ProductVOReq implements Serializable {
      * 每页条数
      */
     private Integer pageSize = 5;
+    /**
+     * 生成sku集合
+     */
+    private List<SkuVOReq> productSkuList;
 }

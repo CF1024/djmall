@@ -30,12 +30,12 @@ public class QiniuUtils {
 	/**
 	 * 存储空间名称
 	 */
-    private static final String BUCKET = "cf1024";
+    private static final String BUCKET = "cf1905";
 
 	/**
 	 * 下载链接
 	 */
-	public static final String URL = "http://qa7q2ruv0.bkt.clouddn.com/";
+	public static final String URL = "http://qcxz8bvc2.bkt.clouddn.com/";
 
 	/**
 	 * 构造一个带指定 Region 对象的配置类

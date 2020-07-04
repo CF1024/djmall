@@ -8,8 +8,10 @@ import com.dj.mall.dict.api.freight.FreightApi;
 import com.dj.mall.dict.api.sku.SkuGmApi;
 import com.dj.mall.dict.dto.sku.SkuGmDTO;
 import com.dj.mall.model.base.PageResult;
+import com.dj.mall.model.contant.PermissionsCode;
 import com.dj.mall.model.util.DozerUtil;
 import com.dj.mall.product.api.spu.ProductApi;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +46,7 @@ public class ProductPageController {
      * @return
      */
     @GetMapping("toShow")
+    @RequiresPermissions(value = PermissionsCode.PRODUCT_MANAGE)
     public String toShow() {
         return "product/spu/show";
     }
@@ -55,6 +58,7 @@ public class ProductPageController {
      * @throws Exception
      */
     @GetMapping("toAddProduct")
+    @RequiresPermissions(value = PermissionsCode.PRODUCT_ADD_BTN)
     public String toAddProduct(ModelMap model) throws Exception {
         //运费
         model.put("freightList", DozerUtil.mapList(freightApi.findAll(), FreightVOResp.class));

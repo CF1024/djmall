@@ -1,5 +1,6 @@
 package com.dj.mall.product.dto.spu;
 
+import com.dj.mall.product.dto.sku.SkuDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.dozer.Mapping;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author chengf
@@ -66,4 +68,8 @@ public class ProductDTO implements Serializable {
      * 每页条数
      */
     private Integer pageSize = 5;
+    /**
+     * 生成sku集合
+     */
+    private List<SkuDTO> productSkuList;
 }

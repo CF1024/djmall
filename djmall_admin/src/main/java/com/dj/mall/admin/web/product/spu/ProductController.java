@@ -2,14 +2,25 @@ package com.dj.mall.admin.web.product.spu;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.dj.mall.admin.vo.dict.attr.AttrVOResp;
+import com.dj.mall.admin.vo.product.spu.ProductVOReq;
+import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.dict.api.attr.AttrApi;
 import com.dj.mall.model.base.ResultModel;
+import com.dj.mall.model.contant.AuthConstant;
+import com.dj.mall.model.contant.DictConstant;
+import com.dj.mall.model.contant.PermissionsCode;
 import com.dj.mall.model.util.DozerUtil;
 import com.dj.mall.product.api.spu.ProductApi;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.dj.mall.product.dto.spu.ProductDTO;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpSession;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author chengf
@@ -39,5 +50,39 @@ public class ProductController {
     @GetMapping("/{productType}")
     public ResultModel loadSkuGmRelatedAttr(@PathVariable("productType") String productType) throws Exception {
         return new ResultModel().success(DozerUtil.mapList(attrApi.loadSkuGmRelatedAttr(productType), AttrVOResp.class));
+    }
+
+    /**
+     * 去重
+     * @param productVOReq
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("deDuplicate")
+    public Boolean deDuplicate(ProductVOReq productVOReq) throws Exception {
+        return productApi.deDuplicate(DozerUtil.map(productVOReq, ProductDTO.class));
+    }
+
+    /**
+     * 商品新增
+     * @param productVOReq
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("addProduct")
+    @RequiresPermissions(value = PermissionsCode.PRODUCT_ADD_BTN)
+    public ResultModel addProduct(ProductVOReq productVOReq, MultipartFile file, HttpSession session) throws Exception {
+        Assert.notEmpty(productVOReq.getProductSkuList(), "请选择商品属性值并生成sku后再进行添加新的商品哟");
+        //图片UUID 当前登录用户 默认上架 排除空数据
+        String fileName = UUID.randomUUID().toString().replace("-", "") + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        UserDTO userDTO = (UserDTO) session.getAttribute(AuthConstant.SESSION_USER);
+
+        productVOReq.setProductImg(fileName);
+        productVOReq.setUserId(userDTO.getUserId());
+        productVOReq.setProductStatus(DictConstant.PRODUCT_STATUS_UP);
+        productVOReq.setProductSkuList(productVOReq.getProductSkuList().stream().filter(sku -> !StringUtils.isEmpty(sku.getSkuAttrIds())).collect(Collectors.toList()));
+
+        productApi.addProduct(DozerUtil.map(productVOReq, ProductDTO.class), file.getBytes());
+        return new ResultModel().success("新增成功");
     }
 }

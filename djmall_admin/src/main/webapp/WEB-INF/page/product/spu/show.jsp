@@ -192,13 +192,13 @@
         <shiro:hasPermission name="USER_UPDATE_BTN">
             <input type="button" value="重构索引" onclick="toUpdateUser()" class="layui-btn layui-btn-radius layui-btn-primary"><br /><br />
         </shiro:hasPermission>
-        <shiro:hasPermission name="USER_UPDATE_BTN">
+        <shiro:hasPermission name="PRODUCT_ADD_BTN">
             <input type="button" value="新增" onclick="toAddProduct()" class="layui-btn layui-btn-radius layui-btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </shiro:hasPermission>
-        <shiro:hasPermission name="USER_UPDATE_BTN">
+        <shiro:hasPermission name="PRODUCT_UPDATE_BTN">
             <input type="button" value="修改" onclick="toUpdateProduct()" class="layui-btn layui-btn-radius layui-btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </shiro:hasPermission>
-        <shiro:hasPermission name="USER_ACTIVATION_BTN">
+        <shiro:hasPermission name="PRODUCT_SHELF_BTN">
             <input type="button" value="上架/下架" onclick="shelf()" class="layui-btn layui-btn-radius">
         </shiro:hasPermission>
         <shiro:hasPermission name="USER_RESET_PASSWORD_BTN">

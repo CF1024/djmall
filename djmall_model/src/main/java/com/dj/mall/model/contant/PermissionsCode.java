@@ -144,5 +144,20 @@ public interface PermissionsCode {
     String RELATED_ATTR_BTN = "RELATED_ATTR_BTN";
 
     //==============================商品==================================//
-
+    /**
+     * 商品管理 菜单
+     */
+    String PRODUCT_MANAGE = "PRODUCT_MANAGE";
+    /**
+     * 商品_新增 按钮
+     */
+    String PRODUCT_ADD_BTN = "PRODUCT_ADD_BTN";
+    /**
+     * 商品_修改 按钮
+     */
+    String PRODUCT_UPDATE_BTN = "PRODUCT_UPDATE_BTN";
+    /**
+     * 商品_上下架 按钮
+     */
+    String PRODUCT_SHELF_BTN = "PRODUCT_SHELF_BTN";
 }
