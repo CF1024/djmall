@@ -307,10 +307,10 @@
                     success: function (data) {
                         layer.close(index);
                         if(data.code != 200){
-                            layer.msg(data.msg, {icon:6,time:5000});
+                            layer.msg(data.msg, {offset: '230px', icon:5, time:5000});
                             return;
                         }
-                        layer.msg(data.msg, {icon: 6, time: 2000},
+                        layer.msg(data.msg, {offset: '230px', icon: 6, time: 2000},
                             function(){
                                 window.location.href = "<%=request.getContextPath()%>/product/spu/toShow";
                             });

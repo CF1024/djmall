@@ -2,14 +2,17 @@ package com.dj.mall.product.pro.spu;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dj.mall.model.base.BusinessException;
+import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.util.DozerUtil;
 import com.dj.mall.model.util.QiniuUtils;
 import com.dj.mall.product.api.spu.ProductApi;
-import com.dj.mall.product.dto.sku.SkuDTO;
+import com.dj.mall.product.bo.spu.ProductBO;
 import com.dj.mall.product.dto.spu.ProductDTO;
 import com.dj.mall.product.entity.sku.SkuEntity;
 import com.dj.mall.product.entity.spu.ProductEntity;
@@ -36,6 +39,22 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
      */
     @Autowired
     private SkuService skuService;
+
+    /**
+     * 商品展示
+     *
+     * @param productDTO 商品dto
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public PageResult findAll(ProductDTO productDTO) throws Exception, BusinessException {
+        Page<ProductEntity> page = new Page<>(productDTO.getPageNo(), productDTO.getPageSize());
+        IPage<ProductBO>  iPage = getBaseMapper().findAll(page, DozerUtil.map(productDTO, ProductBO.class));
+        return new PageResult().toBuilder().pages(iPage.getPages()).list(DozerUtil.mapList(iPage.getRecords(), ProductDTO.class)).build();
+    }
+
     /**
      * 去重
      * @param productDTO

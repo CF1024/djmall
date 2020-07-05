@@ -69,6 +69,18 @@ public class ProductDTO implements Serializable {
      */
     private Integer pageSize = 5;
     /**
+     * 商品类型集合
+     */
+    private List<String> productTypeList;
+    /**
+     * 公司
+     */
+    private String company;
+    /**
+     * 运费
+     */
+    private String freightShow;
+    /**
      * 生成sku集合
      */
     private List<SkuDTO> productSkuList;

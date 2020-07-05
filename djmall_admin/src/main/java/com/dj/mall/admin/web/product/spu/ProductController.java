@@ -3,8 +3,10 @@ package com.dj.mall.admin.web.product.spu;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.dj.mall.admin.vo.dict.attr.AttrVOResp;
 import com.dj.mall.admin.vo.product.spu.ProductVOReq;
+import com.dj.mall.admin.vo.product.spu.ProductVOResp;
 import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.dict.api.attr.AttrApi;
+import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.base.ResultModel;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.contant.DictConstant;
@@ -42,6 +44,23 @@ public class ProductController {
     private ProductApi productApi;
 
     /**
+     * 商品展示
+     * @param productVOReq
+     * @return
+     * @throws Exception
+     */
+    @GetMapping
+    public ResultModel show(ProductVOReq productVOReq, HttpSession session) throws Exception {
+        //当前登录人是否为商人
+        UserDTO userDTO = (UserDTO) session.getAttribute(AuthConstant.SESSION_USER);
+        if (userDTO.getUserRole().equals(AuthConstant.BUSINESS)) {
+            productVOReq.setUserId(userDTO.getUserId());
+        }
+        PageResult pageResult = productApi.findAll(DozerUtil.map(productVOReq, ProductDTO.class));
+        return new ResultModel().success(pageResult.toBuilder().list(DozerUtil.mapList(pageResult.getList(), ProductVOResp.class)).build());
+    }
+
+    /**
      * 加载通用sku已关联的商品属性
      * @param productType 商品类型
      * @return
@@ -65,7 +84,9 @@ public class ProductController {
 
     /**
      * 商品新增
-     * @param productVOReq
+     * @param productVOReq 商品vo
+     * @param file 图片文件
+     * @param session 用户session
      * @return
      * @throws Exception
      */

@@ -47,7 +47,10 @@ public class ProductPageController {
      */
     @GetMapping("toShow")
     @RequiresPermissions(value = PermissionsCode.PRODUCT_MANAGE)
-    public String toShow() {
+    public String toShow(ModelMap model) throws Exception {
+        //商品类型
+        PageResult pageResult = skuGmApi.findAll(DozerUtil.map(SkuGmVOReq.class, SkuGmDTO.class));
+        model.put("productTypeList", DozerUtil.mapList(pageResult.getList(), SkuGmVOResp.class));
         return "product/spu/show";
     }
 

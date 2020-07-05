@@ -68,6 +68,10 @@ public class ProductVOReq implements Serializable {
      */
     private Integer pageSize = 5;
     /**
+     * 商品类型集合
+     */
+    private List<String> productTypeList;
+    /**
      * 生成sku集合
      */
     private List<SkuVOReq> productSkuList;

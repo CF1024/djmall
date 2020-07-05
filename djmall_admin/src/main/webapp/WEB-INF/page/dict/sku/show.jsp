@@ -130,6 +130,7 @@
     </script>
     <body>
         <form class="layui-form" id="fm">
+            <input type="hidden" value="1" name="pageNo" id="pageNo">
             <div class="layui-form-item">
                 <label class="layui-form-label">商品类型</label>
                 <div class="layui-input-inline">

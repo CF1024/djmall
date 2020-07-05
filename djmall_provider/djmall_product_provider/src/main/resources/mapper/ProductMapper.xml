@@ -2,4 +2,41 @@
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dj.mall.product.mapper.spu.ProductMapper">
 
-</mapper>   
+    <select id="findAll" resultType="com.dj.mall.product.bo.spu.ProductBO">
+        SELECT
+            ps.id AS productId,
+            ps.product_name,
+            ps.freight_id,
+            ps.product_describe,
+            ps.product_img,
+            ps.product_type,
+            ps.user_id,
+            ps.product_status,
+            ps.order_number,
+            ps.praise_number,
+            pf.freight AS freightShow,
+            bd.base_name AS company,
+            bd2.base_name AS productStatus
+        FROM
+            djmall_product_spu ps
+        LEFT JOIN djmall_dict_product_freight pf ON ps.freight_id = pf.id
+        LEFT JOIN djmall_dict_base_data bd ON pf.company = bd.base_code
+        LEFT JOIN djmall_dict_base_data bd2 ON ps.product_status = bd2.base_code
+        <where>
+            <if test="product.userId != null">
+                ps.user_id = #{product.userId}
+            </if>
+            <if test="product.productName != null and product.productName != ''">
+                <bind name="productNameLike" value="'%'+product.productName+'%'"/>
+                AND ps.product_name LIKE "%"#{productNameLike}"%"
+            </if>
+            <if test="product.productTypeList != null and product.productTypeList != ''">
+                AND ps.product_type IN
+               <foreach collection="product.productTypeList" item="productType" open="(" close=")" separator=",">
+                   #{productType}
+               </foreach>
+            </if>
+        </where>
+        GROUP BY ps.id DESC
+    </select>
+</mapper>

@@ -17,14 +17,14 @@
         <script type="text/javascript" src="<%=request.getContextPath()%>/static/layui/layui.js"></script>
     </head>
     <script type="text/javascript">
-      /*  $(function () {
+      $(function () {
             show();
         });
 
         function show() {
-            var index = layer.load(0, {shade:0.5});
+            var index = layer.load(0, {offset: '230px', shade:0.5});
             $.get(
-                "<%=request.getContextPath()%>/product/spu",
+                "<%=request.getContextPath()%>/product/spu/",
                 $("#fm").serialize(),
                 function (data) {
                     layer.close(index);
@@ -40,9 +40,9 @@
                         html += "<td>" + pro.productName +"</td>";
                         html += "<td>" + pro.productType +"</td>";
                         html += "<td>" + pro.productStatus +"</td>";
-                        html += "<td>" + pro.freightShow +"</td>";
-                        html += "<td>" + pro.productImg +"</td>";
-                        html += pro.productDescribe == null ? "<td>暂无描述</td>" : "<td>" + pro.productDescribe +"</td>";
+                        html += pro.freightShow == "0.00" ? "<td>"+ pro.company +"-包邮</td>" : "<td>" +pro.company +" - "+ pro.freightShow +"元</td>";
+                        html += "<td><img src='http://qcxz8bvc2.bkt.clouddn.com/"+pro.productImg+"' style='width: 70px; height: 70px'></td>";
+                        html += "<td>" + pro.productDescribe +"</td>";
                         html += pro.praiseNumber == null ? "<td>暂无点赞量</td>" : "<td>" + pro.praiseNumber +"</td>";
                         html += pro.orderNumber == null ? "<td>暂无订单量</td>" : "<td>" + pro.orderNumber +"</td>";
                         html += "</tr>";
@@ -56,7 +56,7 @@
                 }
             );
         }
-*/
+
         //分页
         function page(pages, pageNo) {
             if (pageNo < 1) {
@@ -79,7 +79,7 @@
         layui.use('form', function () {
             var form = layui.form;
             form.render();//重点在这里
-            form.on('checkbox(userRole)', function(){
+            form.on('checkbox(productType)', function(){
                 fuzzySearch();
             });
         });
@@ -146,45 +146,24 @@
     <body>
         <form class="layui-form" id="fm">
             <input type="hidden" value="1" name="pageNo" id="pageNo">
-            <%--<div class="layui-form-item">
-                <label class="layui-form-label">搜索</label>
+            <div class="layui-form-item">
+                <label class="layui-form-label">商品名称</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="userName" placeholder="用户名/昵称/手机号/邮箱" class="layui-input">
+                    <input type="text" name="productName" placeholder="请输入商品名称" class="layui-input">
                 </div>
                 <div class="layui-word-aux">
-                    <input type="button" value="查询" onclick="fuzzySearch()" class="layui-btn layui-btn-normal">
+                    <input type="button" value="搜索" onclick="fuzzySearch()" class="layui-btn layui-btn-normal">
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">角色</label>
+                <label class="layui-form-label">商品类型</label>
                 <div class="layui-input-block">
-                    <c:forEach items="${roleList}" var="role">
-                        <input type="checkbox"  name="userRoleList" lay-filter="userRole" value="${role.roleId}" title="${role.roleName}">
+                    <c:forEach items="${productTypeList}" var="type">
+                        <input type="checkbox"  name="productTypeList" lay-filter="productType" value="${type.productType}" title="${type.productType}">
                     </c:forEach>
                 </div>
             </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label" >性别</label>
-                <div class="layui-input-block" >
-                    <c:forEach items="${sexList}" var="sex">
-                        <input type="checkbox" name="userSexList" lay-filter="sex" value="${sex.baseCode}" title="${sex.baseName}">
-                    </c:forEach>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">激活状态</label>
-                <div class="layui-input-inline">
-                    <select name="userStatus" lay-filter="status">
-                        <option value="-1">请选择</option>
-                        <c:forEach items="${statusList}" var="status">
-                            <option value="${status.baseCode}">${status.baseName}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-            </div>--%>
         </form>
         <shiro:hasPermission name="USER_UPDATE_BTN">
             <input type="button" value="增量索引" onclick="toUpdateUser()" class="layui-btn layui-btn-radius layui-btn-primary">

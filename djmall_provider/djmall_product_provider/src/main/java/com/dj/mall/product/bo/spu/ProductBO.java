@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author chengf
@@ -57,4 +58,16 @@ public class ProductBO implements Serializable {
      *点赞量
      */
     private Integer praiseNumber;
+    /**
+     * 商品类型集合
+     */
+    private List<String> productTypeList;
+    /**
+     * 公司
+     */
+    private String company;
+    /**
+     * 运费
+     */
+    private String freightShow;
 }

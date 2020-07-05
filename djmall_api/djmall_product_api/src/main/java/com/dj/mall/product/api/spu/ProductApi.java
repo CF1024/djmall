@@ -1,6 +1,7 @@
 package com.dj.mall.product.api.spu;
 
 import com.dj.mall.model.base.BusinessException;
+import com.dj.mall.model.base.PageResult;
 import com.dj.mall.product.dto.spu.ProductDTO;
 
 /**
@@ -9,6 +10,14 @@ import com.dj.mall.product.dto.spu.ProductDTO;
  * 商品Api
  */
 public interface ProductApi {
+    /**
+     * 商品展示
+     * @param productDTO 商品dto
+     * @return
+     * @throws Exception
+     * @throws BusinessException
+     */
+    PageResult findAll(ProductDTO productDTO) throws Exception, BusinessException;
     /**
      * 去重
      * @param productDTO
@@ -26,4 +35,6 @@ public interface ProductApi {
      * @throws BusinessException
      */
     void addProduct(ProductDTO productDTO, byte[] file) throws Exception, BusinessException;
+
+
 }

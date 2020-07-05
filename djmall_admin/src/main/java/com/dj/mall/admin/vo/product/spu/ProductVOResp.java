@@ -57,4 +57,12 @@ public class ProductVOResp implements Serializable {
      *点赞量
      */
     private Integer praiseNumber;
+    /**
+     * 公司
+     */
+    private String company;
+    /**
+     * 运费
+     */
+    private String freightShow;
 }
