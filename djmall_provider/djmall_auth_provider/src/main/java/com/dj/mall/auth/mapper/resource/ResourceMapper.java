@@ -1,3 +1,12 @@
+/*
+ * 作者：CF
+ * 日期：2020-07-06 10:25
+ * 项目：djmall
+ * 模块：djmall_auth_provider
+ * 类名：ResourceMapper
+ * 版权所有(C), 2020. 所有权利保留
+ */
+
 package com.dj.mall.auth.mapper.resource;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

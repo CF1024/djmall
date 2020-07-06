@@ -1,12 +1,10 @@
-/*!
- * jQuery Validation Plugin 1.11.1
- *
- * http://bassistance.de/jquery-plugins/jquery-plugin-validation/
- * http://docs.jquery.com/Plugins/Validation
- *
- * Copyright 2013 Jörn Zaefferer
- * Released under the MIT license:
- *   http://www.opensource.org/licenses/mit-license.php
+/*
+ * 作者：CF
+ * 日期：2020-07-06 10:25
+ * 项目：djmall
+ * 模块：djmall_admin
+ * 类名：jquery.validate.js
+ * 版权所有(C), 2020. 所有权利保留
  */
 
 (function($) {

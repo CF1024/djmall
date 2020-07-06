@@ -1,4 +1,13 @@
 <%--
+  ~ 作者：CF
+  ~ 日期：2020-07-06 10:25
+  ~ 项目：djmall
+  ~ 模块：djmall_admin
+  ~ 类名：show.jsp
+  ~ 版权所有(C), 2020. 所有权利保留
+  --%>
+
+<%--
   Created by IntelliJ IDEA.
   User: CF
   Date: 2020/6/7
@@ -159,6 +168,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">商品类型</label>
                 <div class="layui-input-block">
+                    <jsp:useBean id="productTypeList" scope="request" type="java.util.List"/>
                     <c:forEach items="${productTypeList}" var="type">
                         <input type="checkbox"  name="productTypeList" lay-filter="productType" value="${type.productType}" title="${type.productType}">
                     </c:forEach>

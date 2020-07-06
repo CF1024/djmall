@@ -1,7 +1,10 @@
-/*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under the MIT license
+/*
+ * 作者：CF
+ * 日期：2020-07-06 10:25
+ * 项目：djmall
+ * 模块：djmall_admin
+ * 类名：bootstrap.js
+ * 版权所有(C), 2020. 所有权利保留
  */
 
 if (typeof jQuery === 'undefined') {

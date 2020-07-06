@@ -1,3 +1,12 @@
+/*
+ * 作者：CF
+ * 日期：2020-07-06 10:25
+ * 项目：djmall
+ * 模块：djmall_product_provider
+ * 类名：ProductApiImpl
+ * 版权所有(C), 2020. 所有权利保留
+ */
+
 package com.dj.mall.product.pro.spu;
 
 import com.alibaba.dubbo.config.annotation.Service;
@@ -42,11 +51,10 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
 
     /**
      * 商品展示
-     *
      * @param productDTO 商品dto
-     * @return
-     * @throws Exception
-     * @throws BusinessException
+     * @return PageResult
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
      */
     @Override
     public PageResult findAll(ProductDTO productDTO) throws Exception, BusinessException {
@@ -57,10 +65,10 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
 
     /**
      * 去重
-     * @param productDTO
-     * @return
-     * @throws Exception
-     * @throws BusinessException
+     * @param productDTO 商品Dto
+     * @return Boolean
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
      */
     @Override
     public Boolean deDuplicate(ProductDTO productDTO) throws Exception, BusinessException {
@@ -76,11 +84,10 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
 
     /**
      * 商品新增
-     *
-     * @param productDTO
-     * @param file
-     * @throws Exception
-     * @throws BusinessException
+     * @param productDTO 商品Dto
+     * @param file byte流文件
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
      */
     @Override
     public void addProduct(ProductDTO productDTO, byte[] file) throws Exception, BusinessException {
@@ -97,6 +104,35 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
         //七牛云上传
         InputStream inputStream = new ByteArrayInputStream(file);
         QiniuUtils.uploadByInputStream(inputStream, productEntity.getProductImg());
+    }
+
+    /**
+     * 根据id修改商品和商品sku上下架状态
+     * @param id 商品ID
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    @Override
+    public void updateProductStatusById(Integer id) throws Exception, BusinessException {
+        //根据id获取商品信息 和 商品sku的信息
+        ProductEntity productEntity = this.getById(id);
+        List<SkuEntity> skuEntityList = skuService.list(new QueryWrapper<SkuEntity>().eq("product_id", id));
+
+        //商品修改 商品sku批量修改 上架 && 下架
+        if (DictConstant.PRODUCT_STATUS_UP.equals(productEntity.getProductStatus())) {
+            productEntity.setProductStatus(DictConstant.PRODUCT_STATUS_DOWN);
+            skuEntityList.forEach(skuEntity -> skuEntity.setSkuStatus(DictConstant.PRODUCT_STATUS_DOWN));
+            this.updateById(productEntity);
+            skuService.updateBatchById(skuEntityList);
+            return;
+        }
+        if (DictConstant.PRODUCT_STATUS_DOWN.equals(productEntity.getProductStatus())) {
+            productEntity.setProductStatus(DictConstant.PRODUCT_STATUS_UP);
+            skuEntityList.forEach(skuEntity -> skuEntity.setSkuStatus(DictConstant.PRODUCT_STATUS_UP));
+            this.updateById(productEntity);
+            skuService.updateBatchById(skuEntityList);
+        }
+
     }
 
 }

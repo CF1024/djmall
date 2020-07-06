@@ -1,3 +1,12 @@
+/*
+ * 作者：CF
+ * 日期：2020-07-06 10:25
+ * 项目：djmall
+ * 模块：djmall_admin
+ * 类名：SkuGmVOResp
+ * 版权所有(C), 2020. 所有权利保留
+ */
+
 package com.dj.mall.admin.vo.dict.sku;
 
 import lombok.AllArgsConstructor;
