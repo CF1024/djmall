@@ -20,6 +20,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -43,7 +44,7 @@ public class RolePageController {
      * 去展示角色页面
      * @return
      */
-    @RequestMapping("toShow")
+    @GetMapping("toShow")
     @RequiresPermissions(value = PermissionsCode.ROLE_MANAGE)
     public String toShow() {
         return "auth/role/show";
@@ -53,7 +54,7 @@ public class RolePageController {
      * 去新增页面
      * @return
      */
-    @RequestMapping("toAdd")
+    @GetMapping("toAdd")
     @RequiresPermissions(value = PermissionsCode.ROLE_ADD_BTN)
     public String toAdd() {
         return "auth/role/add";
@@ -66,7 +67,7 @@ public class RolePageController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("toUpdate/{roleId}")
+    @GetMapping("toUpdate/{roleId}")
     @RequiresPermissions(value = PermissionsCode.ROLE_UPDATE_BTN)
     public String toUpdate(@PathVariable("roleId") Integer roleId, Model model) throws Exception {
         model.addAttribute("role", DozerUtil.map(roleApi.findById(roleId), RoleVOResp.class));
@@ -80,7 +81,7 @@ public class RolePageController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("toRelatedResource/{roleId}")
+    @GetMapping("toRelatedResource/{roleId}")
     @RequiresPermissions(value = PermissionsCode.ROLE_RELATED_RESOURCE_BTN)
     public String toRelatedResource(@PathVariable("roleId") Integer roleId, ModelMap model) {
         model.put("roleId", roleId);

@@ -53,7 +53,7 @@
             submitHandler : function () {
                 var index = layer.load(0,{shade:0.5});
                 $.post(
-                    "<%=request.getContextPath()%>/auth/user/updateUser",
+                    "<%=request.getContextPath()%>/auth/user/",
                     $("#fm").serialize(),
                     function (data) {
                         layer.close(index);

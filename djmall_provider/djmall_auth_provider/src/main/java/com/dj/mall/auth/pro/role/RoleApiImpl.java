@@ -37,6 +37,7 @@ import com.dj.mall.model.contant.RedisConstant;
 import com.dj.mall.model.util.DozerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,13 +78,8 @@ public class RoleApiImpl extends ServiceImpl<RoleMapper, Role> implements RoleAp
      */
     @Override
     public PageResult findAll(RoleDTO roleDTO) throws Exception, BusinessException {
-        IPage<Role> iPage = getBaseMapper().selectPage(
-                new Page<>(roleDTO.getPageNo(), roleDTO.getPageSize()),
-                new QueryWrapper<Role>().eq("is_del", DictConstant.NOT_DEL));
-        PageResult pageResult = new PageResult().toBuilder()
-                .pages(iPage.getPages())
-                .list(DozerUtil.mapList(iPage.getRecords(), RoleDTO.class)).build();
-        return pageResult;
+        IPage<Role> iPage = getBaseMapper().selectPage(new Page<>(roleDTO.getPageNo(), roleDTO.getPageSize()), new QueryWrapper<Role>().eq("is_del", DictConstant.NOT_DEL));
+        return new PageResult().toBuilder().pages(iPage.getPages()).list(DozerUtil.mapList(iPage.getRecords(), RoleDTO.class)).build();
     }
     /**
      * 去重
@@ -97,10 +93,10 @@ public class RoleApiImpl extends ServiceImpl<RoleMapper, Role> implements RoleAp
     @Override
     public Boolean deDuplicate(String roleName, Integer roleId) throws Exception, BusinessException {
         QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
-        if (null != roleId) {
+        if (!StringUtils.isEmpty(roleId)) {
             queryWrapper.ne("id", roleId);
         }
-        if (null != roleName) {
+        if (!StringUtils.isEmpty(roleName)) {
             queryWrapper.eq("role_name", roleName);
         }
         return getBaseMapper().selectOne(queryWrapper) == null;

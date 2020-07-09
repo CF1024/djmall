@@ -48,7 +48,7 @@ public class AttrPageController {
      * @return
      * @throws Exception
      */
-    @GetMapping("/{attrId}")
+    @GetMapping("toRelatedAttrValue/{attrId}")
     @RequiresPermissions(value = PermissionsCode.RELATED_ATTR_VALUE_BTN)
     public String toRelatedAttrValue(@PathVariable("attrId") Integer attrId, ModelMap model) throws Exception {
         model.put("attr", DozerUtil.map(attrApi.findAttrById(attrId), AttrVOResp.class));

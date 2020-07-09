@@ -46,9 +46,9 @@ public class SkuGmController {
      */
     @GetMapping
     @RequiresPermissions(value = PermissionsCode.SKU_GM_MANAGE)
-    public ResultModel show(SkuGmVOReq skuGmVOReq) throws Exception {
+    public ResultModel<Object> show(SkuGmVOReq skuGmVOReq) throws Exception {
         PageResult pageResult = skuGmApi.findAll(DozerUtil.map(skuGmVOReq, SkuGmDTO.class));
-        return new ResultModel().success(pageResult.toBuilder().list(DozerUtil.mapList(pageResult.getList(), SkuGmVOResp.class)).build());
+        return new ResultModel<>().success(pageResult.toBuilder().list(DozerUtil.mapList(pageResult.getList(), SkuGmVOResp.class)).build());
     }
 
     /**

@@ -57,7 +57,7 @@ public class ShiroConfiguration {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         shiroFilterFactoryBean.setLoginUrl("/auth/user/toLogin");
         shiroFilterFactoryBean.setSuccessUrl("/index/toIndex");
-        shiroFilterFactoryBean.setUnauthorizedUrl("/index/toDisPlay");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/403.jsp");
         Map<String, String> filters = new LinkedHashMap<>();
         //放过的请求 js 登录 去注册 注册 去重 去激活 去强制修改密码 强制修改密码 去手机号登录  手机号登录 获取验证码 去忘记密码 忘记密码
         filters.put("/static/**", "anon");

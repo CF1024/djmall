@@ -90,7 +90,7 @@
             submitHandler : function() {
                 var index = layer.load(0, {shade:0.5});
                 $.post(
-                    "<%=request.getContextPath()%>/auth/resource/add",
+                    "<%=request.getContextPath()%>/auth/resource/",
                     $("#fm").serialize(),
                     function(data) {
                         layer.close(index);

@@ -76,20 +76,21 @@ public class CustomExceptionHandler {
 
     /**
      * 未授权异常处理
-     * @param request
-     * @param response
+     *
      * @param ex
+     * @return
      */
     @ExceptionHandler(UnauthorizedException.class)
     public void unauthorizedExceptionHandler(HttpServletRequest request, HttpServletResponse response, UnauthorizedException ex) {
         ex.printStackTrace();
         try {
+            // 判断请求方式的 页面请求 Ajax请求
             if (request.getHeader("x-requested-with") != null && request.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest")) {
                 response.setStatus(HttpStatus.OK.value());
                 response.setContentType("text/json;charset=UTF-8");
-                response.getWriter().print(JSONObject.toJSON(new ResultModel().error(403, "403")));
+                response.getWriter().print(JSONObject.toJSON(new ResultModel<>().error(403, "403,权限不足")));
             } else {
-                response.sendRedirect(request.getContextPath() + "/index/toDisplay");
+                response.sendRedirect(request.getContextPath() + "/403.jsp");
             }
         } catch (Exception e) {
             e.printStackTrace();

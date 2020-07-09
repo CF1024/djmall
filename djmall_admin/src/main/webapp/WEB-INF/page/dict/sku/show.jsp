@@ -84,7 +84,7 @@
 
         //去关联属性
         function toRelatedAttr(productType) {
-            window.location.href = "<%=request.getContextPath()%>/dict/skuGm/"+productType;
+            window.location.href = "<%=request.getContextPath()%>/dict/skuGm/toRelatedAttr/"+productType;
         }
 
         //去新增

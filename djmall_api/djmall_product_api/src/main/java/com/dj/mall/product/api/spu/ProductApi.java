@@ -53,4 +53,22 @@ public interface ProductApi {
      * @throws BusinessException 业务处理异常
      */
     void updateProductStatusById(Integer id) throws Exception, BusinessException;
+
+    /**
+     * 根据id查商品信息
+     * @param productId 商品ID
+     * @return ProductDTO
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    ProductDTO findProductById(Integer productId) throws Exception, BusinessException;
+
+    /**
+     * 根据id修改商品
+     * @param productDTO productDTO
+     * @param file 图片文件流
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    void updateProductById(ProductDTO productDTO, byte[] file) throws Exception, BusinessException;
 }

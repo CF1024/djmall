@@ -14,11 +14,13 @@ package com.dj.mall.model.contant;
  * 权限编码
  */
 public interface PermissionsCode {
+
     /**
      * 权限管理 菜单
      */
     String PERMISSION_MANAGE = "PERMISSION_MANAGE";
     //==============================用户==================================//
+
     /**
      * 用户管理 菜单
      */
@@ -45,6 +47,7 @@ public interface PermissionsCode {
     String USER_AUTH_BTN = "USER_AUTH_BTN";
 
     //==============================角色==================================//
+
     /**
      * 角色管理 菜单
      */
@@ -68,6 +71,7 @@ public interface PermissionsCode {
     String ROLE_DELETE_BTN = "ROLE_DELETE_BTN";
 
     //==============================资源==================================//
+
     /**
      * 资源管理 菜单
      */
@@ -86,6 +90,7 @@ public interface PermissionsCode {
     String RESOURCE_DELETE_BTN = "RESOURCE_DELETE_BTN";
 
     //==============================字典==================================//
+
     /**
      * 字典管理 菜单
      */
@@ -169,4 +174,50 @@ public interface PermissionsCode {
      * 商品_上下架 按钮
      */
     String PRODUCT_SHELF_BTN = "PRODUCT_SHELF_BTN";
+    /**
+     * 增量索引 按钮
+     */
+    String INCREMENTAL_INDEX_BTN = "INCREMENTAL_INDEX_BTN";
+    /**
+     * 重构索引 按钮
+     */
+    String REFACTORING_THE_INDEX_BTN = "REFACTORING_THE_INDEX_BTN";
+    /**
+     * 查看评论 按钮
+     */
+    String VIEW_COMMENTS_BTN = "VIEW_COMMENTS_BTN";
+    /**
+     * 下载导入模板 按钮
+     */
+    String DOWNLOAD_THE_IMPORT_TEMPLATE_BTN = "DOWNLOAD_THE_IMPORT_TEMPLATE_BTN";
+    /**
+     * 导入 按钮
+     */
+    String IMPORT_BTN = "IMPORT_BTN";
+
+    //==============================商品SKU==================================//
+
+    /**
+     * 商品SKU_展示 按钮
+     */
+    String PRODUCT_SKU_SHOW_BTN = "PRODUCT_SKU_SHOW_BTN";
+    /**
+     * 商品SKU_修改库存 按钮
+     */
+    String PRODUCT_SKU_UPDATE_COUNT_BTN = "PRODUCT_SKU_UPDATE_COUNT_BTN";
+    /**
+     * 商品SKU_编辑 按钮
+     */
+    String PRODUCT_SKU_EDIT_BTN = "PRODUCT_SKU_EDIT_BTN";
+    /**
+     * 商品SKU_设为默认 按钮
+     */
+    String PRODUCT_SKU_SET_AS_DEFAULT = "PRODUCT_SKU_SET_AS_DEFAULT";
+    /**
+     * 商品SKU_上下架 按钮
+     */
+    String PRODUCT_SKU_UPDATE_STATUS = "PRODUCT_SKU_UPDATE_STATUS";
+
+    //==============================商城==================================//
+
 }

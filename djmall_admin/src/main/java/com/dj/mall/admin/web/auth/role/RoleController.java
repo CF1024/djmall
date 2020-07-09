@@ -41,7 +41,7 @@ public class RoleController {
      * @return
      * @throws Exception
      */
-    @PostMapping("show")
+    @GetMapping
     @RequiresPermissions(value = PermissionsCode.ROLE_MANAGE)
     public ResultModel<Object> show(RoleVOReq roleVOReq) throws Exception {
         PageResult pageResult = roleApi.findAll(DozerUtil.map(roleVOReq, RoleDTO.class));
@@ -58,8 +58,7 @@ public class RoleController {
      */
     @GetMapping("deDuplicate")
     public Boolean deDuplicate(String roleName, Integer roleId) throws Exception {
-        Boolean deDuplicate = roleApi.deDuplicate(roleName, roleId);
-        return deDuplicate;
+        return roleApi.deDuplicate(roleName, roleId);
     }
 
     /**
@@ -68,9 +67,9 @@ public class RoleController {
      * @return
      * @throws Exception
      */
-    @PostMapping("add")
+    @PostMapping
     @RequiresPermissions(value = PermissionsCode.ROLE_ADD_BTN)
-    public ResultModel<Object> add(RoleVOReq roleVOReq) throws Exception {
+    public ResultModel<Object> addRole(RoleVOReq roleVOReq) throws Exception {
         roleApi.insertRole(DozerUtil.map(roleVOReq, RoleDTO.class));
         return new ResultModel<>().success("新增成功");
     }
@@ -81,9 +80,9 @@ public class RoleController {
      * @return
      * @throws Exception
      */
-    @PutMapping("update")
+    @PutMapping
     @RequiresPermissions(value = PermissionsCode.ROLE_UPDATE_BTN)
-    public ResultModel<Object> update(RoleVOReq roleVOReq) throws Exception {
+    public ResultModel<Object> updateRole(RoleVOReq roleVOReq) throws Exception {
         roleApi.updateRole(DozerUtil.map(roleVOReq, RoleDTO.class));
         return new ResultModel<>().success("修改成功");
     }
@@ -107,7 +106,7 @@ public class RoleController {
      * @return
      * @throws Exception
      */
-    @GetMapping("getRelatedResource/{roleId}")
+    @GetMapping("/{roleId}")
     @RequiresPermissions(value = PermissionsCode.ROLE_RELATED_RESOURCE_BTN)
     public ResultModel<Object> getRelatedResource(@PathVariable("roleId") Integer roleId) throws Exception {
         return new ResultModel<>().success(roleApi.getRelatedResource(roleId));

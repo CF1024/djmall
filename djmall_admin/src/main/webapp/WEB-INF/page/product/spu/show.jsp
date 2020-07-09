@@ -46,7 +46,7 @@
                         var pro = data.data.list[i];
                         html += "<tr>";
                         html += "<td><input type='checkbox' name='ids' value='"+pro.productId +"'></td>";
-                        html += "<td>" + pro.productName +"</td>";
+                        html += "<td width='200px'>" + pro.productName +"</td>";
                         html += "<td>" + pro.productType +"</td>";
                         html += "<td>" + pro.productStatus +"</td>";
                         html += pro.freightShow == "0.00" ? "<td>"+ pro.company +"-包邮</td>" : "<td>" +pro.company +" - "+ pro.freightShow +"元</td>";
@@ -95,7 +95,7 @@
 
         //获取id
         function getIds() {
-            var ids=new Array();
+            var ids=[];
             $(":checkbox[name='ids']:checked").each(function () {
                 ids.push($(this).val());
             });
@@ -118,7 +118,7 @@
                 layer.msg("只能选择一个商品进行修改！", {icon:6});
                 return;
             }
-            window.location.href = "<%=request.getContextPath()%>/product/spu/toUpdateProduct";
+            window.location.href = "<%=request.getContextPath()%>/product/spu/toUpdateProduct/" + ids[0];
         }
 
         //上下架
@@ -137,7 +137,7 @@
                     "<%=request.getContextPath()%>/product/spu/shelf",
                     {"id":ids[0]},
                     function (data) {
-                        if(data.code != 200) {
+                        if(data.code !== 200) {
                             layer.msg(data.msg, {icon:5,time:2000});
                             return;
                         }
@@ -150,7 +150,6 @@
                 layer.close(index);
             });
         }
-
     </script>
     <body>
         <form class="layui-form" id="fm">
@@ -175,11 +174,11 @@
                 </div>
             </div>
         </form>
-        <shiro:hasPermission name="USER_UPDATE_BTN">
-            <input type="button" value="增量索引" onclick="toUpdateUser()" class="layui-btn layui-btn-radius layui-btn-primary">
+        <shiro:hasPermission name="INCREMENTAL_INDEX_BTN">
+            <input type="button" value="增量索引" onclick="toIncrementalIndex()" class="layui-btn layui-btn-radius layui-btn-primary">
         </shiro:hasPermission>
-        <shiro:hasPermission name="USER_UPDATE_BTN">
-            <input type="button" value="重构索引" onclick="toUpdateUser()" class="layui-btn layui-btn-radius layui-btn-primary"><br /><br />
+        <shiro:hasPermission name="REFACTORING_THE_INDEX_BTN">
+            <input type="button" value="重构索引" onclick="toRefactoringTheIndex()" class="layui-btn layui-btn-radius layui-btn-primary"><br /><br />
         </shiro:hasPermission>
         <shiro:hasPermission name="PRODUCT_ADD_BTN">
             <input type="button" value="新增" onclick="toAddProduct()" class="layui-btn layui-btn-radius layui-btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -190,14 +189,14 @@
         <shiro:hasPermission name="PRODUCT_SHELF_BTN">
             <input type="button" value="上架/下架" onclick="shelf()" class="layui-btn layui-btn-radius">
         </shiro:hasPermission>
-        <shiro:hasPermission name="USER_RESET_PASSWORD_BTN">
-            <input type="button" value="查看评论" onclick="resetPwd()" class="layui-btn layui-btn-radius layui-btn-normal">
+        <shiro:hasPermission name="VIEW_COMMENTS_BTN">
+            <input type="button" value="查看评论" onclick="toViewComments()" class="layui-btn layui-btn-radius layui-btn-normal">
         </shiro:hasPermission>
-        <shiro:hasPermission name="USER_DELETE_BTN">
-            <input type="button" value="下载导入模板" onclick="removeUser()" class="layui-btn layui-btn-radius layui-btn-danger">
+        <shiro:hasPermission name="DOWNLOAD_THE_IMPORT_TEMPLATE_BTN">
+            <input type="button" value="下载导入模板" onclick="toDownloadTheImportTemplate()" class="layui-btn layui-btn-radius layui-btn-danger">
         </shiro:hasPermission>
-        <shiro:hasPermission name="USER_AUTH_BTN">
-            <input type="button" value="导入" onclick="toAuthUserRole()" class="layui-btn layui-btn-radius layui-btn-warm">
+        <shiro:hasPermission name="IMPORT_BTN">
+            <input type="button" value="导入" onclick="toImport()" class="layui-btn layui-btn-radius layui-btn-warm">
         </shiro:hasPermission>
         <table border="0px" class="layui-table" >
             <colgroup>

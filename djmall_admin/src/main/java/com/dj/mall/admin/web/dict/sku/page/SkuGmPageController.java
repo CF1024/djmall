@@ -54,7 +54,7 @@ public class SkuGmPageController {
      * @return
      * @throws Exception
      */
-    @GetMapping("/{productType}")
+    @GetMapping("toRelatedAttr/{productType}")
     @RequiresPermissions(value = PermissionsCode.RELATED_ATTR_BTN)
     public String toRelatedAttr(@PathVariable("productType") String productType, ModelMap model) throws Exception {
         List<SkuGmVOResp> skuGmList = DozerUtil.mapList(skuGmApi.findSkuGmByProductType(productType), SkuGmVOResp.class);

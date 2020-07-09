@@ -93,4 +93,8 @@ public class ProductDTO implements Serializable {
      * 生成sku集合
      */
     private List<SkuDTO> productSkuList;
+    /**
+     * 删除商品照片
+     */
+    private String removeImg;
 }

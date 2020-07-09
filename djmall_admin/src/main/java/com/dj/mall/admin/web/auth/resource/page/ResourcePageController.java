@@ -20,6 +20,7 @@ import com.dj.mall.model.util.DozerUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -46,7 +47,7 @@ public class ResourcePageController {
      * 去展示
      * @return
      */
-    @RequestMapping("toShow")
+    @GetMapping("toShow")
     @RequiresPermissions(value = PermissionsCode.RESOURCE_MANAGE)
     public String toShow() {
         return "auth/resource/show";
@@ -59,7 +60,7 @@ public class ResourcePageController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("toAdd/{parentId}")
+    @GetMapping("toAdd/{parentId}")
     @RequiresPermissions(value = PermissionsCode.RESOURCE_ADD_BTN)
     public String toAdd(@PathVariable Integer parentId, Model model) throws Exception {
         model.addAttribute("parentId", parentId);
@@ -75,7 +76,7 @@ public class ResourcePageController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("toUpdate/{resourceId}")
+    @GetMapping("toUpdate/{resourceId}")
     @RequiresPermissions(value = PermissionsCode.RESOURCE_UPDATE_BTN)
     public String toUpdate(@PathVariable Integer resourceId, Model model) throws Exception {
         model.addAttribute("resource", DozerUtil.map(resourceApi.findResourceByResourceId(resourceId), ResourceVOResp.class));

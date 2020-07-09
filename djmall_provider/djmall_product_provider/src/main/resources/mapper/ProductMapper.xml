@@ -39,7 +39,7 @@
                 <bind name="productNameLike" value="'%'+product.productName+'%'"/>
                 AND ps.product_name LIKE "%"#{productNameLike}"%"
             </if>
-            <if test="product.productTypeList != null and product.productTypeList != ''">
+            <if test="product.productTypeList != null and product.productTypeList.size > 0">
                 AND ps.product_type IN
                <foreach collection="product.productTypeList" item="productType" open="(" close=")" separator=",">
                    #{productType}

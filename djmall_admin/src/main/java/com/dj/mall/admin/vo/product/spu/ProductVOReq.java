@@ -84,4 +84,8 @@ public class ProductVOReq implements Serializable {
      * 生成sku集合
      */
     private List<SkuVOReq> productSkuList;
+    /**
+     * 删除商品照片
+     */
+    private String removeImg;
 }

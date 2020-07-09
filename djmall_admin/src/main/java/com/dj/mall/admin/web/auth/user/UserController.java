@@ -101,7 +101,7 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    @PostMapping("addUser")
+    @PostMapping
     public ResultModel<Object> addUser(UserVOReq userVOReq) throws Exception {
         //非空判断
         Assert.hasText(userVOReq.getUserName(), "请输入账号");
@@ -119,7 +119,7 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    @PostMapping("show")
+    @GetMapping
     @RequiresPermissions(value = PermissionsCode.USER_MANAGE)
     public ResultModel<Object> show(UserVOReq userVOReq) throws Exception {
         PageResult pageResult = userApi.findAll(DozerUtil.map(userVOReq, UserDTO.class));
@@ -133,7 +133,7 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    @PutMapping("updateUser")
+    @PutMapping
     @RequiresPermissions(value = PermissionsCode.USER_UPDATE_BTN)
     public ResultModel<Object> updateUser(UserVOReq userVOReq) throws Exception {
         //非空判断

@@ -66,7 +66,7 @@
 
         //去关联属性值
         function toRelatedAttrValue(attrId) {
-            window.location.href = "<%=request.getContextPath()%>/dict/attr/"+attrId;
+            window.location.href = "<%=request.getContextPath()%>/dict/attr/toRelatedAttrValue/"+attrId;
         }
 
         //去新增

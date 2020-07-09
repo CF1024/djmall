@@ -51,14 +51,15 @@
     <script type="text/javascript">
         $.validator.setDefaults({
             submitHandler : function () {
-                $("#userPwd").val(md5($("#userPwd").val()));
+                var userPwd = $("#userPwd");
+                userPwd.val(md5(userPwd.val()));
                 var index = layer.load(0, {shade:0.5});
                 $.get(
                     "<%=request.getContextPath()%>/auth/user/login",
                     $("#fm").serialize(),
                     function (data) {
                         layer.close(index);
-                        if (data.code == -100) {
+                        if (data.code === '-100') {
                             layer.msg(data.msg, {icon:5,time:2000});
                             layer.open({
                                 type: 2,
@@ -71,7 +72,7 @@
                             });
                             return;
                         }
-                        if(data.code != 200){
+                        if(data.code !== 200){
                             layer.msg(data.msg, {icon:5,time:2000});
                             return;
                         }

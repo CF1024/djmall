@@ -55,13 +55,4 @@ public class IndexPageController {
     public String toRight() {
         return "index/right";
     }
-
-    /**
-     * 403页面
-     * @return
-     */
-    @RequestMapping("toDisplay")
-    public String toDisplay() {
-        return "index/403";
-    }
 }

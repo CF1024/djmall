@@ -61,6 +61,7 @@ public class ProductController {
      * @throws Exception 异常
      */
     @GetMapping
+    @RequiresPermissions(value = PermissionsCode.PRODUCT_MANAGE)
     public ResultModel<Object> show(ProductVOReq productVOReq, HttpSession session) throws Exception {
         //当前登录人是否为商人
         UserDTO userDTO = (UserDTO) session.getAttribute(AuthConstant.SESSION_USER);
@@ -101,7 +102,7 @@ public class ProductController {
      * @return ResultModel 新增成功
      * @throws Exception 异常
      */
-    @PostMapping("addProduct")
+    @PostMapping
     @RequiresPermissions(value = PermissionsCode.PRODUCT_ADD_BTN)
     public  ResultModel<Object> addProduct(ProductVOReq productVOReq, MultipartFile file, HttpSession session) throws Exception {
         Assert.notEmpty(productVOReq.getProductSkuList(), "请选择商品属性值并生成sku后再进行添加新的商品哟");
@@ -125,8 +126,30 @@ public class ProductController {
      * @throws Exception 异常
      */
     @PostMapping("shelf")
+    @RequiresPermissions(value = PermissionsCode.PRODUCT_SHELF_BTN)
     public  ResultModel<Object> shelf(Integer id) throws Exception {
         productApi.updateProductStatusById(id);
         return new  ResultModel<>().success("操作成功");
+    }
+
+    /**
+     * 根据ID修改商品
+     * @param productVOReq productVOReq
+     * @param file 图片文件流
+     * @return 修改成功
+     * @throws Exception 异常
+     */
+    @PutMapping
+    @RequiresPermissions(value = PermissionsCode.PRODUCT_UPDATE_BTN)
+    public ResultModel<Object> updateProduct(ProductVOReq productVOReq, MultipartFile file) throws Exception {
+        //判断file文件流是不是空
+        byte[] bytes = null;
+        if (!StringUtils.isEmpty(file.getOriginalFilename())) {
+            String fileName = UUID.randomUUID().toString().replace("-", "") + Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
+            productVOReq.setProductImg(fileName);
+            bytes = file.getBytes();
+        }
+        productApi.updateProductById(DozerUtil.map(productVOReq, ProductDTO.class), bytes);
+        return new  ResultModel<>().success("修改成功");
     }
 }

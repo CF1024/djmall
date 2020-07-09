@@ -220,15 +220,15 @@
         }
         //生成SKU
         function generateSku() {
-            var skuId = new Array();            //属性ID集合
-            var sku = new Array();              //属性集合
+            var skuId = [];            //属性ID集合
+            var sku = [];              //属性集合
             var $tr = $("#tbd tr");             //获取全部属性tr
             for (var i = 0; i < $tr.length; i++) {
                 var $td = $($tr[i]).find("td")[1];              //获取全部td
                 var checkedValues = $($td).find(":checked");    //已选中
                 if (checkedValues.length > 0 ) {
-                    var attrValueIds = new Array();            //属性值ID集合
-                    var attrValues = new Array();              //属性值集合
+                    var attrValueIds = [];            //属性值ID集合
+                    var attrValues = [];              //属性值集合
                     for (var j = 0; j < checkedValues.length; j++) {
                         attrValueIds.push(checkedValues[j].value.split(",")[0]);
                         attrValues.push(checkedValues[j].value.split(",")[1]);
@@ -307,7 +307,7 @@
                 var index = layer.load(0, {shade:0.5});
                 //七牛雲上传图片只能ajax提交
                 $.ajax({
-                    url:'<%= request.getContextPath() %>/product/spu/addProduct',
+                    url:'<%= request.getContextPath() %>/product/spu/',
                     dataType:'json',
                     type:'post',
                     data: formData,
@@ -315,7 +315,7 @@
                     contentType : false, // 不要设置Content-Type请求头信息
                     success: function (data) {
                         layer.close(index);
-                        if(data.code != 200){
+                        if(data.code !== 200){
                             layer.msg(data.msg, {offset: '230px', icon:5, time:5000});
                             return;
                         }
@@ -340,7 +340,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">邮费</label>
                 <div class="layui-input-inline">
-                    <select name="freightId"  style="width: 190px; height: 38px">
+                    <select name="freightId" style="width: 190px; height: 38px">
                         <c:forEach items="${freightList}" var="freight">
                             <option value="${freight.freightId}">${freight.company}-<c:if test="${freight.freight == '0.00'}">包邮</c:if><c:if test="${freight.freight != '0.00'}">${freight.freight}</c:if></option>
                         </c:forEach>

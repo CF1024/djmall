@@ -64,7 +64,7 @@ public class FreightPageController {
      * @return
      * @throws Exception
      */
-    @GetMapping("/{freightId}")
+    @GetMapping("toUpdate/{freightId}")
     @RequiresPermissions(value = PermissionsCode.FREIGHT_UPDATE_BTN)
     public String toShow(@PathVariable("freightId") Integer freightId, ModelMap model) throws Exception {
         model.put("freight", DozerUtil.map(freightApi.findFreightById(freightId), FreightDTO.class));

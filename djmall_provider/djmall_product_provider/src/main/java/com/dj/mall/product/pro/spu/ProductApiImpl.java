@@ -99,6 +99,7 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
             skuEntity.setSkuStatus(DictConstant.PRODUCT_STATUS_UP);
             skuEntity.setIsDefault(DictConstant.NOT_DEFAULT);
         });
+        //集合下标为0的sku数据的是否默认：设为默认
         skuEntityList.get(AuthConstant.ZERO).setIsDefault(DictConstant.HAVE_DEFAULT);
         skuService.saveBatch(skuEntityList);
         //七牛云上传
@@ -117,7 +118,6 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
         //根据id获取商品信息 和 商品sku的信息
         ProductEntity productEntity = this.getById(id);
         List<SkuEntity> skuEntityList = skuService.list(new QueryWrapper<SkuEntity>().eq("product_id", id));
-
         //商品修改 商品sku批量修改 上架 && 下架
         if (DictConstant.PRODUCT_STATUS_UP.equals(productEntity.getProductStatus())) {
             productEntity.setProductStatus(DictConstant.PRODUCT_STATUS_DOWN);
@@ -133,6 +133,37 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
             skuService.updateBatchById(skuEntityList);
         }
 
+
+    }
+
+    /**
+     * 根据id查商品信息
+     * @param productId 商品ID
+     * @return ProductDTO
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    @Override
+    public ProductDTO findProductById(Integer productId) throws Exception, BusinessException {
+        return DozerUtil.map(this.getById(productId), ProductDTO.class);
+    }
+
+    /**
+     * 根据id修改商品
+     * @param productDTO productDTO
+     * @param file 图片文件流
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    @Override
+    public void updateProductById(ProductDTO productDTO, byte[] file) throws Exception, BusinessException {
+        this.updateById(DozerUtil.map(productDTO, ProductEntity.class));
+        //七牛云删除之前的以及上传新的
+        if (!StringUtils.isEmpty(file)) {
+            QiniuUtils.delFile(productDTO.getRemoveImg());
+            InputStream inputStream = new ByteArrayInputStream(file);
+            QiniuUtils.uploadByInputStream(inputStream, productDTO.getProductImg());
+        }
     }
 
 }

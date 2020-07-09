@@ -36,11 +36,11 @@
             submitHandler : function() {
                 var index = layer.load(0,{shade:0.5});
                 $.post(
-                    "<%=request.getContextPath()%>/auth/role/update",
+                    "<%=request.getContextPath()%>/auth/role/",
                     $("#fm").serialize(),
                     function (data) {
                         layer.close(index);
-                        if(data.code != 200) {
+                        if(data.code !== 200) {
                             layer.msg(data.msg, {icon:5,time:2000});
                             return;
                         }
@@ -57,8 +57,8 @@
             $("#fm").validate({
                 rules:{
                     roleName:{
-                        required:true,//必输字段
-                        rangelength:[0,5],
+                        required: true,//必输字段
+                        rangelength: [0,5],
                         remote: {
                             type: 'GET',
                             url: "<%=request.getContextPath()%>/auth/role/deDuplicate",

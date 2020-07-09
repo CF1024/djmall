@@ -44,7 +44,7 @@ public class AttrValueController {
      */
     @GetMapping
     @RequiresPermissions(value = PermissionsCode.RELATED_ATTR_VALUE_BTN)
-    public ResultModel show(AttrValueVOReq attrValueVOReq) throws Exception {
+    public ResultModel<Object> show(AttrValueVOReq attrValueVOReq) throws Exception {
         PageResult pageResult = attrValueApi.findAll(DozerUtil.map(attrValueVOReq, AttrValueDTO.class));
         pageResult.toBuilder().list(DozerUtil.mapList(pageResult.getList(), AttrValueVOResp.class)).build();
         return new ResultModel<>().success(pageResult);
@@ -69,7 +69,7 @@ public class AttrValueController {
      */
     @PostMapping
     @RequiresPermissions(value = PermissionsCode.ATTR_VALUE_ADD_BTN)
-    public ResultModel addAttrValue(AttrValueVOReq attrValueVOReq) throws Exception {
+    public ResultModel<Object> addAttrValue(AttrValueVOReq attrValueVOReq) throws Exception {
         attrValueApi.addAttrValue(DozerUtil.map(attrValueVOReq, AttrValueDTO.class));
         return new ResultModel<>().success("新增成功");
     }
@@ -82,7 +82,7 @@ public class AttrValueController {
      */
     @PostMapping("deleteAttrValue")
     @RequiresPermissions(value = PermissionsCode.ATTR_VALUE_DELETE_BTN)
-    public ResultModel deleteAttrValue(Integer attrValueId) throws Exception {
+    public ResultModel<Object> deleteAttrValue(Integer attrValueId) throws Exception {
         attrValueApi.deleteAttrValue(attrValueId);
         return new ResultModel<>().success("删除成功");
     }

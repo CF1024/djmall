@@ -43,10 +43,10 @@
         });
         function getRelatedResource(){
             var index = layer.load(0, {shade:0.5});
-            $.get("<%=request.getContextPath()%>/auth/role/getRelatedResource/"+${roleId},
+            $.get("<%=request.getContextPath()%>/auth/role/"+${roleId},
                 function (data){
                     layer.close(index);
-                    if (data.code == 200) {
+                    if (data.code === 200) {
                         $.fn.zTree.init($("#resourceTree"), setting, data.data);
                     }
                 })
@@ -65,7 +65,7 @@
                 {"roleId" : ${roleId}, "resourceIdList" : resourceIdList},
                 function (data) {
                     layer.close(index);
-                    if(data.code != 200) {
+                    if(data.code !== 200) {
                         layer.msg(data.msg, {icon:5,time:2000});
                         return;
                     }

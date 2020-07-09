@@ -36,11 +36,11 @@
             submitHandler : function() {
                 var index = layer.load(0,{shade:0.5});
                 $.post(
-                    "<%=request.getContextPath()%>/auth/role/add",
+                    "<%=request.getContextPath()%>/auth/role/",
                     $("#fm").serialize(),
                     function (data) {
                         layer.close(index);
-                        if(data.code != 200) {
+                        if(data.code !== 200) {
                             layer.msg(data.msg, {icon:5,time:2000});
                             return;
                         }

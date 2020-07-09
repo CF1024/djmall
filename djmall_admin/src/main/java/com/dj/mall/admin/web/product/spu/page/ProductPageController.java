@@ -13,18 +13,26 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.dj.mall.admin.vo.dict.freight.FreightVOResp;
 import com.dj.mall.admin.vo.dict.sku.SkuGmVOReq;
 import com.dj.mall.admin.vo.dict.sku.SkuGmVOResp;
+import com.dj.mall.admin.vo.product.sku.SkuVOResp;
+import com.dj.mall.admin.vo.product.spu.ProductVOResp;
 import com.dj.mall.dict.api.freight.FreightApi;
 import com.dj.mall.dict.api.sku.SkuGmApi;
 import com.dj.mall.dict.dto.sku.SkuGmDTO;
 import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.contant.PermissionsCode;
 import com.dj.mall.model.util.DozerUtil;
+import com.dj.mall.product.api.sku.SkuApi;
 import com.dj.mall.product.api.spu.ProductApi;
+import com.dj.mall.product.dto.sku.SkuDTO;
+import com.dj.mall.product.dto.spu.ProductDTO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 /**
  * @author chengf
@@ -49,15 +57,22 @@ public class ProductPageController {
      */
     @Reference
     private SkuGmApi skuGmApi;
+    /**
+     * sku的api
+     */
+    @Reference
+    private SkuApi skuApi;
 
     /**
      * 商品展示
-     * @return
+     * @param model ModelMap
+     * @return show展示页面
+     * @throws Exception 异常
      */
     @GetMapping("toShow")
     @RequiresPermissions(value = PermissionsCode.PRODUCT_MANAGE)
     public String toShow(ModelMap model) throws Exception {
-        //商品类型
+        //商品类型集合
         PageResult pageResult = skuGmApi.findAll(DozerUtil.map(SkuGmVOReq.class, SkuGmDTO.class));
         model.put("productTypeList", DozerUtil.mapList(pageResult.getList(), SkuGmVOResp.class));
         return "product/spu/show";
@@ -65,18 +80,34 @@ public class ProductPageController {
 
     /**
      * 新增商品
-     * @param model
-     * @return
-     * @throws Exception
+     * @param model ModelMap
+     * @return add新增页面
+     * @throws Exception 异常
      */
     @GetMapping("toAddProduct")
     @RequiresPermissions(value = PermissionsCode.PRODUCT_ADD_BTN)
     public String toAddProduct(ModelMap model) throws Exception {
-        //运费
+        //运费集合
         model.put("freightList", DozerUtil.mapList(freightApi.findAll(), FreightVOResp.class));
-        //商品类型
+        //商品类型集合
         PageResult pageResult = skuGmApi.findAll(DozerUtil.map(SkuGmVOReq.class, SkuGmDTO.class));
         model.put("productTypeList", DozerUtil.mapList(pageResult.getList(), SkuGmVOResp.class));
         return "product/spu/add";
+    }
+
+    /**
+     * 根据商品ID查找商品数据
+     * @param productId 商品ID
+     * @param model ModelMap
+     * @return update修改页面
+     * @throws Exception 异常
+     */
+    @GetMapping("toUpdateProduct/{productId}")
+    @RequiresPermissions(value = PermissionsCode.PRODUCT_UPDATE_BTN)
+    public String toUpdateProduct(@PathVariable("productId") Integer productId, ModelMap model) throws Exception {
+        //根据商品ID获取 商品信息 商品sku集合信息
+        model.put("product", DozerUtil.map(productApi.findProductById(productId), ProductVOResp.class));
+        model.put("freightList", DozerUtil.mapList(freightApi.findAll(), FreightVOResp.class));
+        return "product/spu/update";
     }
 }

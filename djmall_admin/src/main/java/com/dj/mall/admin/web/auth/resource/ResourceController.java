@@ -36,7 +36,7 @@ public class ResourceController {
      * @return
      * @throws Exception
      */
-    @PostMapping("show")
+    @GetMapping
     @RequiresPermissions(value = PermissionsCode.RESOURCE_MANAGE)
     public ResultModel<Object> show() throws Exception {
         return new ResultModel<>().success(DozerUtil.mapList(resourceApi.findAll(), ResourceVOResp.class));
@@ -59,9 +59,9 @@ public class ResourceController {
      * @return
      * @throws Exception
      */
-    @PostMapping("add")
+    @PostMapping
     @RequiresPermissions(value = PermissionsCode.RESOURCE_ADD_BTN)
-    public ResultModel<Object> add(ResourceVOReq resourceVOReq) throws Exception {
+    public ResultModel<Object> addResource(ResourceVOReq resourceVOReq) throws Exception {
         resourceApi.insertResource(DozerUtil.map(resourceVOReq, ResourceDTO.class));
         return new ResultModel<>().success("新增资源成功");
     }
@@ -72,9 +72,9 @@ public class ResourceController {
      * @return
      * @throws Exception
      */
-    @PutMapping("update")
+    @PutMapping
     @RequiresPermissions(value = PermissionsCode.RESOURCE_UPDATE_BTN)
-    public ResultModel<Object> update(ResourceVOReq resourceVOReq) throws Exception {
+    public ResultModel<Object> updateResource(ResourceVOReq resourceVOReq) throws Exception {
         resourceApi.updateResource(DozerUtil.map(resourceVOReq, ResourceDTO.class));
         return new ResultModel<>().success("修改资源成功");
     }

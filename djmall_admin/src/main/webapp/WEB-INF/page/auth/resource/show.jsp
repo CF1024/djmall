@@ -51,14 +51,14 @@
         });
         function show(){
             var index = layer.load(0, {shade:0.5});
-            $.post("<%=request.getContextPath()%>/auth/resource/show",
+            $.get("<%=request.getContextPath()%>/auth/resource/",
                 function (data){
                     layer.close(index);
                     $.fn.zTree.init($("#resourceTree"), setting, data.data);
                 })
         }
 
-        //新增
+        //去新增
         function toAdd() {
             var zTree = $.fn.zTree.getZTreeObj("resourceTree"),
                 nodes = zTree.getSelectedNodes(),
@@ -73,7 +73,6 @@
                 area: ['500px', '62%'],
                 content: '<%=request.getContextPath()%>/auth/resource/toAdd/'+parentId
             });
-
         }
 
         //去修改

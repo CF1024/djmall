@@ -31,12 +31,12 @@
 
         function show() {
             var index = layer.load(0, {shade:0.5});
-            $.post(
-                "<%=request.getContextPath()%>/auth/role/show",
+            $.get(
+                "<%=request.getContextPath()%>/auth/role/",
                 $("#fm").serialize(),
                 function (data) {
                     layer.close(index);
-                    if (data.code != 200) {
+                    if (data.code !== 200) {
                         layer.alert(data.msg);
                         return;
                     }
@@ -112,7 +112,7 @@
                     "<%=request.getContextPath()%>/auth/role/remove",
                     {"roleId":roleId},
                     function (data) {
-                        if(data.code != 200) {
+                        if(data.code !== 200) {
                             layer.msg(data.msg, {icon:5,time:2000});
                             return;
                         }
@@ -130,7 +130,7 @@
         function toAdd() {
             layer.open({
                 type: 2,
-                title: '修改',
+                title: '新增',
                 shadeClose: true,
                 maxmin: true, //开启最大化最小化按钮
                 shade: 0.8,
