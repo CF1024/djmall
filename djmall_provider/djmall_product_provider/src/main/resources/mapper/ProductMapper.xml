@@ -48,4 +48,56 @@
         </where>
         GROUP BY ps.id DESC
     </select>
+
+    <select id="findList" resultType="com.dj.mall.product.bo.spu.ProductBO">
+        SELECT
+            ps.id AS productId,
+            ps.product_name,
+            ps.product_describe,
+            ps.product_img,
+            ps.product_type,
+            ps.product_status,
+            ps.praise_number,
+            pf.freight AS freightShow,
+            bd.base_name AS company,
+            psk.sku_count AS skuCountShow,
+            psk.sku_price AS skuPriceShow,
+            psk.sku_rate AS skuRateShow
+        FROM
+            djmall_product_spu ps
+        LEFT JOIN djmall_dict_product_freight pf ON ps.freight_id = pf.id
+        LEFT JOIN djmall_dict_base_data bd ON pf.company = bd.base_code
+        LEFT JOIN (
+            SELECT
+                psk.product_id,
+                psk.sku_price,
+                psk.sku_count,
+                psk.sku_rate,
+                psk.is_default
+            FROM
+                djmall_product_sku psk
+            WHERE
+                psk.is_default = #{product.isDefault}
+        ) AS psk ON psk.product_id = ps.id
+        <where>
+            ps.product_status = #{product.productStatus}
+            <if test="product.productName != null and product.productName != ''">
+                <bind name="productNameLike" value="'%'+product.productName+'%'"/>
+                AND ps.product_name LIKE "%"#{productNameLike}"%"
+            </if>
+            <if test="product.skuPriceMin != null and product.skuPriceMin != ''">
+                AND psk.sku_price &gt; #{product.skuPriceMin}
+            </if>
+            <if test="product.skuPriceMax != null and product.skuPriceMax != ''">
+                AND psk.sku_price &lt; #{product.skuPriceMax}
+            </if>
+            <if test="product.productTypeList != null and product.productTypeList.size > 0">
+                AND ps.product_type IN
+                <foreach collection="product.productTypeList" item="productType" open="(" close=")" separator=",">
+                    #{productType}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY ps.id DESC
+    </select>
 </mapper>

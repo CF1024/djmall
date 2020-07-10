@@ -33,4 +33,13 @@ public interface ProductMapper extends BaseMapper<ProductEntity> {
      * @throws DataAccessException 数据访问异常
      */
     IPage<ProductBO> findAll(@Param("page") Page<?> page, @Param("product") ProductBO productBO) throws DataAccessException;
+
+    /**
+     * 商城展示
+     * @param page 分页
+     * @param productBO 商品bo
+     * @return  IPage<ProductBO>
+     * @throws DataAccessException 数据访问异常
+     */
+    IPage<ProductBO> findList(@Param("page") Page<?> page, @Param("product") ProductBO productBO) throws DataAccessException;
 }

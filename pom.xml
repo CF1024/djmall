@@ -17,6 +17,7 @@
         <module>djmall_api</module>
         <module>djmall_provider</module>
         <module>djmall_admin</module>
+        <module>djmall_platform</module>
     </modules>
     <!-- 控制springboot版本 -->
     <parent>
@@ -48,6 +49,13 @@
 
     <!-- 项目的依赖信息 -->
     <dependencies>
+
+        <!--netty-all -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.42.Final</version>
+        </dependency>
 
         <!-- 阿里的fastJson -->
         <dependency>

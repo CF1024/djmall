@@ -78,23 +78,49 @@ public class ProductDTO implements Serializable {
      */
     private Integer pageSize = 5;
     /**
-     * 商品类型集合
+     * 商品类型集合 展示商品 复选框查询
      */
     private List<String> productTypeList;
     /**
-     * 公司
+     * 公司 展示商品
      */
     private String company;
     /**
-     * 运费
+     * 运费 展示商品
      */
     private String freightShow;
     /**
-     * 生成sku集合
+     * 生成sku集合 新增商品
      */
     private List<SkuDTO> productSkuList;
     /**
-     * 删除商品照片
+     * 删除商品照片 修改商品
      */
     private String removeImg;
+
+    /*=========================商城========================*/
+    /**
+     * 最低价格 展示 价格查询
+     */
+    private String skuPriceMin;
+    /**
+     * 最高价格 展示 价格查询
+     */
+    private String skuPriceMax;
+    /**
+     * 是否默认：是 展示条件
+     */
+    private String isDefault;
+    /**
+     * 库存 展示
+     */
+    private String skuCountShow;
+    /**
+     * 价格 展示
+     */
+    private String skuPriceShow;
+    /**
+     *  折扣 展示
+     */
+    private String skuRateShow;
 }

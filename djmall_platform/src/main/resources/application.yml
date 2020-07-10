@@ -1,0 +1,27 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    jsp:
+      init-parameters:
+        development: true
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/page/
+      suffix: .jsp
+    static-path-pattern: /static/**
+    hiddenmethod: #支持RestFul PUT DELETE
+      filter:
+        enabled: true
+    date-format: yyyy-MM-dd HH:mm:ss #前台传给后天时间转换
+# Dubbo
+dubbo:
+  application:
+    name: djmall_platfotm # 应用名
+    qos-enable: false # 关闭在线调试
+  registry:
+    address: zookeeper://localhost:2181 # 注册中心地址
+  consumer:
+    check: false
+    timeout: 60000

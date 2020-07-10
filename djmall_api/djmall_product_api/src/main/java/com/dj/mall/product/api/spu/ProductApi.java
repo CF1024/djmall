@@ -71,4 +71,15 @@ public interface ProductApi {
      * @throws BusinessException 业务处理异常
      */
     void updateProductById(ProductDTO productDTO, byte[] file) throws Exception, BusinessException;
+
+    /*=========================商城========================*/
+
+    /**
+     * 商城展示
+     * @param productDTO  productDTO
+     * @return PageResult
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    PageResult findList(ProductDTO productDTO) throws Exception, BusinessException;
 }

@@ -79,4 +79,30 @@ public class ProductBO implements Serializable {
      * 运费
      */
     private String freightShow;
+
+    /*=========================商城========================*/
+    /**
+     * 最低价格 展示 价格查询
+     */
+    private String skuPriceMin;
+    /**
+     * 最高价格 展示 价格查询
+     */
+    private String skuPriceMax;
+    /**
+     * 是否默认：是 展示条件
+     */
+    private String isDefault;
+    /**
+     * 库存 展示
+     */
+    private String skuCountShow;
+    /**
+     * 价格 展示
+     */
+    private String skuPriceShow;
+    /**
+     *  折扣 展示
+     */
+    private String skuRateShow;
 }

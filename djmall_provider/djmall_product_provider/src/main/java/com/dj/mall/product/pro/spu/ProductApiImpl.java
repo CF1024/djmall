@@ -166,4 +166,22 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
         }
     }
 
+    /*==============================================商城==================================================*/
+
+    /**
+     * 商城展示
+     * @param productDTO  productDTO
+     * @return PageResult
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    @Override
+    public PageResult findList(ProductDTO productDTO) throws Exception, BusinessException {
+        //展示 默认状态：默认 上下架 ： 上架
+        productDTO.setIsDefault(DictConstant.HAVE_DEFAULT);
+        productDTO.setProductStatus(DictConstant.PRODUCT_STATUS_UP);
+        IPage<ProductBO> iPage = getBaseMapper().findList(new Page<ProductEntity>(productDTO.getPageNo(), productDTO.getPageSize()), DozerUtil.map(productDTO, ProductBO.class));
+        return new PageResult().toBuilder().pages(iPage.getPages()).list(DozerUtil.mapList(iPage.getRecords(), ProductDTO.class)).build();
+    }
+
 }
