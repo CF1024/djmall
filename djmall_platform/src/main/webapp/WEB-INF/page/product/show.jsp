@@ -18,14 +18,25 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
     <head>
-        <title>Title</title>
+        <title>点金商城</title>
         <link rel="stylesheet" href="<%=request.getContextPath()%>/static/layui/css/layui.css" media="all">
         <script type="text/javascript" src="<%=request.getContextPath()%>/static/js/jquery-1.12.4.min.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/static/layer/layer.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/static/layui/layui.js"></script>
+        <script type="text/javascript" src="<%=request.getContextPath()%>/static/layui/layui.js"></script>
+        <script type="text/javascript" src="<%=request.getContextPath()%>/static\js\cookie.js"></script>
+        <script type="text/javascript" src="<%=request.getContextPath()%>/static\js\token.js"></script>
     </head>
+    <style type="text/css">
+        .linkStyle:hover {
+            color: #FFF !important;
+            background-color: #fb7000 !important;
+            border: 1px solid #ffffff !important;
+            text-decoration:none !important;
+        }
+    </style>
     <script type="text/javascript">
-      $(function () {
+        $(function () {
             show();
         });
 
@@ -44,12 +55,12 @@
                     for (var i = 0; i < data.data.list.length; i++) {
                         var pro = data.data.list[i];
                         html += "<tr>";
-                        html += "<td width='200px'>" + pro.productName +"</td>";
+                        html += "<td width='200px'><a  href='<%=request.getContextPath()%>/product/toProductDetails?id="+pro.productId+"' target='_blank' class='linkStyle' style='color: dodgerblue'>" + pro.productName +"</a></td>";
                         html += "<td>" + pro.skuPriceShow +"</td>";
                         html += "<td>" + pro.skuCountShow +"</td>";
                         html += "<td>" + pro.productType +"</td>";
                         html += pro.skuRateShow === "0" ? "<td>无折扣</td>" : "<td>"+ pro.skuRateShow +"%</td>";
-                        html += pro.freightShow === "0.00" ? "<td>"+ pro.company +"-包邮</td>" : "<td>" +pro.company +" - "+ pro.freightShow +"元</td>";
+                        html += pro.freightShow === 0.00? "<td>"+ pro.company +"-包邮</td>" : "<td>" +pro.company +" - "+ pro.freightShow +"元</td>";
                         html += "<td><img src='http://qcxz8bvc2.bkt.clouddn.com/"+pro.productImg+"' style='width: 70px; height: 70px'></td>";
                         html += "<td>" + pro.productDescribe +"</td>";
                         html += pro.praiseNumber == null ? "<td>暂无点赞量</td>" : "<td>" + pro.praiseNumber +"</td>";
@@ -84,29 +95,92 @@
             show();
         }
         //声明from模块，否则select、checkbox、radio等将无法显示，并且无法使用form相关功能
-        layui.use('form', function () {
+        layui.use(['form', 'element'], function () {
             var form = layui.form;
+            var element = layui.element;
             form.render();//重点在这里
             form.on('checkbox(productType)', function(){
                 fuzzySearch();
             });
         });
 
-        //去新增商品
-        function toAddProduct() {
-            window.location.href = "<%=request.getContextPath()%>/product/spu/toAddProduct";
+        //是否登录
+        $(function () {
+            $("#hiddenLogout").hide();
+          // 是否登录
+          if (check_login()) {
+              var nickName = cookie.get("NICK_NAME");
+              $("#login").html(nickName);
+              $("#login").attr("href", "<%=request.getContextPath()%>/user/toIndex?TOKEN=" + getToken());
+              $("#hiddenRegister").hide();
+              $("#hiddenLogout").show();
+          } else {
+              $("#login").html("<i class='layui-icon layui-icon-username' style='font-size: 30px'></i>点我登录");
+              $("#login").attr("href", "javascript:toLogin()");
+          }
+        })
+
+        // 去登陆
+        function toLogin() {
+          //iframe层
+          layer.open({
+              type: 2,
+              title: '登录',
+              shadeClose: true,
+              maxmin: true, //开启最大化最小化按钮
+              shade: 0.8,
+              area: ['460px', '60%'],
+              content: "<%=request.getContextPath()%>/user/toLogin"
+          });
+        }
+
+        //退出登录
+        function signOut() {
+            var index = layer.load(0,{shade:0.5});
+            token_post(
+                "<%=request.getContextPath()%>/user/toLogout",
+                {"token": getToken()},
+                function (data) {
+                    layer.close(index);
+                    if(data.code !== 200){
+                        layer.msg(data.msg, {icon:5,time:2000});
+                        return;
+                    }
+                    layer.msg(data.msg, {icon: 6, time: 2000},
+                        function(){
+                            cookie.delete("TOKEN");
+                            cookie.delete("NICK_NAME");
+                            $("#hiddenLogout").hide();
+                            parent.window.location.reload();
+                        });
+            })
         }
 
     </script>
-    <body class="layui-layout-body" style="overflow: hidden">
+    <body>
         <div class="layui-layout layui-layout-admin">
             <div class="layui-header">
                 <div class="layui-logo" style="color: coral">点金商城</div>
-                <ul class="layui-nav layui-layout-left">
-                    <li class="layui-nav-item"><a href="<%=request.getContextPath()%>/auth/user/logout" style="color: aqua">退出登录</a></li>
-                </ul>
+                <div id="hiddenLogout">
+                    <ul class="layui-nav layui-layout-left">
+                        <li class="layui-nav-item" >
+                            <a href="javascript:signOut()" style="color: springgreen"><i class="layui-icon layui-icon-logout" style="font-size: 30px"></i>退出登录</a>
+                        </li>
+                    </ul>
+                </div>
                 <ul class="layui-nav layui-layout-right">
-                    <li class="layui-nav-item">欢迎登录</li>
+                    <li class="layui-nav-item">
+                        <a href="<%=request.getContextPath()%>/product/toShow"  style="color: aqua"><i class="layui-icon layui-icon-home" style="font-size: 30px"></i>首页</a>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:toLogin()" id="login" style="color: violet"><i class="layui-icon layui-icon-username" style="font-size: 30px"></i>点我登录</a>
+                    </li>
+                    <li class="layui-nav-item" id="hiddenRegister">
+                        <a href="<%=request.getContextPath()%>/user/toRegister" target="_blank" style="color: tomato"><i class="layui-icon layui-icon-user" style="font-size: 30px"></i>注册</a>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="" style="color: dodgerblue"><i class="layui-icon layui-icon-cart" style="font-size: 30px"></i>我的购物车</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -127,7 +201,7 @@
                     <div class="layui-input-inline" style="width: 100px;">
                         <input type="text" name="skuPriceMin" placeholder="￥" autocomplete="off" class="layui-input">
                     </div>
-                    <div class="layui-form-mid">-</div>
+                    <div class="layui-form-mid">~</div>
                     <div class="layui-input-inline" style="width: 100px;">
                         <input type="text" name="skuPriceMax" placeholder="￥" autocomplete="off" class="layui-input">
                     </div>
@@ -143,6 +217,7 @@
                 </div>
             </div>
         </form>
+
         <table border="0px" class="layui-table" >
             <colgroup>
                 <col width="100">

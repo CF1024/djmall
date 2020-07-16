@@ -18,20 +18,24 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dj.mall.auth.api.user.MailBoxApi;
 import com.dj.mall.auth.api.user.UserApi;
 import com.dj.mall.auth.bo.user.UserBO;
-import com.dj.mall.auth.dto.resource.ResourceDTO;
-import com.dj.mall.auth.dto.role.RoleResourceDTO;
+import com.dj.mall.auth.dto.cart.ShoppingCartDTO;
 import com.dj.mall.auth.dto.user.UserDTO;
-import com.dj.mall.auth.entity.resource.Resource;
+import com.dj.mall.auth.dto.user.UserTokenDTO;
+import com.dj.mall.auth.entity.cart.ShoppingCartEntity;
 import com.dj.mall.auth.entity.user.User;
 import com.dj.mall.auth.entity.user.LastLoginTime;
 import com.dj.mall.auth.entity.user.UserRole;
 import com.dj.mall.auth.mapper.user.UserMapper;
+import com.dj.mall.auth.service.cart.ShoppingCartService;
 import com.dj.mall.auth.service.user.LastLoginTimeService;
 import com.dj.mall.auth.service.user.UserRoleService;
+import com.dj.mall.cmpt.RedisApi;
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.contant.DictConstant;
+import com.dj.mall.model.contant.ProductConstant;
+import com.dj.mall.model.contant.RedisConstant;
 import com.dj.mall.model.util.DozerUtil;
 import com.dj.mall.model.util.LocalDateTimeUtils;
 import com.dj.mall.model.util.MessageVerifyUtils;
@@ -44,7 +48,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.UUID;
 
 /**
  * @author chengf
@@ -55,20 +59,32 @@ import java.util.Random;
 @Transactional(rollbackFor = Exception.class)
 public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserApi {
     /**
-     * 用户角色service
+     * 用户角色service 不暴露服务
      */
     @Autowired
     private UserRoleService userRoleService;
     /**
-     * 时报service
+     * 时报service 不暴露服务
      */
     @Autowired
     private LastLoginTimeService lastLoginTimeService;
+    /**
+     * 购物车Service 不暴露服务
+     */
+    @Autowired
+    private ShoppingCartService shoppingCartService;
+
     /**
      * 邮箱api
      */
     @Reference
     private MailBoxApi mailBoxApi;
+    /**
+     * redisApi
+     */
+    @Reference
+    private RedisApi redisApi;
+
     /**
      * 用户登录
      * @param userName
@@ -141,16 +157,22 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
      */
     @Override
     public void addUser(UserDTO userDTO) throws Exception, BusinessException {
+        //角色：普通用户
+        if (StringUtils.isEmpty(userDTO.getUserRole())) {
+            userDTO.setUserRole(AuthConstant.GENERAL_USER);
+        }
         //新增 激活状态：已激活 创建时间 ：当前时间 状态：未删除
-        User user = DozerUtil.map(userDTO, User.class).toBuilder()
-                .userStatus(DictConstant.HAVE_ACTIVATE)
-                .createTime(LocalDateTime.now())
-                .isDel(DictConstant.NOT_DEL).build();
+        User user = DozerUtil.map(userDTO, User.class).toBuilder().userStatus(DictConstant.HAVE_ACTIVATE).createTime(LocalDateTime.now()).isDel(DictConstant.NOT_DEL).build();
+        //昵称:DJ+随机6位数
+        if (StringUtils.isEmpty(userDTO.getNickName())) {
+            user.setNickName("DJ" + MessageVerifyUtils.getNewCode());
+        }
         //如果是商家 激活状态：未激活
         if (AuthConstant.BUSINESS.equals(userDTO.getUserRole())) {
             user.setUserStatus(DictConstant.NOT_ACTIVATE);
         }
         getBaseMapper().insert(user);
+
         //如果激活状态为：未激活 并且是商家 则发送邮件
         if (DictConstant.NOT_ACTIVATE.equals(user.getUserStatus()) && AuthConstant.BUSINESS.equals(userDTO.getUserRole())) {
             //邮箱验证
@@ -377,5 +399,78 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         mailBoxApi.sendMail(user.getUserEmail(), AuthConstant.FORGET_PWD, sendMail);
     }
 
+    /**
+     * 普通用户登录
+     * @param userName 用户名
+     * @param userPwd 密码
+     * @return  UserDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public UserTokenDTO findUserTokenByNameAndPwd(String userName, String userPwd) throws Exception, BusinessException {
+        //账号 手机号 邮箱登录
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.nested(i ->i.eq("user_name", userName)
+                .or().eq("user_phone", userName)
+                .or().eq("user_email", userName));
+        User user = this.getOne(queryWrapper);
+        //有效性校验
+        if (StringUtils.isEmpty(user)) {
+            throw new BusinessException("该用户不存在");
+        }
+        if (!PasswordSecurityUtil.checkPassword(userPwd, user.getUserPwd(), user.getSalt())) {
+            throw new BusinessException("用户名或密码错误");
+        }
+        UserDTO userDTO = DozerUtil.map(user, UserDTO.class);
+        //查询用户已关联角色 角色的判断：是否为普通用户
+        UserRole userRole = userRoleService.getOne(new QueryWrapper<UserRole>().eq("user_id", userDTO.getUserId()));
+        if (!AuthConstant.GENERAL_USER.equals(userRole.getRoleId())) {
+            throw new BusinessException("角色不匹配");
+        }
+        //生成token uuID唯一标识 存redis 22天失效
+        String token = UUID.randomUUID().toString().replace("-", "");
+        redisApi.set(RedisConstant.USER_TOKEN + token, userDTO, 22 * 24 * 60 * 60);
+        //将需要的token信息存入UserTokenDTO中
+        UserTokenDTO userTokenDTO = new UserTokenDTO().toBuilder().userName(userName).nickName(userDTO.getNickName()).token(token).build();
+        //最后登录时间
+        lastLoginTimeService.save(new LastLoginTime().toBuilder().userId(userDTO.getUserId()).lastLoginTime(LocalDateTime.now()).build());
+        return userTokenDTO;
+    }
 
+    /**
+     * 退出登录
+     * @param token token
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public void toLogout(String token) throws Exception, BusinessException {
+        redisApi.del(RedisConstant.USER_TOKEN + token);
+    }
+
+    /**
+     * 添加购物车
+     * @param shoppingCartDTO shoppingCartDTO
+     * @param TOKEN 令牌密钥 用户唯一标识
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public void addToShoppingCart(ShoppingCartDTO shoppingCartDTO, String TOKEN) throws Exception, BusinessException {
+        //得到当前登录用户 默认未选中
+        UserDTO userDTO = redisApi.get(RedisConstant.USER_TOKEN + TOKEN);
+        //查到购物车所有数据 判断购物车所有数据是否有跟skuId和用户id相同的数据 直接修改购买数量 如果购买数量大于200 直接返回购买最大额
+        List<ShoppingCartEntity> shoppingCartEntityList = shoppingCartService.list();
+        for (ShoppingCartEntity shoppingCartEntity : shoppingCartEntityList) {
+            if (shoppingCartEntity.getSkuId().equals(shoppingCartDTO.getSkuId()) && shoppingCartEntity.getUserId().equals(userDTO.getUserId())) {
+                shoppingCartEntity.setQuantity(Math.min(shoppingCartEntity.getQuantity() + shoppingCartDTO.getQuantity(), ProductConstant.MAX_QUANTITY));
+                shoppingCartService.updateById(shoppingCartEntity);
+                return;
+            }
+        }
+        shoppingCartDTO.setUserId(userDTO.getUserId());
+        shoppingCartDTO.setChecked(ProductConstant.NOT_CHECKED);
+        shoppingCartService.save(DozerUtil.map(shoppingCartDTO, ShoppingCartEntity.class));
+    }
 }

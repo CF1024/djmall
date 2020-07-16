@@ -11,6 +11,7 @@ package com.dj.mall.product.api.spu;
 
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
+import com.dj.mall.product.dto.sku.SkuDTO;
 import com.dj.mall.product.dto.spu.ProductDTO;
 
 /**
@@ -82,4 +83,5 @@ public interface ProductApi {
      * @throws BusinessException 业务处理异常
      */
     PageResult findList(ProductDTO productDTO) throws Exception, BusinessException;
+
 }

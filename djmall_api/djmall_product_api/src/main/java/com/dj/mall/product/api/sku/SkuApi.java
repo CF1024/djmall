@@ -63,4 +63,13 @@ public interface SkuApi {
      * @throws BusinessException 业务处理异常
      */
     void updateStatusById(Integer skuId) throws Exception, BusinessException;
+
+    /**
+     * 根据商品skuId查找sku数据
+     * @param skuId 商品skuId
+     * @return SkuDTO
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    SkuDTO getSkuBySkuId(Integer skuId) throws Exception, BusinessException;
 }

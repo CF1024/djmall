@@ -31,6 +31,10 @@ public interface AuthConstant {
      */
     Integer BUSINESS = 2;
     /**
+     * 普通用户
+     */
+    Integer GENERAL_USER = 3;
+    /**
      * 验证邮箱激活
      */
     String ACTIVATE = "验证邮箱激活";

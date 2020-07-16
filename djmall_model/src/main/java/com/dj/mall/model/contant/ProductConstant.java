@@ -18,4 +18,12 @@ public interface ProductConstant {
      * session里的登录人的key
      */
     String SESSION_USER = "USER";
+    /**
+     * 商品未选中
+     */
+    Integer NOT_CHECKED = 1;
+    /**
+     * 最大购买量 200
+     */
+    Integer MAX_QUANTITY = 200;
 }

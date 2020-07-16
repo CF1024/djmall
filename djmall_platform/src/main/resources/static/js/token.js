@@ -45,7 +45,7 @@ function getToken() {
 function toLogin() {
     layer.open({
         type:2,
-        content : "/toLogin",
+        content : "/user/toLogin",
         title : '登录',
         shade : 0.6
     });

@@ -9,9 +9,11 @@
 
 package com.dj.mall.auth.api.user;
 
+import com.dj.mall.auth.dto.cart.ShoppingCartDTO;
 import com.dj.mall.auth.dto.resource.ResourceDTO;
 import com.dj.mall.auth.dto.role.RoleResourceDTO;
 import com.dj.mall.auth.dto.user.UserDTO;
+import com.dj.mall.auth.dto.user.UserTokenDTO;
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
 
@@ -144,4 +146,30 @@ public interface UserApi {
      */
     void updatePwdByPhone(UserDTO userDTO) throws Exception, BusinessException;
 
+    /**
+     * 普通用户登录
+     * @param userName 用户名
+     * @param userPwd 密码
+     * @return  UserTokenDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    UserTokenDTO findUserTokenByNameAndPwd(String userName, String userPwd) throws Exception, BusinessException;
+
+    /**
+     * 退出登录
+     * @param token token
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    void toLogout(String token) throws Exception, BusinessException;
+
+    /**
+     * 添加购物车
+     * @param shoppingCartDTO shoppingCartDTO
+     * @param TOKEN 令牌密钥 用户唯一标识
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    void addToShoppingCart(ShoppingCartDTO shoppingCartDTO, String TOKEN) throws Exception, BusinessException;
 }

@@ -108,4 +108,15 @@ public class SkuApiImpl extends ServiceImpl<SkuMapper, SkuEntity> implements Sku
             this.updateById(skuEntity);
         }
     }
+
+    /**
+     * 根据商品skuId查找sku数据
+     * @param skuId 商品skuId
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    @Override
+    public SkuDTO getSkuBySkuId(Integer skuId) throws Exception, BusinessException {
+        return DozerUtil.map(this.getById(skuId), SkuDTO.class);
+    }
 }

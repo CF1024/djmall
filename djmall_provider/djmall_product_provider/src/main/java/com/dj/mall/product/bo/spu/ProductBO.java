@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -78,17 +79,17 @@ public class ProductBO implements Serializable {
     /**
      * 运费
      */
-    private String freightShow;
+    private BigDecimal freightShow;
 
     /*=========================商城========================*/
     /**
      * 最低价格 展示 价格查询
      */
-    private String skuPriceMin;
+    private BigDecimal skuPriceMin;
     /**
      * 最高价格 展示 价格查询
      */
-    private String skuPriceMax;
+    private BigDecimal skuPriceMax;
     /**
      * 是否默认：是 展示条件
      */
@@ -96,11 +97,11 @@ public class ProductBO implements Serializable {
     /**
      * 库存 展示
      */
-    private String skuCountShow;
+    private Integer skuCountShow;
     /**
      * 价格 展示
      */
-    private String skuPriceShow;
+    private BigDecimal skuPriceShow;
     /**
      *  折扣 展示
      */

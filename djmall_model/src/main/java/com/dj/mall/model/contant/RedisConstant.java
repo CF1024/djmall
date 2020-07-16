@@ -22,4 +22,8 @@ public interface RedisConstant {
      * 角色ID
      */
     String ROLE_ID_KEY = "ROLE_";
+    /**
+     * 用户token
+     */
+    String USER_TOKEN = "USER_TOKEN_";
 }

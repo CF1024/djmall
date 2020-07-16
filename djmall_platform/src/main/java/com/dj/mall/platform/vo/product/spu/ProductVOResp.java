@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @author chengf
@@ -73,17 +74,17 @@ public class ProductVOResp implements Serializable {
     /**
      * 运费
      */
-    private String freightShow;
+    private BigDecimal freightShow;
 
-    /*==================================商城====================================*/
+    /*=========================商城========================*/
     /**
      * 库存 展示
      */
-    private String skuCountShow;
+    private Integer skuCountShow;
     /**
      * 价格 展示
      */
-    private String skuPriceShow;
+    private BigDecimal skuPriceShow;
     /**
      *  折扣 展示
      */

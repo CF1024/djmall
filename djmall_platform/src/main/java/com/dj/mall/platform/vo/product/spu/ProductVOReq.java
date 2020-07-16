@@ -16,6 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -93,9 +94,9 @@ public class ProductVOReq implements Serializable {
     /**
      * 最低价格 展示 价格查询
      */
-    private String skuPriceMin;
+    private BigDecimal skuPriceMin;
     /**
      * 最高价格 展示 价格查询
      */
-    private String skuPriceMax;
+    private BigDecimal skuPriceMax;
 }

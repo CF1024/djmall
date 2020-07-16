@@ -22,6 +22,7 @@ import com.dj.mall.model.util.DozerUtil;
 import com.dj.mall.model.util.QiniuUtils;
 import com.dj.mall.product.api.spu.ProductApi;
 import com.dj.mall.product.bo.spu.ProductBO;
+import com.dj.mall.product.dto.sku.SkuDTO;
 import com.dj.mall.product.dto.spu.ProductDTO;
 import com.dj.mall.product.entity.sku.SkuEntity;
 import com.dj.mall.product.entity.spu.ProductEntity;
@@ -183,5 +184,6 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
         IPage<ProductBO> iPage = getBaseMapper().findList(new Page<ProductEntity>(productDTO.getPageNo(), productDTO.getPageSize()), DozerUtil.map(productDTO, ProductBO.class));
         return new PageResult().toBuilder().pages(iPage.getPages()).list(DozerUtil.mapList(iPage.getRecords(), ProductDTO.class)).build();
     }
+
 
 }
