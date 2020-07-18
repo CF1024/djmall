@@ -7,7 +7,7 @@
  * 版权所有(C), 2020. 所有权利保留
  */
 
-package com.dj.mall.platform.vo.auth.cart;
+package com.dj.mall.auth.bo.cart;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShoppingCartVOReq implements Serializable {
+public class ShoppingCartBO implements Serializable {
     /**
      * 购物车id
      */
@@ -41,7 +42,6 @@ public class ShoppingCartVOReq implements Serializable {
      * sku id
      */
     private Integer skuId;
-
     /**
      * 购买数量
      */
@@ -56,9 +56,42 @@ public class ShoppingCartVOReq implements Serializable {
      * 是否被选中 0：是 1：否
      */
     private Integer checked;
+
+    /*====================================================*/
+    /**
+     * 商品名称
+     */
+    private String productName;
+
+    /**
+     * 商品价格
+     */
+    private BigDecimal skuPrice;
+    /**
+     * 商品属性名
+     */
+    private String skuAttrValueNames;
+
+    /**
+     * 折扣
+     */
+    private String skuRate;
+
+    /**
+     * 库存
+     */
+    private Integer skuCount;
+    /**
+     * 运费展示
+     */
+    private BigDecimal freight;
     /**
      * 购物车id集合
      */
     private List<Integer> cartIdList;
+    /**
+     * 折后价
+     */
+    private BigDecimal discountPrice;
 
 }

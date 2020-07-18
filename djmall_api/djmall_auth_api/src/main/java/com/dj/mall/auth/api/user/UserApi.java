@@ -158,11 +158,11 @@ public interface UserApi {
 
     /**
      * 退出登录
-     * @param token token
+     * @param TOKEN token
      * @throws Exception 异常
      * @throws BusinessException 自定义异常
      */
-    void toLogout(String token) throws Exception, BusinessException;
+    void deleteToken(String TOKEN) throws Exception, BusinessException;
 
     /**
      * 添加购物车

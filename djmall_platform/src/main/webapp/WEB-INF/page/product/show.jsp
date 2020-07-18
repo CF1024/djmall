@@ -36,6 +36,9 @@
         }
     </style>
     <script type="text/javascript">
+        if (window.top.document.URL != document.URL) {
+            window.top.location = document.URL;
+        }
         $(function () {
             show();
         });
@@ -48,7 +51,7 @@
                 function (data) {
                     layer.close(index);
                     if (data.code !== 200) {
-                        layer.alert(data.msg);
+                        layer.alert(data.msg,{offset: '230px'});
                         return;
                     }
                     var html = "";
@@ -59,7 +62,7 @@
                         html += "<td>" + pro.skuPriceShow +"</td>";
                         html += "<td>" + pro.skuCountShow +"</td>";
                         html += "<td>" + pro.productType +"</td>";
-                        html += pro.skuRateShow === "0" ? "<td>无折扣</td>" : "<td>"+ pro.skuRateShow +"%</td>";
+                        html += pro.skuRateShow === "100" ? "<td>无折扣</td>" : "<td>"+ pro.skuRateShow +"%</td>";
                         html += pro.freightShow === 0.00? "<td>"+ pro.company +"-包邮</td>" : "<td>" +pro.company +" - "+ pro.freightShow +"元</td>";
                         html += "<td><img src='http://qcxz8bvc2.bkt.clouddn.com/"+pro.productImg+"' style='width: 70px; height: 70px'></td>";
                         html += "<td>" + pro.productDescribe +"</td>";
@@ -107,21 +110,46 @@
         //是否登录
         $(function () {
             $("#hiddenLogout").hide();
+            var token = cookie.get("TOKEN");
+            var nickName = cookie.get("NICK_NAME");
           // 是否登录
-          if (check_login()) {
-              var nickName = cookie.get("NICK_NAME");
-              $("#login").html(nickName);
-              $("#login").attr("href", "<%=request.getContextPath()%>/user/toIndex?TOKEN=" + getToken());
-              $("#hiddenRegister").hide();
-              $("#hiddenLogout").show();
-          } else {
-              $("#login").html("<i class='layui-icon layui-icon-username' style='font-size: 30px'></i>点我登录");
-              $("#login").attr("href", "javascript:toLogin()");
-          }
+            if (token === undefined && nickName === undefined) {
+                $("#login").html("<i class='layui-icon layui-icon-username' style='font-size: 30px'></i>点我登录");
+                $("#login").attr("href", "javascript:toLogin()");
+                $("#hiddenRegister").show();
+                $("#hiddenLogout").hide();
+            }  else if (token !== '' && nickName !== '') {
+                $("#login").html(nickName);
+                $("#login").attr("href", "<%=request.getContextPath()%>/user/toIndex?TOKEN=" + getToken());
+                $("#hiddenRegister").hide();
+                $("#hiddenLogout").show();
+            }
         })
 
+        //退出登录
+        function signOut() {
+            var index = layer.load(0,{offset: '230px', shade:0.5});
+            token_post(
+                "<%=request.getContextPath()%>/user/toLogout?TOKEN="+getToken(),
+                {"_method": "DELETE"},
+                function (data) {
+                    layer.close(index);
+                    layer.msg(data.msg, {offset: '230px', icon: 6, time: 2000},
+                        function(){
+                            cookie.clear("TOKEN");
+                            cookie.clear("NICK_NAME");
+                            window.location.href = "<%=request.getContextPath()%>/product/toShow";
+                        });
+            })
+        }
+
+        //我的购物车
+        function toMyShoppingCart() {
+            window.location.href = "<%=request.getContextPath()%>/user/cart/toMyShoppingCart?TOKEN="+getToken();
+        }
+
         // 去登陆
-        function toLogin() {
+        /*function toLogin() {
           //iframe层
           layer.open({
               type: 2,
@@ -129,33 +157,11 @@
               shadeClose: true,
               maxmin: true, //开启最大化最小化按钮
               shade: 0.8,
+              offset: '230px',
               area: ['460px', '60%'],
-              content: "<%=request.getContextPath()%>/user/toLogin"
+              content: "<%--<%=request.getContextPath()%>--%>/user/toLogin"
           });
-        }
-
-        //退出登录
-        function signOut() {
-            var index = layer.load(0,{shade:0.5});
-            token_post(
-                "<%=request.getContextPath()%>/user/toLogout",
-                {"token": getToken()},
-                function (data) {
-                    layer.close(index);
-                    if(data.code !== 200){
-                        layer.msg(data.msg, {icon:5,time:2000});
-                        return;
-                    }
-                    layer.msg(data.msg, {icon: 6, time: 2000},
-                        function(){
-                            cookie.delete("TOKEN");
-                            cookie.delete("NICK_NAME");
-                            $("#hiddenLogout").hide();
-                            parent.window.location.reload();
-                        });
-            })
-        }
-
+        }*/
     </script>
     <body>
         <div class="layui-layout layui-layout-admin">
@@ -173,13 +179,13 @@
                         <a href="<%=request.getContextPath()%>/product/toShow"  style="color: aqua"><i class="layui-icon layui-icon-home" style="font-size: 30px"></i>首页</a>
                     </li>
                     <li class="layui-nav-item">
-                        <a href="javascript:toLogin()" id="login" style="color: violet"><i class="layui-icon layui-icon-username" style="font-size: 30px"></i>点我登录</a>
+                        <a href="<%=request.getContextPath()%>/user/toLogin" id="login" style="color: violet"><i class="layui-icon layui-icon-username" style="font-size: 30px"></i>点我登录</a>
                     </li>
                     <li class="layui-nav-item" id="hiddenRegister">
-                        <a href="<%=request.getContextPath()%>/user/toRegister" target="_blank" style="color: tomato"><i class="layui-icon layui-icon-user" style="font-size: 30px"></i>注册</a>
+                        <a href="<%=request.getContextPath()%>/user/toRegister" style="color: tomato"><i class="layui-icon layui-icon-user" style="font-size: 30px"></i>注册</a>
                     </li>
                     <li class="layui-nav-item">
-                        <a href="" style="color: dodgerblue"><i class="layui-icon layui-icon-cart" style="font-size: 30px"></i>我的购物车</a>
+                        <a href="javascript:toMyShoppingCart()" style="color: dodgerblue"><i class="layui-icon layui-icon-cart" style="font-size: 30px"></i>我的购物车</a>
                     </li>
                 </ul>
             </div>

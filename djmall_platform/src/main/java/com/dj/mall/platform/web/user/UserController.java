@@ -10,6 +10,7 @@
 package com.dj.mall.platform.web.user;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.dj.mall.auth.api.cart.ShoppingCartApi;
 import com.dj.mall.auth.api.user.UserApi;
 import com.dj.mall.auth.dto.cart.ShoppingCartDTO;
 import com.dj.mall.auth.dto.user.UserDTO;
@@ -17,9 +18,12 @@ import com.dj.mall.auth.dto.user.UserTokenDTO;
 import com.dj.mall.model.base.ResultModel;
 import com.dj.mall.model.util.DozerUtil;
 import com.dj.mall.platform.vo.auth.cart.ShoppingCartVOReq;
+import com.dj.mall.platform.vo.auth.cart.ShoppingCartVOResp;
 import com.dj.mall.platform.vo.auth.user.UserVOReq;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/user/")
@@ -29,6 +33,11 @@ public class UserController {
      */
     @Reference
     private UserApi userApi;
+    /**
+     * 购物车api
+     */
+    @Reference
+    private ShoppingCartApi shoppingCartApi;
 
     /**
      * 注册去重
@@ -75,16 +84,17 @@ public class UserController {
 
     /**
      * 退出登录
-     * @param token token
+     * @param TOKEN token
      * @return 退出成功
      * @throws Exception 异常信息
      */
-    @PostMapping("toLogout")
-    public ResultModel<Object> toLogout(String token) throws Exception {
-        userApi.toLogout(token);
+    @DeleteMapping("toLogout")
+    public ResultModel<Object> toLogout(String TOKEN) throws Exception {
+        userApi.deleteToken(TOKEN);
         return new ResultModel<>().success("退出成功");
     }
 
+/*===========================================================我的购物车==============================================================*/
     /**
      * 添购物车
      * @param shoppingCartVOReq shoppingCartVOReq
@@ -96,5 +106,40 @@ public class UserController {
     public ResultModel<Object> addToShoppingCart(ShoppingCartVOReq shoppingCartVOReq, String TOKEN) throws Exception {
         userApi.addToShoppingCart(DozerUtil.map(shoppingCartVOReq, ShoppingCartDTO.class), TOKEN);
         return new ResultModel<>().success("添加购物车成功");
+    }
+
+    /**
+     * 金额计算
+     * @param ids 购物车id集合
+     * @return 购物车VOResp
+     * @throws Exception 异常信息
+     */
+    @PostMapping("cart/getTotal")
+    public ResultModel<Object> getTotal(@RequestParam("ids[]") ArrayList<Integer> ids, String TOKEN) throws Exception {
+        return new ResultModel<>().success(DozerUtil.map(shoppingCartApi.getTotal(ids, TOKEN), ShoppingCartVOResp.class));
+    }
+
+    /**
+     * 根据id修改购物车
+     * @param shoppingCartVOReq 购物车dto
+     * @return ResultModel
+     * @throws Exception 异常
+     */
+    @PutMapping("cart/updateCart")
+    public ResultModel<Object> updateCart(ShoppingCartVOReq shoppingCartVOReq) throws Exception {
+        shoppingCartApi.updateCart(DozerUtil.map(shoppingCartVOReq, ShoppingCartDTO.class));
+        return new ResultModel<>().success();
+    }
+
+    /**
+     *根据购物车id删除购物车
+     * @param ids  购物车id集合
+     * @return 删除成功
+     * @throws Exception 异常
+     */
+    @DeleteMapping("cart/deleteCart")
+    public ResultModel<Object> deleteCart(Integer[] ids) throws Exception {
+        shoppingCartApi.deleteCartById(ids);
+        return new ResultModel<>().success("删除成功");
     }
 }

@@ -440,13 +440,13 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
 
     /**
      * 退出登录
-     * @param token token
+     * @param TOKEN token
      * @throws Exception 异常
      * @throws BusinessException 自定义异常
      */
     @Override
-    public void toLogout(String token) throws Exception, BusinessException {
-        redisApi.del(RedisConstant.USER_TOKEN + token);
+    public void deleteToken(String TOKEN) throws Exception, BusinessException {
+        redisApi.del(RedisConstant.USER_TOKEN + TOKEN);
     }
 
     /**

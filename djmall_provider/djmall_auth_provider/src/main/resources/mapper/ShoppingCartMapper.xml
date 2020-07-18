@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ 作者：CF
+  ~ 日期：2020-07-16 17:36
+  ~ 项目：djmall
+  ~ 模块：djmall_auth_provider
+  ~ 类名：ShoppingCartMapper.xml
+  ~ 版权所有(C), 2020. 所有权利保留
+  -->
+
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dj.mall.auth.mapper.cart.ShoppingCartMapper">
+
+    <!--购物车展示-->
+    <select id="findCartByToken" resultType="com.dj.mall.auth.bo.cart.ShoppingCartBO">
+        SELECT
+            sc.id AS cartId,
+            sc.user_id,
+            sc.sku_id,
+            sc.product_id,
+            sc.quantity,
+            sc.checked,
+            spu.product_name AS productName,
+            sku.sku_price AS skuPrice,
+            sku.sku_attr_value_names AS skuAttrValueNames,
+            sku.sku_rate AS skuRate,
+            sku.sku_count AS skuCount,
+            pf.freight AS freight
+        FROM
+            djmall_auth_shopping_cart sc
+        LEFT JOIN djmall_product_spu spu ON sc.product_id = spu.id
+        LEFT JOIN djmall_product_sku sku ON sc.sku_id = sku.id
+        LEFT JOIN djmall_dict_product_freight pf ON spu.freight_id = pf.id
+        WHERE sc.user_id = #{userId}
+    </select>
+
+    <!--金额计算-->
+    <select id="findPriceByCartId" resultType="com.dj.mall.auth.bo.cart.ShoppingCartBO">
+        SELECT
+            sc.quantity,
+            sc.checked,
+            sku.sku_price AS skuPrice,
+            sku.sku_rate AS skuRate,
+            pf.freight AS freight,
+        CONVERT (
+            sku.sku_rate * sku.sku_price * 0.01,
+            DECIMAL (10, 2)
+        ) AS discountPrice
+        FROM
+            djmall_auth_shopping_cart sc
+        LEFT JOIN djmall_product_spu spu ON sc.product_id = spu.id
+        LEFT JOIN djmall_product_sku sku ON sc.sku_id = sku.id
+        LEFT JOIN djmall_dict_product_freight pf ON spu.freight_id = pf.id
+        WHERE
+              sc.id IN
+        <foreach collection="ids" item="id" open="("  close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

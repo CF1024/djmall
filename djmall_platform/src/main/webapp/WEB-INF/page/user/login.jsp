@@ -17,7 +17,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
-        <title>强制修改密码</title>
+        <title>用户登录</title>
         <link rel="stylesheet" href="<%=request.getContextPath()%>/static/css/verify.css" media="all">
         <link rel="stylesheet" href="<%=request.getContextPath()%>/static/layui/css/layui.css" media="all">
         <script type="text/javascript" src="<%=request.getContextPath()%>/static/js/jquery-1.12.4.min.js"></script>
@@ -33,8 +33,8 @@
     <style type="text/css">
         #login{
             position:absolute;
-            left: 75%;
-            top: 85%;
+            left: 55%;
+            top: 65%;
             margin-left:-200px;
             margin-top:-140px;
             border:1px;
@@ -42,6 +42,24 @@
             align:center;
         }
         #form{
+            position:relative;
+            left:70%;
+            top:70%;
+            margin-left:-150px;
+            margin-top:-80px;
+        }
+        #phoneLogin{
+            position:absolute;
+            left: 50%;
+            top: 60%;
+            margin-left:-200px;
+            margin-top:-140px;
+            border:1px;
+            background-color:transparent;
+            align:center;
+            width: 300px;
+        }
+        #phoneForm{
             position:relative;
             left:50%;
             top:50%;
@@ -77,7 +95,7 @@
                                     cookie.set("TOKEN", data.data.token, 22);
                                     cookie.set("NICK_NAME", data.data.nickName, 22);
                                     // 刷新父页面
-                                    parent.window.location.reload();
+                                    window.location.href = "<%=request.getContextPath()%>/product/toShow";
                                 });
                         });
                 })
@@ -97,6 +115,19 @@
         });
     </script>
     <body>
+        <div class="layui-layout layui-layout-admin">
+            <div class="layui-header">
+                <div class="layui-logo" style="color: coral">点金商城</div>
+                <ul class="layui-nav layui-layout-right">
+                    <li class="layui-nav-item">
+                        <a href="<%=request.getContextPath()%>/product/toShow"  style="color: aqua"><i class="layui-icon layui-icon-home" style="font-size: 30px"></i>首页</a>
+                    </li>
+                    <li class="layui-nav-item" id="hiddenRegister">
+                        <a href="<%=request.getContextPath()%>/user/toRegister" style="color: tomato"><i class="layui-icon layui-icon-user" style="font-size: 30px"></i>注册</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <div class="layui-tab">
             <ul class="layui-tab-title" lay-filter="login">
                 <li class="layui-this">账号登录</li>
@@ -136,6 +167,8 @@
                 </div>
 
                 <div class="layui-tab-item">
+                    <div id="phoneLogin">
+                        <div id="phoneForm">
                             <form class="layui-form" id="phoneFm">
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">手机号</label>
@@ -167,6 +200,8 @@
                                 <label class="layui-form-label"></label>
                                 <input type="submit" value="登录" class="layui-btn">
                             </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

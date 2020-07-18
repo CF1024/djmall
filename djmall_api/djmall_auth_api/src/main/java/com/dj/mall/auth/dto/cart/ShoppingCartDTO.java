@@ -15,6 +15,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author chengf
@@ -54,5 +56,58 @@ public class ShoppingCartDTO implements Serializable {
      * 是否被选中 0：是 1：否
      */
     private Integer checked;
+
+    /*====================================================*/
+    /**
+     * 商品名称
+     */
+    private String productName;
+
+    /**
+     * 商品价格
+     */
+    private BigDecimal skuPrice;
+    /**
+     * 商品属性名
+     */
+    private String skuAttrValueNames;
+
+    /**
+     * 折扣
+     */
+    private String skuRate;
+
+    /**
+     * 库存
+     */
+    private Integer skuCount;
+    /**
+     * 运费展示
+     */
+    private BigDecimal freight;
+    /**
+     * 购物车id集合
+     */
+    private List<Integer> cartIdList;
+    /**
+     * 折后价
+     */
+    private BigDecimal discountPrice;
+    /**
+     * 总价
+     */
+    private BigDecimal totalPrice;
+    /**
+     * 总折后价
+     */
+    private BigDecimal totalDiscountedPrice;
+    /**
+     * 总运费
+     */
+    private BigDecimal totalFreight;
+    /**
+     * 最终价格
+     */
+    private BigDecimal finalPrice;
 
 }

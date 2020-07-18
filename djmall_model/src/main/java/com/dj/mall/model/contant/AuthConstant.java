@@ -63,4 +63,8 @@ public interface AuthConstant {
      * 长度为0
      */
     Integer ZERO = 0;
+    /**
+     * 购物车选中状态为：1（未选中）
+     */
+    Integer CART_CHECKED_ONE = 1;
 }

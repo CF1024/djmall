@@ -170,6 +170,19 @@
         });
     </script>
     <body>
+        <div class="layui-layout layui-layout-admin">
+            <div class="layui-header">
+                <div class="layui-logo" style="color: coral">点金商城</div>
+                <ul class="layui-nav layui-layout-right">
+                    <li class="layui-nav-item">
+                        <a href="<%=request.getContextPath()%>/product/toShow"  style="color: aqua"><i class="layui-icon layui-icon-home" style="font-size: 30px"></i>首页</a>
+                    </li>
+                    <li class="layui-nav-item" id="hiddenRegister">
+                        <a href="<%=request.getContextPath()%>/user/toLogin" style="color: tomato"><i class="layui-icon layui-icon-user" style="font-size: 30px"></i>点我登录</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <div id="login">
             <div id="form">
                 <form class="layui-form" id="fm">

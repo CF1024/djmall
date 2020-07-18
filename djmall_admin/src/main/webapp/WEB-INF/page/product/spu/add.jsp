@@ -247,7 +247,7 @@
                 html += "<td>"+ skuList[l] +"<input type = 'hidden' name = 'productSkuList["+ l +"].skuAttrNames' value = '"+ sku +"'> <input type = 'hidden' name = 'productSkuList["+ l +"].skuAttrValueNames' value = '"+ skuList[l] +"'></td>";
                 html += "<td><input type = 'text' name = 'productSkuList["+ l +"].skuCount' value = '10' class='layui-input'></td>";
                 html += "<td><input type = 'text' name = 'productSkuList["+ l +"].skuPrice' value = '100' class='layui-input'></td>";
-                html += "<td><input type = 'text' name = 'productSkuList["+ l +"].skuRate' value = '0' class='layui-input'></td>";
+                html += "<td><input type = 'text' name = 'productSkuList["+ l +"].skuRate' value = '100' class='layui-input'></td>";
                 html += "<td><button type='button' onclick='skuDel(this)' class='layui-btn layui-btn-danger layui-btn-xs'>移除</button></td>";
                 html += "</tr>";
             }
