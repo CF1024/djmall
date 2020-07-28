@@ -115,12 +115,12 @@
           // 是否登录
             if (token === undefined && nickName === undefined) {
                 $("#login").html("<i class='layui-icon layui-icon-username' style='font-size: 30px'></i>点我登录");
-                $("#login").attr("href", "javascript:toLogin()");
+                $("#login").attr("href", "<%=request.getContextPath()%>/user/toLogin");
                 $("#hiddenRegister").show();
                 $("#hiddenLogout").hide();
             }  else if (token !== '' && nickName !== '') {
-                $("#login").html(nickName);
-                $("#login").attr("href", "<%=request.getContextPath()%>/user/toIndex?TOKEN=" + getToken());
+                $("#login").html("<i class='layui-icon layui-icon-username' style='font-size: 30px'></i>"+nickName);
+                $("#login").attr("href", "<%=request.getContextPath()%>/user/index/toIndex?TOKEN=" + getToken());
                 $("#hiddenRegister").hide();
                 $("#hiddenLogout").show();
             }
@@ -195,7 +195,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">商品名称</label>
                 <div class="layui-input-inline" style="width: 225px;">
-                    <input type="text" name="productName" placeholder="请输入商品名称" class="layui-input">
+                    <input type="text" name="productKeywords" placeholder="请输入商品名称" class="layui-input">
                 </div>
                 <div class="layui-word-aux">
                     <input type="button" value="搜索" onclick="fuzzySearch()" class="layui-btn layui-btn-normal">

@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * @author chengf
@@ -67,6 +68,14 @@ public class ProductVOResp implements Serializable {
      *点赞量
      */
     private Integer praiseNumber;
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+    /**
+     *修改时间
+     */
+    private LocalDateTime updateTime;
     /**
      * 公司
      */

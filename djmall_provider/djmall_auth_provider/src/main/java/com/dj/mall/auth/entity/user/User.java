@@ -102,4 +102,9 @@ public class User implements Serializable {
      * 用户状态 2：未删除 3 已删除
      */
     private String isDel;
+    /**
+     * 用户头像
+     */
+    private String userImg;
+
 }

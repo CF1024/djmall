@@ -9,6 +9,8 @@
 
 package com.dj.mall.auth.api.user;
 
+import com.dj.mall.auth.dto.address.AreaDTO;
+import com.dj.mall.auth.dto.address.UserAddressDTO;
 import com.dj.mall.auth.dto.cart.ShoppingCartDTO;
 import com.dj.mall.auth.dto.resource.ResourceDTO;
 import com.dj.mall.auth.dto.role.RoleResourceDTO;
@@ -146,6 +148,10 @@ public interface UserApi {
      */
     void updatePwdByPhone(UserDTO userDTO) throws Exception, BusinessException;
 
+
+/*========================================================普通用户==============================================================*/
+
+
     /**
      * 普通用户登录
      * @param userName 用户名
@@ -165,6 +171,73 @@ public interface UserApi {
     void deleteToken(String TOKEN) throws Exception, BusinessException;
 
     /**
+     * 修改普通用户
+     * @param userDTO userDTO
+     * @return  UserTokenDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    UserTokenDTO updateGeneralUser(UserDTO userDTO, byte[] file) throws Exception, BusinessException;
+
+
+    /*===========================================================收货地址==============================================================*/
+
+    /**
+     * 收货地址展示
+     * @param TOKEN 令牌密钥 用户唯一标识
+     * @return AreaDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    List<UserAddressDTO> findAddressAll(String TOKEN) throws Exception, BusinessException;
+
+    /**
+     * 三级联动 根据父级id查数据
+     * @param parentId 父级id
+     * @return AreaDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    List<AreaDTO> getAreaByParentId(Integer parentId) throws Exception, BusinessException;
+
+    /**
+     * 新增收货地址
+     * @param userAddressDTO 收货地址 dto
+     * @param TOKEN 令牌密钥 用户唯一标识
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    void newShippingAddress(UserAddressDTO userAddressDTO, String TOKEN) throws Exception, BusinessException;
+
+    /**
+     * 根据id查
+     * @param id 地址id
+     * @return UserAddressDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    UserAddressDTO findAddressById(Integer id) throws Exception, BusinessException;
+
+    /**
+     * 查全部数据
+     * @return AreaDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    List<AreaDTO> findAreaAll(String isDel) throws Exception, BusinessException;
+
+    /**
+     * 修改收货地址
+     * @param userAddressDTO 收货地址 dto
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    void updateAddressById(UserAddressDTO userAddressDTO) throws Exception, BusinessException;
+
+    /*========================================================购物车==============================================================*/
+
+
+    /**
      * 添加购物车
      * @param shoppingCartDTO shoppingCartDTO
      * @param TOKEN 令牌密钥 用户唯一标识
@@ -172,4 +245,5 @@ public interface UserApi {
      * @throws BusinessException 自定义异常
      */
     void addToShoppingCart(ShoppingCartDTO shoppingCartDTO, String TOKEN) throws Exception, BusinessException;
+
 }

@@ -22,6 +22,12 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!-- 引入solr库连接jar-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-solr</artifactId>
+        </dependency>
+
         <!--商品api接口-->
         <dependency>
             <groupId>com.dj.mall</groupId>

@@ -18,14 +18,20 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dj.mall.auth.api.user.MailBoxApi;
 import com.dj.mall.auth.api.user.UserApi;
 import com.dj.mall.auth.bo.user.UserBO;
+import com.dj.mall.auth.dto.address.AreaDTO;
+import com.dj.mall.auth.dto.address.UserAddressDTO;
 import com.dj.mall.auth.dto.cart.ShoppingCartDTO;
 import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.auth.dto.user.UserTokenDTO;
+import com.dj.mall.auth.entity.address.AreaEntity;
+import com.dj.mall.auth.entity.address.UserAddressEntity;
 import com.dj.mall.auth.entity.cart.ShoppingCartEntity;
 import com.dj.mall.auth.entity.user.User;
 import com.dj.mall.auth.entity.user.LastLoginTime;
 import com.dj.mall.auth.entity.user.UserRole;
 import com.dj.mall.auth.mapper.user.UserMapper;
+import com.dj.mall.auth.service.address.AreaService;
+import com.dj.mall.auth.service.address.UserAddressService;
 import com.dj.mall.auth.service.cart.ShoppingCartService;
 import com.dj.mall.auth.service.user.LastLoginTimeService;
 import com.dj.mall.auth.service.user.UserRoleService;
@@ -36,13 +42,13 @@ import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.contant.ProductConstant;
 import com.dj.mall.model.contant.RedisConstant;
-import com.dj.mall.model.util.DozerUtil;
-import com.dj.mall.model.util.LocalDateTimeUtils;
-import com.dj.mall.model.util.MessageVerifyUtils;
-import com.dj.mall.model.util.PasswordSecurityUtil;
+import com.dj.mall.model.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -73,6 +79,16 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
      */
     @Autowired
     private ShoppingCartService shoppingCartService;
+    /**
+     * 地区Service 不暴露服务
+     */
+    @Autowired
+    private AreaService areaService;
+    /**
+     * 收货地址Service 不暴露服务
+     */
+    @Autowired
+    private UserAddressService userAddressService;
 
     /**
      * 邮箱api
@@ -449,6 +465,112 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         redisApi.del(RedisConstant.USER_TOKEN + TOKEN);
     }
 
+    /**
+     * 修改普通用户
+     * @param userDTO userDTO
+     * @return  UserTokenDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public UserTokenDTO updateGeneralUser(UserDTO userDTO, byte[] file) throws Exception, BusinessException {
+        this.updateById(DozerUtil.map(userDTO, User.class));
+        User user = getById(userDTO.getUserId());
+        redisApi.set(RedisConstant.USER_TOKEN + userDTO.getToken(), DozerUtil.map(user, UserDTO.class), 22 * 24 * 60 * 60);
+        //将需要的token信息存入UserTokenDTO中
+        UserTokenDTO userTokenDTO = new UserTokenDTO().toBuilder().userId(user.getId()).userName(user.getUserName()).nickName(user.getNickName()).token(userDTO.getToken()).build();
+        //七牛云删除之前的以及上传新的
+        if (!StringUtils.isEmpty(file)) {
+            QiniuUtils.delFile(userDTO.getRemoveImg());
+            InputStream inputStream = new ByteArrayInputStream(file);
+            QiniuUtils.uploadByInputStream(inputStream, userDTO.getUserImg());
+        }
+        return userTokenDTO;
+    }
+
+
+    /*===========================================================收货地址==============================================================*/
+
+    /**
+     * 收货地址展示
+     * @param TOKEN 令牌密钥 用户唯一标识
+     * @return AreaDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public List<UserAddressDTO> findAddressAll(String TOKEN) throws Exception, BusinessException {
+        //得到当前登录用户
+        UserDTO userDTO = redisApi.get(RedisConstant.USER_TOKEN + TOKEN);
+        return DozerUtil.mapList(userAddressService.findAddressAll(userDTO.getUserId()), UserAddressDTO.class);
+    }
+    /**
+     * 三级联动 根据父级id查数据
+     * @param parentId 父级id
+     * @return AreaDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public List<AreaDTO> getAreaByParentId(Integer parentId) throws Exception, BusinessException {
+        return DozerUtil.mapList(areaService.list(new QueryWrapper<AreaEntity>().eq("area_parent_id", parentId)), AreaDTO.class);
+    }
+
+    /**
+     * 新增收货地址
+     * @param userAddressDTO 收货地址 dto
+     * @param TOKEN 令牌密钥 用户唯一标识
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public void newShippingAddress(UserAddressDTO userAddressDTO, String TOKEN) throws Exception, BusinessException {
+        //得到当前登录用户
+        UserDTO userDTO = redisApi.get(RedisConstant.USER_TOKEN + TOKEN);
+        userAddressDTO.setUserId(userDTO.getUserId());
+        userAddressService.save(DozerUtil.map(userAddressDTO, UserAddressEntity.class));
+    }
+
+    /**
+     * 根据id查
+     * @param id 地址id
+     * @return UserAddressDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public UserAddressDTO findAddressById(Integer id) throws Exception, BusinessException {
+        return DozerUtil.map(userAddressService.getById(id), UserAddressDTO.class);
+    }
+
+    /**
+     * 查全国地区全部数据
+     * @return AreaDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public List<AreaDTO> findAreaAll(String isDel) throws Exception, BusinessException {
+        List<AreaDTO> areaList = redisApi.getHashValues(isDel);
+        if (StringUtils.isEmpty(areaList) || AuthConstant.ZERO.equals(areaList.size())) {
+            areaList = DozerUtil.mapList(areaService.list(new QueryWrapper<AreaEntity>().eq("is_del", isDel)), AreaDTO.class);
+            areaList.forEach(area -> redisApi.pushHash(area.getIsDel(), String.valueOf(area.getId()), area));
+        }
+        return areaList;
+    }
+
+    /**
+     * 修改收货地址
+     * @param userAddressDTO 收货地址 dto
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public void updateAddressById(UserAddressDTO userAddressDTO) throws Exception, BusinessException {
+        userAddressService.updateById(DozerUtil.map(userAddressDTO, UserAddressEntity.class));
+    }
+
+    /*========================================================购物车==============================================================*/
     /**
      * 添加购物车
      * @param shoppingCartDTO shoppingCartDTO

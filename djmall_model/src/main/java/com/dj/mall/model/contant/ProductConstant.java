@@ -26,4 +26,8 @@ public interface ProductConstant {
      * 最大购买量 200
      */
     Integer MAX_QUANTITY = 200;
+    /**
+     * 0
+     */
+    Integer ZERO = 0;
 }

@@ -43,5 +43,6 @@
         <module>djmall_dict_provider</module>
         <module>djmall_cmpt_provider</module>
         <module>djmall_product_provider</module>
+        <module>djmall_task</module>
     </modules>
 </project>

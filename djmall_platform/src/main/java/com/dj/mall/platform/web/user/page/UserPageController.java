@@ -15,17 +15,18 @@ import com.dj.mall.auth.api.user.UserApi;
 import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.cmpt.RedisApi;
 import com.dj.mall.dict.api.dict.BaseDataApi;
+import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.contant.RedisConstant;
 import com.dj.mall.model.util.DozerUtil;
+import com.dj.mall.platform.vo.auth.address.AreaVoResp;
+import com.dj.mall.platform.vo.auth.address.UserAddressVoResp;
 import com.dj.mall.platform.vo.auth.cart.ShoppingCartVOResp;
+import com.dj.mall.platform.vo.auth.user.UserVOResp;
 import com.dj.mall.platform.vo.dict.dict.BaseDataVOResp;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/user/")
@@ -72,6 +73,57 @@ public class UserPageController {
         return "user/login";
     }
 
+    /**
+     * 展示个人信息
+     * @param TOKEN  令牌密钥 用户唯一标识
+     * @param model ModelMap
+     * @return 展示个人信息
+     * @throws Exception 异常
+     */
+    @GetMapping("toShowUserDetails")
+    public String toShowUserDetails(String TOKEN, ModelMap model) throws Exception {
+        UserDTO userDTO = redisApi.get(RedisConstant.USER_TOKEN + TOKEN);
+        model.put("TOKEN",TOKEN);
+        model.put("user", DozerUtil.map(userApi.findUserById(userDTO.getUserId()), UserVOResp.class));
+        model.put("sexList", DozerUtil.mapList(baseDataApi.findBaseDataByParentCode(DictConstant.USER_SEX), BaseDataVOResp.class));
+        return "user/show";
+    }
+/*==========================================================收货地址========================================================*/
+
+    /**
+     * 收货地址展示
+     * @return 收货地址展示
+     */
+    @GetMapping("address/toShowAddress")
+    public String toShowAddress() {
+        return "user/address/show";
+    }
+
+    /**
+     * 新增收货地址
+     * @return 新增收货地址
+     */
+    @GetMapping("address/toNewShippingAddress")
+    public String toNewShippingAddress() {
+        return "user/address/add";
+    }
+
+    /**
+     * 根据id查
+     * @param id 地址id
+     * @param model ModelMap
+     * @return 修改收货地址
+     * @throws Exception 异常
+     */
+    @GetMapping("address/toUpdate")
+    public String toUpdate(String TOKEN, Integer id, ModelMap model) throws Exception {
+        model.put("areaList", DozerUtil.mapList(userApi.findAreaAll(DictConstant.NOT_DEL), AreaVoResp.class));
+        model.put("address", DozerUtil.map(userApi.findAddressById(id), UserAddressVoResp.class));
+        return "user/address/update";
+    }
+
+
+/*==========================================================购物车========================================================*/
     /**
      * 去我的购物车
      * @param TOKEN 令牌密钥 用户唯一标识

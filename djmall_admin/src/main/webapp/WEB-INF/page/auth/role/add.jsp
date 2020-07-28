@@ -78,7 +78,7 @@
         });
     </script>
     <body>
-        <form id="fm" class="layui-form" id="fm">
+        <form class="layui-form" id="fm">
             <input type="hidden" name="_method" value="POST"/>
             <div class="layui-form-item">
                 <label class="layui-form-label">角色名</label>

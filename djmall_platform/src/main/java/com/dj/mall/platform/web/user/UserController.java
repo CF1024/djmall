@@ -12,18 +12,26 @@ package com.dj.mall.platform.web.user;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.dj.mall.auth.api.cart.ShoppingCartApi;
 import com.dj.mall.auth.api.user.UserApi;
+import com.dj.mall.auth.dto.address.UserAddressDTO;
 import com.dj.mall.auth.dto.cart.ShoppingCartDTO;
 import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.auth.dto.user.UserTokenDTO;
 import com.dj.mall.model.base.ResultModel;
 import com.dj.mall.model.util.DozerUtil;
+import com.dj.mall.platform.vo.auth.address.AreaVoResp;
+import com.dj.mall.platform.vo.auth.address.UserAddressVoReq;
+import com.dj.mall.platform.vo.auth.address.UserAddressVoResp;
 import com.dj.mall.platform.vo.auth.cart.ShoppingCartVOReq;
 import com.dj.mall.platform.vo.auth.cart.ShoppingCartVOResp;
 import com.dj.mall.platform.vo.auth.user.UserVOReq;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user/")
@@ -93,6 +101,77 @@ public class UserController {
         userApi.deleteToken(TOKEN);
         return new ResultModel<>().success("退出成功");
     }
+
+    /**
+     * 修改用户信息
+     * @param userVOReq  userVOReq
+     * @param file 头像文件
+     * @return userTokenDTO
+     * @throws Exception 异常信息
+     */
+    @PutMapping("updateGeneralUser")
+    public ResultModel<Object> updateGeneralUser(UserVOReq userVOReq, MultipartFile file) throws Exception {
+        //判断file文件流是不是空
+        byte[] bytes = null;
+        if (!StringUtils.isEmpty(file.getOriginalFilename())) {
+            String fileName = UUID.randomUUID().toString().replace("-", "") + Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
+            userVOReq.setUserImg(fileName);
+            bytes = file.getBytes();
+        }
+        UserTokenDTO userTokenDTO = userApi.updateGeneralUser(DozerUtil.map(userVOReq, UserDTO.class), bytes);
+        return new ResultModel<>().success(userTokenDTO);
+    }
+
+
+
+/*===========================================================收货地址==============================================================*/
+
+    /**
+     * 展示收货地址
+     * @param TOKEN 令牌密钥 用户唯一标识
+     * @return  UserAddressVoResp
+     * @throws Exception 异常信息
+     */
+    @GetMapping("address/show")
+    public ResultModel<Object> show(@RequestHeader("TOKEN") String TOKEN) throws Exception {
+        return new ResultModel<>().success(DozerUtil.mapList(userApi.findAddressAll(TOKEN), UserAddressVoResp.class));
+    }
+
+    /**
+     * 三级联动 根据父级id查数据
+     * @param parentId 父级id
+     * @return AreaVoResp
+     * @throws Exception  异常信息
+     */
+    @GetMapping("address/getAreaByParentId")
+    public ResultModel<Object> getAreaByParentId(Integer parentId) throws Exception {
+        return new ResultModel<>().success(DozerUtil.mapList(userApi.getAreaByParentId(parentId), AreaVoResp.class));
+    }
+
+    /**
+     * 新增收货地址
+     * @param userAddressVoReq userAddressVoReq
+     * @param TOKEN 令牌密钥 用户唯一标识
+     * @return  ResultModel
+     * @throws Exception 异常信息
+     */
+    @PostMapping("address/add")
+    public ResultModel<Object> add(UserAddressVoReq userAddressVoReq, String TOKEN) throws Exception {
+        userApi.newShippingAddress(DozerUtil.map(userAddressVoReq, UserAddressDTO.class), TOKEN);
+        return new ResultModel<>().success();
+    }
+    /**
+     * 修改收货地址
+     * @param userAddressVoReq userAddressVoReq
+     * @return  ResultModel
+     * @throws Exception 异常信息
+     */
+    @PutMapping("address/update")
+    public ResultModel<Object> update(UserAddressVoReq userAddressVoReq) throws Exception {
+        userApi.updateAddressById(DozerUtil.map(userAddressVoReq, UserAddressDTO.class));
+        return new ResultModel<>().success();
+    }
+
 
 /*===========================================================我的购物车==============================================================*/
     /**

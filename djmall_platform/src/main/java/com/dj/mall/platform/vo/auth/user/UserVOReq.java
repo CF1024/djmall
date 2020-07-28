@@ -122,5 +122,17 @@ public class UserVOReq implements Serializable {
      * 当前登录人
      */
     private String sessionUser;
+    /**
+     * 用户头像
+     */
+    private String userImg;
+    /**
+     * 用户头像
+     */
+    private String removeImg;
+    /**
+     * 用户token
+     */
+    private String token;
 
 }

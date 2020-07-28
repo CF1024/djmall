@@ -143,5 +143,17 @@ public class UserDTO implements Serializable {
      * 非此表字段 用户权限集合
      */
     private List<ResourceDTO> permissionList;
+    /**
+     * 用户头像
+     */
+    private String userImg;
+    /**
+     * 用户头像
+     */
+    private String removeImg;
+    /**
+     * 用户token
+     */
+    private String token;
 
 }

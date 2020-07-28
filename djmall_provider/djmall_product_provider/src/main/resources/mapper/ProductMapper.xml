@@ -49,7 +49,7 @@
         GROUP BY ps.id DESC
     </select>
 
-    <select id="findList" resultType="com.dj.mall.product.bo.spu.ProductBO">
+    <!--<select id="findList" resultType="com.dj.mall.product.bo.spu.ProductBO">
         SELECT
         ps.id AS productId,
         ps.product_name,
@@ -89,5 +89,5 @@
             </if>
         </where>
         GROUP BY ps.id DESC
-    </select>
+    </select>-->
 </mapper>

@@ -99,4 +99,8 @@ public class UserBO implements Serializable {
      * 非此表字段 用户性别集合
      */
     private List<String> userSexList;
+    /**
+     * 用户头像
+     */
+    private String userImg;
 }

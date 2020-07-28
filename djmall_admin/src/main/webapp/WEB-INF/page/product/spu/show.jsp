@@ -102,6 +102,42 @@
             return ids;
         }
 
+        //增量索引
+        function incrementalIndex() {
+            var index = layer.load(0, {offset: '230px', shade:0.5});
+            $.post(
+                "<%=request.getContextPath()%>/product/spu/incrementalIndex",
+                function (data) {
+                    layer.close(index);
+                    if(data.code !== 200) {
+                        layer.msg(data.msg, {icon:5,time:2000});
+                        return;
+                    }
+                    layer.msg(data.msg, {icon: 6, time: 2000},
+                        function() {
+                            window.location.href = "<%=request.getContextPath()%>/product/spu/toShow";
+                        });
+                })
+        }
+
+        //重构索引
+        function refactoringTheIndex() {
+            var index = layer.load(0, {offset: '230px', shade:0.5});
+            $.post(
+                "<%=request.getContextPath()%>/product/spu/refactoringTheIndex",
+                function (data) {
+                    layer.close(index);
+                    if(data.code !== 200) {
+                        layer.msg(data.msg, {icon:5,time:2000});
+                        return;
+                    }
+                    layer.msg(data.msg, {icon: 6, time: 2000},
+                        function() {
+                            window.location.href = "<%=request.getContextPath()%>/product/spu/toShow";
+                        });
+                })
+        }
+
         //去新增商品
         function toAddProduct() {
             window.location.href = "<%=request.getContextPath()%>/product/spu/toAddProduct";
@@ -175,10 +211,10 @@
             </div>
         </form>
         <shiro:hasPermission name="INCREMENTAL_INDEX_BTN">
-            <input type="button" value="增量索引" onclick="toIncrementalIndex()" class="layui-btn layui-btn-radius layui-btn-primary">
+            <input type="button" value="增量索引" onclick="incrementalIndex()" class="layui-btn layui-btn-radius layui-btn-primary">
         </shiro:hasPermission>
         <shiro:hasPermission name="REFACTORING_THE_INDEX_BTN">
-            <input type="button" value="重构索引" onclick="toRefactoringTheIndex()" class="layui-btn layui-btn-radius layui-btn-primary"><br /><br />
+            <input type="button" value="重构索引" onclick="refactoringTheIndex()" class="layui-btn layui-btn-radius layui-btn-primary"><br /><br />
         </shiro:hasPermission>
         <shiro:hasPermission name="PRODUCT_ADD_BTN">
             <input type="button" value="新增" onclick="toAddProduct()" class="layui-btn layui-btn-radius layui-btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

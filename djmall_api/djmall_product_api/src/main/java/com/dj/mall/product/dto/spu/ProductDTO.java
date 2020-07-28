@@ -18,6 +18,7 @@ import org.dozer.Mapping;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -70,6 +71,14 @@ public class ProductDTO implements Serializable {
      *点赞量
      */
     private Integer praiseNumber;
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+    /**
+     *修改时间
+     */
+    private LocalDateTime updateTime;
     /**
      * 当前页
      */
@@ -124,4 +133,8 @@ public class ProductDTO implements Serializable {
      *  折扣 展示
      */
     private String skuRateShow;
+    /**
+     * 关键字
+     */
+    private String productKeywords;
 }

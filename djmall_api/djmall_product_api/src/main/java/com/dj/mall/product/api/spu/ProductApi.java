@@ -73,6 +73,21 @@ public interface ProductApi {
      */
     void updateProductById(ProductDTO productDTO, byte[] file) throws Exception, BusinessException;
 
+
+    /**
+     * 增量索引
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    void incrementalIndex() throws Exception, BusinessException;
+
+    /**
+     * 重构索引
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    void refactoringTheIndex() throws Exception, BusinessException;
+
     /*=========================商城========================*/
 
     /**
@@ -83,5 +98,4 @@ public interface ProductApi {
      * @throws BusinessException 业务处理异常
      */
     PageResult findList(ProductDTO productDTO) throws Exception, BusinessException;
-
 }

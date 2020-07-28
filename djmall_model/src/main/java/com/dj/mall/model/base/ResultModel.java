@@ -1,79 +1,137 @@
-/*
- * 作者：CF
- * 日期：2020-07-06 10:25
- * 项目：djmall
- * 模块：djmall_model
- * 类名：ResultModel
- * 版权所有(C), 2020. 所有权利保留
- */
-
 package com.dj.mall.model.base;
+
+import lombok.Data;
+
 /**
- * @author chengf
- * @date 2020/6/3 17:55
- * ResultModel工具类
+ * API接口统一返回
+ *
+ * @param <T> 数据泛型
  */
+@Data
 public class ResultModel<T> {
+    // 后期可优化为枚举
+    /**
+     * 默认处理失败状态码
+     */
+    private static final Integer DEFAULT_ERROR_CODE = -1;
 
-	private Integer code = 200;
-	private String msg = "成功！";
-	private T data;
+    /**
+     * 默认处理成功状态码
+     */
+    private static final Integer DEFAULT_SUCCESS_CODE = 200;
 
-	
-	public ResultModel<T> success(String msg){
-		this.msg = msg;
-		return this;
-	}
-	public ResultModel<T> success(){
-		return this;
-	}
-	
-	public ResultModel<T> success(T data){
-		this.data = data;
-		return this;
-	}
-	public ResultModel<T> success(String msg, T data){
-		this.msg = msg;
-		this.data = data;
-		return this;
-	}
-	
-	public ResultModel<T> error(String msg){
-		this.code = -1;
-		this.msg = msg;
-		return this;
-	}
-	
-	public ResultModel<T> error(Integer code, String msg){
-		this.code = code;
-		this.msg = msg;
-		return this;
-	}
-	public ResultModel<T> error(Integer code, String msg, T data){
-		this.code = code;
-		this.msg = msg;
-		this.data = data;
-		return this;
-	}
-	
-	public Integer getCode() {
-		return code;
-	}
-	public void setCode(Integer code) {
-		this.code = code;
-	}
-	public String getMsg() {
-		return msg;
-	}
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
+    /**
+     * 返回状态码
+     */
+    private Integer code = DEFAULT_SUCCESS_CODE;
 
-	public T getData() {
-		return data;
-	}
+    /**
+     * 返回消息
+     */
+    private String msg = "业务处理成功";
 
-	public void setData(T data) {
-		this.data = data;
-	}
+    /**
+     * 返回数据
+     */
+    private T data;
+
+    /**
+     * 成功-默认消息
+     *
+     * @return
+     */
+    public ResultModel<T> success() {
+        return this;
+    }
+
+    /**
+     * 成功-无数据返回
+     *
+     * @param msg 返回消息
+     * @return
+     */
+    public ResultModel<T> success(String msg) {
+        this.msg = msg;
+        return this;
+    }
+
+    /**
+     * 成功-返回数据
+     *
+     * @param data 返回数据
+     * @return
+     */
+    public ResultModel<T> success(T data) {
+        this.data = data;
+        return this;
+    }
+
+    /**
+     * 成功-返回状态码+数据
+     *
+     * @param code 返回状态码
+     * @param data 返回数据
+     * @return ·
+     */
+    public ResultModel<T> success(Integer code, T data) {
+        this.code = code;
+        this.data = data;
+        return this;
+    }
+
+    /**
+     * 成功-返回状态码+消息+数据
+     *
+     * @param code 返回状态码
+     * @param msg  返回消息
+     * @param data 返回数据
+     * @return
+     */
+    public ResultModel<T> success(Integer code, String msg, T data) {
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
+        return this;
+    }
+
+    /**
+     * 失败-返回消息
+     *
+     * @param msg 返回消息
+     * @return
+     */
+    public ResultModel<T> error(String msg) {
+        this.code = DEFAULT_ERROR_CODE;
+        this.msg = msg;
+        return this;
+    }
+
+    /**
+     * 失败- 返回状态码+消息
+     *
+     * @param code 返回状态码
+     * @param msg  返回消息
+     * @return
+     */
+    public ResultModel<T> error(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+        return this;
+    }
+
+    /**
+     * 失败-返回状态码+消息+数据
+     *
+     * @param code 返回状态码
+     * @param msg  返回消息
+     * @param data 返回数据
+     * @return
+     */
+    public ResultModel<T> error(Integer code, String msg, T data) {
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
+        return this;
+    }
+
 }

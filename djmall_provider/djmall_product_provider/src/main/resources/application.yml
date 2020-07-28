@@ -7,6 +7,9 @@ spring:
     url: jdbc:mysql://localhost:3306/djmall?characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false
   mvc:
     date-format: yyyy-MM-dd HH:mm:ss #前台传给后台时间转换
+  data:
+    solr:
+      host: http://localhost:8085/solr/SolrCore
 
 # Mybatis-plus
 mybatis-plus:

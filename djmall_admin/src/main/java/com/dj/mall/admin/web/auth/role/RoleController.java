@@ -13,7 +13,6 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.dj.mall.admin.vo.auth.role.RoleVOReq;
 import com.dj.mall.admin.vo.auth.role.RoleVOResp;
 import com.dj.mall.auth.api.role.RoleApi;
-import com.dj.mall.auth.dto.resource.TreeData;
 import com.dj.mall.auth.dto.role.RoleDTO;
 import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.base.ResultModel;
@@ -21,8 +20,6 @@ import com.dj.mall.model.contant.PermissionsCode;
 import com.dj.mall.model.util.DozerUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author chengf

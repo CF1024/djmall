@@ -37,12 +37,12 @@
             // 是否登录
             if (token === undefined && nickName === undefined) {
                 $("#login").html("<i class='layui-icon layui-icon-username' style='font-size: 30px'></i>点我登录");
-                $("#login").attr("href", "javascript:toLogin()");
+                $("#login").attr("href", "<%=request.getContextPath()%>/user/toLogin");
                 $("#hiddenRegister").show();
                 $("#hiddenLogout").hide();
             }  else if (token !== '' && nickName !== '') {
-                $("#login").html(nickName);
-                $("#login").attr("href", "<%=request.getContextPath()%>/user/toIndex?TOKEN=" + getToken());
+                $("#login").html("<i class='layui-icon layui-icon-username' style='font-size: 30px'></i>"+nickName);
+                $("#login").attr("href", "<%=request.getContextPath()%>/user/index/toIndex?TOKEN=" + getToken());
                 $("#hiddenRegister").hide();
                 $("#hiddenLogout").show();
             }
@@ -290,7 +290,7 @@
                             <div class="layui-col-md4">
                                 购买数量：
                                 <input type="button" value="-"  onclick="subCount(this, ${cart.skuCount})" class="layui-btn layui-btn-normal">
-                                <input type="number" name="quantity" id="quantity" value="${cart.quantity}" onchange="check_count(this, ${cart.skuCount})" max="200" min="1" style="width: 120px; height: 38px">
+                                <input type="number" name="quantity" id="quantity" value="${cart.quantity}" onmouseout="check_count(this, ${cart.skuCount})" max="200" min="1" style="width: 120px; height: 38px">
                                 <input type="button" value="+"  onclick="plusCount(this, ${cart.skuCount})" class="layui-btn layui-btn-normal">
                                 <div align="center">
                                     <br><span class="countSpan" style="color: #FF5722">货源充足</span><br><br>

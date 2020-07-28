@@ -11,9 +11,9 @@ package com.dj.mall.admin.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dj.mall.model.base.BusinessException;
-import com.dj.mall.model.base.ResultModel;
 /*import com.dj.mall.model.contant.SystemConstant;
 import org.apache.shiro.authz.UnauthorizedException;*/
+import com.dj.mall.model.base.ResultModel;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -70,6 +71,14 @@ public class ProductVOReq implements Serializable {
      */
     private Integer praiseNumber;
     /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+    /**
+     *修改时间
+     */
+    private LocalDateTime updateTime;
+    /**
      * 当前页
      */
     private Integer pageNo = 1;
@@ -99,4 +108,8 @@ public class ProductVOReq implements Serializable {
      * 最高价格 展示 价格查询
      */
     private BigDecimal skuPriceMax;
+    /**
+     * 关键字
+     */
+    private String productKeywords;
 }

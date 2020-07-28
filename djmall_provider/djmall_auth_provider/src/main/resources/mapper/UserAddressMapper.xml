@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ 作者：CF
+  ~ 日期：2020-07-28 18:41
+  ~ 项目：djmall
+  ~ 模块：djmall_auth_provider
+  ~ 类名：UserAddressMapper.xml
+  ~ 版权所有(C), 2020. 所有权利保留
+  -->
+
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dj.mall.auth.mapper.address.UserAddressMapper">
+    <!--收货地址展示-->
+    <select id="findAddressAllByUserId" resultType="com.dj.mall.auth.entity.address.UserAddressEntity">
+        SELECT
+            sa.id,
+            sa.user_id,
+            sa.receiver_name,
+            sa.phone,
+            sa.province,
+            sa.city,
+            sa.county,
+            sa.is_del,
+            CONCAT(
+                    a1.area_name,
+                    a2.area_name,
+                    a3.area_name,
+                    sa.detailed_address
+                ) AS detailed_address
+        FROM
+            djmall_shipping_address sa
+                LEFT JOIN djmall_area a1 ON sa.province = a1.id
+                LEFT JOIN djmall_area a2 ON sa.city = a2.id
+                LEFT JOIN djmall_area a3 ON sa.county = a3.id
+        WHERE
+            sa.user_id = #{userId} AND sa.is_del = 'NOT_DEL'
+    </select>
+</mapper>

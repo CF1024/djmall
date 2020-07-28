@@ -117,6 +117,10 @@ public class UserVOResp implements Serializable {
      * 非此表字段 激活状态
      */
     private String userStatusShow;
+    /**
+     * 用户头像
+     */
+    private String userImg;
 
 
 }

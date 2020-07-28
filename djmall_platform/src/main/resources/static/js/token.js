@@ -43,13 +43,12 @@ function getToken() {
 
 // 去登录
 function toLogin() {
-    window.location.href = "/product/toShow";
-    /*layer.open({
+    layer.open({
         type:2,
         content : "/user/toLogin",
         title : '登录',
         shade : 0.6
-    });*/
+    });
 }
 
 // Ajax请求 返回拦截

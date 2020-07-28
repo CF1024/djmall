@@ -10,7 +10,6 @@
 package com.dj.mall.admin.web.dict.attr;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.dj.mall.admin.vo.auth.user.UserVOResp;
 import com.dj.mall.admin.vo.dict.attr.AttrValueVOReq;
 import com.dj.mall.admin.vo.dict.attr.AttrValueVOResp;
 import com.dj.mall.dict.api.attr.AttrValueApi;

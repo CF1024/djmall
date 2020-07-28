@@ -152,4 +152,26 @@ public class ProductController {
         productApi.updateProductById(DozerUtil.map(productVOReq, ProductDTO.class), bytes);
         return new  ResultModel<>().success("修改成功");
     }
+
+    /**
+     * 增量索引
+     * @throws Exception 异常
+     */
+    @PostMapping("incrementalIndex")
+    @RequiresPermissions(value = PermissionsCode.INCREMENTAL_INDEX_BTN)
+    public ResultModel<Object> incrementalIndex() throws Exception {
+        productApi.incrementalIndex();
+        return new  ResultModel<>().success();
+    }
+
+    /**
+     * 重构索引
+     * @throws Exception 异常
+     */
+    @PostMapping("refactoringTheIndex")
+    @RequiresPermissions(value = PermissionsCode.REFACTORING_THE_INDEX_BTN)
+    public ResultModel<Object> refactoringTheIndex() throws Exception {
+        productApi.refactoringTheIndex();
+        return new  ResultModel<>().success();
+    }
 }

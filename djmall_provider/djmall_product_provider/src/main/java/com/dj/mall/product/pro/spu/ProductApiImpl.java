@@ -18,23 +18,31 @@ import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.contant.DictConstant;
+import com.dj.mall.model.contant.ProductConstant;
 import com.dj.mall.model.util.DozerUtil;
+import com.dj.mall.model.util.HttpClientUtil;
 import com.dj.mall.model.util.QiniuUtils;
 import com.dj.mall.product.api.spu.ProductApi;
 import com.dj.mall.product.bo.spu.ProductBO;
-import com.dj.mall.product.dto.sku.SkuDTO;
+import com.dj.mall.product.config.ProductSolr;
 import com.dj.mall.product.dto.spu.ProductDTO;
 import com.dj.mall.product.entity.sku.SkuEntity;
 import com.dj.mall.product.entity.spu.ProductEntity;
 import com.dj.mall.product.mapper.spu.ProductMapper;
 import com.dj.mall.product.service.sku.SkuService;
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.response.QueryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author chengf
@@ -49,6 +57,11 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
      */
     @Autowired
     private SkuService skuService;
+    /**
+     * SolrClient 搜索服务调用
+     */
+    @Autowired
+    private SolrClient solrClient;
 
     /**
      * 商品展示
@@ -167,6 +180,26 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
         }
     }
 
+    /**
+     * 增量索引
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    @Override
+    public void incrementalIndex() throws Exception, BusinessException {
+        HttpClientUtil.sendHttpRequest("http://localhost:8085/solr/SolrCore/dataimport?command=delta-import", HttpClientUtil.HttpRequestMethod.GET, new HashMap<>());
+    }
+
+    /**
+     * 重构索引
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    @Override
+    public void refactoringTheIndex() throws Exception, BusinessException {
+        HttpClientUtil.sendHttpRequest("http://localhost:8085/solr/SolrCore/dataimport?command=full-import", HttpClientUtil.HttpRequestMethod.GET, new HashMap<>());
+    }
+
     /*==============================================商城==================================================*/
 
     /**
@@ -178,12 +211,93 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
      */
     @Override
     public PageResult findList(ProductDTO productDTO) throws Exception, BusinessException {
-        //展示 默认状态：默认 上下架 ： 上架
-        productDTO.setIsDefault(DictConstant.HAVE_DEFAULT);
-        productDTO.setProductStatus(DictConstant.PRODUCT_STATUS_UP);
-        IPage<ProductBO> iPage = getBaseMapper().findList(new Page<ProductEntity>(productDTO.getPageNo(), productDTO.getPageSize()), DozerUtil.map(productDTO, ProductBO.class));
-        return new PageResult().toBuilder().pages(iPage.getPages()).list(DozerUtil.mapList(iPage.getRecords(), ProductDTO.class)).build();
-    }
+        ProductSolr productSolr = DozerUtil.map(productDTO, ProductSolr.class);
+        SolrQuery query = new SolrQuery();
+        //输入框查询 或 查询全部
+        if (!StringUtils.isEmpty(productSolr.getProductKeywords())) {
+            query.setQuery("product_keywords:"+productSolr.getProductKeywords());
+        } else {
+            query.setQuery("*:*");
+        }
 
+        //价格查询
+        if (null != productSolr.getSkuPriceMin() && null == productSolr.getSkuPriceMax()) {
+            query.addFilterQuery("sku_price_show : ["+ productSolr.getSkuPriceMin() +" TO *]");
+        }
+        if (null == productSolr.getSkuPriceMin() && null != productSolr.getSkuPriceMax()) {
+            query.addFilterQuery("sku_price_show : [* TO "+ productSolr.getSkuPriceMax() +"]");
+        }
+        if (null != productSolr.getSkuPriceMin() && null != productSolr.getSkuPriceMax()) {
+            query.addFilterQuery("sku_price_show : ["+ productSolr.getSkuPriceMin() +" TO "+ productSolr.getSkuPriceMax() +"]");
+        }
+
+        //复选框查询
+        List<String> productTypeList = productSolr.getProductTypeList();
+        if (null != productTypeList && ProductConstant.ZERO < productTypeList.size()) {
+            StringBuilder filter = new StringBuilder("product_type:");
+            for (String productType : productTypeList) {
+                filter.append(productType).append(",");
+            }
+            query.addFilterQuery(filter.substring(0, filter.length() -1));
+        }
+
+        //排序条件
+        List<SolrQuery.SortClause> solrList = new ArrayList<>();
+        solrList.add(new SolrQuery.SortClause("id", SolrQuery.ORDER.desc));
+        //根据多字段排序
+        query.setSorts(solrList);
+
+        //分页 起始页：setStart 每页条数：setRows
+        query.setStart(productDTO.getPageSize() * (productDTO.getPageNo() - 1));
+        query.setRows(productDTO.getPageSize());
+
+        //高亮查询
+        query.setHighlight(true); //开启高亮
+        //高亮字段
+        query.addHighlightField("product_name");
+        query.addHighlightField("product_type");
+        query.addHighlightField("product_describe");
+        query.addHighlightField("sku_attr_value_names");
+        //高亮前后缀
+        query.setHighlightSimplePre("<font color='red'>");
+        query.setHighlightSimplePost("</font>");
+
+        QueryResponse queryResponse  = solrClient.query(query);
+
+        //获得数据
+        List<ProductSolr> productSolrList = queryResponse.getBeans(ProductSolr.class);
+        List<Integer> productIds = new ArrayList<>();
+
+        //获得高亮数据
+        Map<String, Map<String, List<String>>> highlighting = queryResponse.getHighlighting();
+        productSolrList.forEach(product -> {
+            productIds.add(Integer.valueOf(product.getProductId()));
+            Map<String, List<String>> listMap = highlighting.get(product.getProductId());
+            if (!StringUtils.isEmpty(listMap)) {
+                List<String> productName = listMap.get("product_name");
+                List<String> productType = listMap.get("product_type");
+                List<String> productDescribe = listMap.get("product_describe");
+                List<String> skuAttrValueNames = listMap.get("sku_attr_value_names");
+
+                if (!StringUtils.isEmpty(productName)) {
+                    product.setProductName(productName.get(ProductConstant.ZERO));
+                }
+                if (!StringUtils.isEmpty(productType)) {
+                    product.setProductType(productType.get(ProductConstant.ZERO));
+                }
+                if (!StringUtils.isEmpty(productDescribe)) {
+                    product.setProductDescribe(productDescribe.get(ProductConstant.ZERO));
+                }
+                if (!StringUtils.isEmpty(skuAttrValueNames)) {
+                    product.setSkuAttrValueNames(skuAttrValueNames.get(ProductConstant.ZERO));
+                }
+            }
+        });
+        //总条数 / 每页条数
+        Double numFound = (double) queryResponse.getResults().getNumFound();
+        long pages = (long) Math.ceil(numFound / Double.valueOf(productDTO.getPageSize()));
+
+        return new PageResult().toBuilder().pages(pages).list(DozerUtil.mapList(productSolrList, ProductDTO.class)).build();
+    }
 
 }

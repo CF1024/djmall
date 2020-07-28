@@ -82,7 +82,7 @@
         });
     </script>
     <body>
-        <form id="fm" class="layui-form" id="fm">
+        <form class="layui-form" id="fm">
             <input type="hidden" name="_method" value="PUT"/>
             <input type="hidden" name="roleId" value="${role.roleId}" id="roleId">
             <div class="layui-form-item">
