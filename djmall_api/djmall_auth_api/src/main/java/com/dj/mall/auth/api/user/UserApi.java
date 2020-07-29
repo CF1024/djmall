@@ -234,6 +234,14 @@ public interface UserApi {
      */
     void updateAddressById(UserAddressDTO userAddressDTO) throws Exception, BusinessException;
 
+    /**
+     * 删除
+     * @param id 地址id
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    void removeAddressById(Integer id) throws Exception, BusinessException;
+
     /*========================================================购物车==============================================================*/
 
 
@@ -245,5 +253,6 @@ public interface UserApi {
      * @throws BusinessException 自定义异常
      */
     void addToShoppingCart(ShoppingCartDTO shoppingCartDTO, String TOKEN) throws Exception, BusinessException;
+
 
 }

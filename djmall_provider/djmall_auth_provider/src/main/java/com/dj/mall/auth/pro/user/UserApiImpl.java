@@ -504,6 +504,7 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         UserDTO userDTO = redisApi.get(RedisConstant.USER_TOKEN + TOKEN);
         return DozerUtil.mapList(userAddressService.findAddressAll(userDTO.getUserId()), UserAddressDTO.class);
     }
+
     /**
      * 三级联动 根据父级id查数据
      * @param parentId 父级id
@@ -528,6 +529,7 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         //得到当前登录用户
         UserDTO userDTO = redisApi.get(RedisConstant.USER_TOKEN + TOKEN);
         userAddressDTO.setUserId(userDTO.getUserId());
+        userAddressDTO.setIsDel(DictConstant.NOT_DEL);
         userAddressService.save(DozerUtil.map(userAddressDTO, UserAddressEntity.class));
     }
 
@@ -568,6 +570,19 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
     @Override
     public void updateAddressById(UserAddressDTO userAddressDTO) throws Exception, BusinessException {
         userAddressService.updateById(DozerUtil.map(userAddressDTO, UserAddressEntity.class));
+    }
+
+    /**
+     * 删除
+     * @param id 地址id
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public void removeAddressById(Integer id) throws Exception, BusinessException {
+        UserAddressEntity addressEntity = userAddressService.getById(id);
+        addressEntity.setIsDel(DictConstant.HAVE_DEL);
+        userAddressService.updateById(addressEntity);
     }
 
     /*========================================================购物车==============================================================*/

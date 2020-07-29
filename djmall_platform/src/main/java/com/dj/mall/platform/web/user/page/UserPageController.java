@@ -116,7 +116,7 @@ public class UserPageController {
      * @throws Exception 异常
      */
     @GetMapping("address/toUpdate")
-    public String toUpdate(String TOKEN, Integer id, ModelMap model) throws Exception {
+    public String toUpdate(Integer id, ModelMap model) throws Exception {
         model.put("areaList", DozerUtil.mapList(userApi.findAreaAll(DictConstant.NOT_DEL), AreaVoResp.class));
         model.put("address", DozerUtil.map(userApi.findAddressById(id), UserAddressVoResp.class));
         return "user/address/update";

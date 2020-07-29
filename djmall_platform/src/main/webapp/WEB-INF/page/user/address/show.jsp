@@ -80,7 +80,7 @@
                 shadeClose: true,
                 maxmin: true, //开启最大化最小化按钮
                 shade: 0.8,
-                area: ['500px', '50%'],
+                area: ['800px', '50%'],
                 content: '<%=request.getContextPath()%>/user/address/toUpdate?TOKEN='+getToken()+"&id="+id
             });
         }
@@ -88,9 +88,9 @@
         //删除
         function remove(id) {
             layer.confirm('确认删除？', {icon: 3, title:'提示'}, function(index){
-                $.post(
+                token_post(
                     "<%=request.getContextPath()%>/user/address/remove",
-                    {"id":id},
+                    {"id":id, "_method":"PUT"},
                     function (data) {
                         if(data.code !== 200) {
                             layer.msg(data.msg, {icon:5,time:2000});

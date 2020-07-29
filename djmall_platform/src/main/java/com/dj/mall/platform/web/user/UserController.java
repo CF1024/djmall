@@ -172,6 +172,18 @@ public class UserController {
         return new ResultModel<>().success();
     }
 
+    /**
+     * 删除收货地址
+     * @param id 地址id
+     * @return  ResultModel
+     * @throws Exception 异常信息
+     */
+    @PutMapping("address/remove")
+    public ResultModel<Object> remove(Integer id) throws Exception {
+        userApi.removeAddressById(id);
+        return new ResultModel<>().success();
+    }
+
 
 /*===========================================================我的购物车==============================================================*/
     /**

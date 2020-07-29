@@ -163,8 +163,7 @@
 
 </script>
     <body>
-        <form id="fm">
-
+        <form id="fm" style="padding: 15px;">
             <input type="hidden" name="_method" value="PUT">
             <input type="hidden" name="id" id="id" value="${address.id}">
             <div class="layui-form-item">
@@ -218,10 +217,9 @@
                     </c:forEach>
                 </select>
             </div>--%>
-
             <div class="layui-form-item">
                 <label class="layui-form-label">详细位置</label>
-                <div class="layui-input-inline">
+                <div class="layui-input-block">
                     <input type="text" name="detailedAddress" value="${address.detailedAddress}" id="detailedAddress" placeholder="请输入详细位置" class="layui-input">
                 </div>
             </div>

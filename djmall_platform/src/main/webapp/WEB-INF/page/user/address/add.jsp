@@ -192,7 +192,7 @@
 
             <div class="layui-form-item">
                 <label class="layui-form-label">详细位置</label>
-                <div class="layui-input-inline">
+                <div class="layui-input-block">
                     <input type="text" name="detailedAddress" id="detailedAddress" placeholder="请输入详细位置" class="layui-input">
                 </div>
             </div>

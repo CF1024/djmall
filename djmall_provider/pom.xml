@@ -44,5 +44,6 @@
         <module>djmall_cmpt_provider</module>
         <module>djmall_product_provider</module>
         <module>djmall_task</module>
+        <module>djmall_order_provider</module>
     </modules>
 </project>
