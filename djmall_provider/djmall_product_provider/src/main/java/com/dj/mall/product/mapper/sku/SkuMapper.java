@@ -10,11 +10,19 @@
 package com.dj.mall.product.mapper.sku;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.dj.mall.product.bo.sku.SkuBO;
 import com.dj.mall.product.entity.sku.SkuEntity;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.dao.DataAccessException;
+
+import java.util.List;
+
 /**
  * @author chengf
  * @date 2020/7/4 19:10
  * 商品sku
  */
 public interface SkuMapper extends BaseMapper<SkuEntity> {
+
+    List<SkuBO> findSkuBySkuIds(@Param("list") List<Integer> skuIdList) throws DataAccessException;
 }

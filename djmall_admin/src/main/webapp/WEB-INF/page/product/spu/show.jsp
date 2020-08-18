@@ -49,11 +49,11 @@
                         html += "<td width='200px'>" + pro.productName +"</td>";
                         html += "<td>" + pro.productType +"</td>";
                         html += "<td>" + pro.productStatus +"</td>";
-                        html += pro.freightShow == "0.00" ? "<td>"+ pro.company +"-包邮</td>" : "<td>" +pro.company +" - "+ pro.freightShow +"元</td>";
-                        html += "<td><img src='http://qcxz8bvc2.bkt.clouddn.com/"+pro.productImg+"' style='width: 70px; height: 70px'></td>";
+                        html += pro.freight == "0.00" ? "<td>"+ pro.company +"-包邮</td>" : "<td>" +pro.company +" - "+ pro.freight +"元</td>";
+                        html += "<td><img src='http://qeu5389un.bkt.clouddn.com/"+pro.productImg+"' style='width: 70px; height: 70px'></td>";
                         html += "<td>" + pro.productDescribe +"</td>";
-                        html += pro.praiseNumber == null ? "<td>暂无点赞量</td>" : "<td>" + pro.praiseNumber +"</td>";
-                        html += pro.orderNumber == null ? "<td>暂无订单量</td>" : "<td>" + pro.orderNumber +"</td>";
+                        html += "<td>" + pro.praiseNumber +"</td>";
+                        html += "<td>" + pro.orderNumber +"</td>";
                         html += "</tr>";
                     }
                     $("#tbd").html(html);
@@ -186,6 +186,61 @@
                 layer.close(index);
             });
         }
+      //下载导入模板
+      function toDownloadTheImportTemplate() {
+          window.location.href = "<%=request.getContextPath()%>/product/spu/toDownloadTheImportTemplate";
+      }
+
+      //导入
+      function importProduct() {
+          layer.open({
+              type: 1,
+              content: '上传Excel：<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"><br>',
+              title: "导入文件",
+              shadeClose: true,
+              shade: 0.5,
+              area: ['30%', '50%'],
+              btn: ['确认', '取消'],
+              yes: function (index) {
+                  var formData = new FormData();
+                  formData.append("file", $("#file")[0].files[0]);
+                  var index1 = layer.load();
+                  //上传文件只能ajax提交
+                  $.ajax({
+                      url:'<%= request.getContextPath() %>/product/spu/importProduct',
+                      dataType:'json',
+                      type:'POST',
+                      data: formData,
+                      processData : false, // 使数据不做处理
+                      contentType : false, // 不要设置Content-Type请求头信息
+                      shade: 0.5,
+                      success: function(data){
+                          layer.msg(data.msg,function () {
+                              layer.close(index1);
+                              if (data.code != 200) {
+                                  return;
+                              }
+                              window.location.href = "<%= request.getContextPath() %>/product/toShow";
+                          })
+                      }
+                  });
+                  layer.close(index);
+              }
+          });
+      }
+        //查看评论
+      function toViewComments() {
+          var ids = getIds();
+          if (ids.length < 1){
+              layer.msg("请选择一个商品进行查看评论", {icon:6});
+              return;
+          }
+          if (ids.length > 1) {
+              layer.msg("只能选择一个商品进行查看评论！", {icon:6});
+              return;
+          }
+          window.location.href = "<%= request.getContextPath() %>/product/spu/toViewComments/"+ids[0];
+      }
     </script>
     <body>
         <form class="layui-form" id="fm">
@@ -210,6 +265,7 @@
                 </div>
             </div>
         </form>
+
         <shiro:hasPermission name="INCREMENTAL_INDEX_BTN">
             <input type="button" value="增量索引" onclick="incrementalIndex()" class="layui-btn layui-btn-radius layui-btn-primary">
         </shiro:hasPermission>
@@ -232,7 +288,7 @@
             <input type="button" value="下载导入模板" onclick="toDownloadTheImportTemplate()" class="layui-btn layui-btn-radius layui-btn-danger">
         </shiro:hasPermission>
         <shiro:hasPermission name="IMPORT_BTN">
-            <input type="button" value="导入" onclick="toImport()" class="layui-btn layui-btn-radius layui-btn-warm">
+            <input type="button" value="导入" onclick="importProduct()" class="layui-btn layui-btn-radius layui-btn-warm">
         </shiro:hasPermission>
         <table border="0px" class="layui-table" >
             <colgroup>

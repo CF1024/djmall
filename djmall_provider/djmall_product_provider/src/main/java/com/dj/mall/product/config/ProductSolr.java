@@ -31,7 +31,7 @@ public class ProductSolr implements Serializable {
     /**
      *商品名
      */
-    @Field(value = "product_name")
+    @Field
     private String productName;
     /**
      *运费id
@@ -41,17 +41,17 @@ public class ProductSolr implements Serializable {
     /**
      *商品描述
      */
-    @Field(value = "product_describe")
+    @Field
     private String productDescribe;
     /**
      * 商品照片
      */
-    @Field(value = "product_img")
+    @Field
     private String productImg;
     /**
      * 商品类型
      */
-    @Field(value = "product_type")
+    @Field
     private String productType;
     /**
      * 用户id
@@ -61,17 +61,18 @@ public class ProductSolr implements Serializable {
     /**
      * 商品状态
      */
-    @Field(value = "product_status")
+    @Field
     private String productStatus;
+    /**
+     * 订单量
+     */
+    @Field
+    private Integer orderNumber;
     /**
      *点赞量
      */
-    @Field(value = "praise_number")
+    @Field
     private Integer praiseNumber;
-    /**
-     * 商品类型集合 展示商品 复选框查询
-     */
-    private List<String> productTypeList;
     /**
      * 公司 展示商品
      */
@@ -80,44 +81,59 @@ public class ProductSolr implements Serializable {
     /**
      * 运费 展示商品
      */
-    @Field(value = "freight_show")
-    private Double freightShow;
-
-    /*=========================商城========================*/
-    /**
-     * 最低价格 展示 价格查询
-     */
     @Field
-    private Double skuPriceMin;
-    /**
-     * 最高价格 展示 价格查询
-     */
-    @Field
-    private Double skuPriceMax;
+    private Double freight;
     /**
      * 库存 展示
      */
-    @Field(value = "sku_count_show")
-    private Integer skuCountShow;
+    @Field
+    private Integer skuCount;
     /**
      * 价格 展示
      */
-    @Field(value = "sku_price_show")
-    private Double skuPriceShow;
+    @Field
+    private Double skuPrice;
     /**
      *  折扣 展示
      */
-    @Field(value = "sku_rate_show")
-    private String skuRateShow;
+    @Field
+    private String skuRate;
     /**
      *sku属性值名集合
      */
-    @Field(value = "sku_attr_value_names")
+    @Field
     private String skuAttrValueNames;
     /**
      *  商品查询 关键字
      */
-    @Field(value = "product_keywords")
+    @Field
     private String productKeywords;
+    /**
+     * 评论量
+     */
+    @Field
+    private Integer commentsNum;
 
+    /**
+     * 好评率
+     */
+    @Field
+    private Integer goodRate;
+
+    /**
+     * 商品类型集合 展示商品 复选框查询
+     */
+    private List<String> productTypeList;
+    /**
+     * 最低价格 展示 价格查询
+     */
+    private Double skuPriceMin;
+    /**
+     * 最高价格 展示 价格查询
+     */
+    private Double skuPriceMax;
+    /**
+     * 是否点赞 0 是 1 否
+     */
+    private Integer isLike;
 }

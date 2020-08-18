@@ -44,9 +44,11 @@
                     var html = "";
                     for (var i = 0; i < data.data.list.length; i++) {
                         var user = data.data.list[i];
+                        var initialValue = 1;
+                        var coding = initialValue + i;
                         html += "<tr>";
                         html += "<td><input type='checkbox' name='ids' value='"+user.userId +"'></td>";
-                        html += "<td>" + user.userId +"</td>";
+                        html += "<td>" + coding +"</td>";
                         html += "<td>" + user.userName +"</td>";
                         html += "<td>" + user.nickName +"</td>";
                         html += "<td>" + user.userPhone +"</td>";

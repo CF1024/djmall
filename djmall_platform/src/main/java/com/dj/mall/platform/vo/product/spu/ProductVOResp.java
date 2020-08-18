@@ -69,6 +69,10 @@ public class ProductVOResp implements Serializable {
      */
     private Integer praiseNumber;
     /**
+     *评论量
+     */
+    private Integer reviewsNumber;
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;
@@ -83,19 +87,23 @@ public class ProductVOResp implements Serializable {
     /**
      * 运费
      */
-    private BigDecimal freightShow;
+    private BigDecimal freight;
 
     /*=========================商城========================*/
     /**
      * 库存 展示
      */
-    private Integer skuCountShow;
+    private Integer skuCount;
     /**
      * 价格 展示
      */
-    private BigDecimal skuPriceShow;
+    private BigDecimal skuPrice;
     /**
      *  折扣 展示
      */
-    private String skuRateShow;
+    private String skuRate;
+    /**
+     * 是否点赞 0 是 1 否
+     */
+    private Integer isLike;
 }

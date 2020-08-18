@@ -13,12 +13,14 @@ import com.alibaba.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author chengf
  * @date 2020/7/29 17:24
  * 订单启动类
  */
+@EnableTransactionManagement
 @SpringBootApplication
 @EnableDubbo
 @MapperScan("com.dj.mall.order.mapper")

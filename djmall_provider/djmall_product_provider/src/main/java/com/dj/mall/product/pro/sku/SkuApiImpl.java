@@ -119,4 +119,27 @@ public class SkuApiImpl extends ServiceImpl<SkuMapper, SkuEntity> implements Sku
     public SkuDTO getSkuBySkuId(Integer skuId) throws Exception, BusinessException {
         return DozerUtil.map(this.getById(skuId), SkuDTO.class);
     }
+
+    /**
+     * 根据购物车中的skuId获取对应sku商品集合
+     * @param skuIdList skuId集合
+     * @return List<ShoppingCartDTO>
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public List<SkuDTO> findSkuBySkuIds(List<Integer> skuIdList) throws Exception, BusinessException {
+        return DozerUtil.mapList(baseMapper.findSkuBySkuIds(skuIdList), SkuDTO.class);
+    }
+
+    /**
+     * 批量修改商品sku库存
+     * @param skuList 商品sku集合
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public void updateSkuCountBatchByIds(List<SkuDTO> skuList) throws Exception, BusinessException {
+        this.updateBatchById(DozerUtil.mapList(skuList, SkuEntity.class));
+    }
 }

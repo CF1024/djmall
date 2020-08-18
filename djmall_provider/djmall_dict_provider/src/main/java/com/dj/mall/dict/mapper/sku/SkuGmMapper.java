@@ -32,5 +32,12 @@ public interface SkuGmMapper extends BaseMapper<SkuGmEntity> {
      * @return
      * @throws DataAccessException
      */
-    IPage<SkuGmBO> findAll(@Param("page") Page<?> page, @Param("skuGm") SkuGmBO skuGmBO) throws DataAccessException;
+    IPage<SkuGmBO> findAll(Page<SkuGmEntity> page, @Param("skuGm") SkuGmBO skuGmBO) throws DataAccessException;
+
+    /**
+     * 单纯查数据
+     * @return
+     * @throws DataAccessException
+     */
+    List<SkuGmBO> findSkuGm()throws DataAccessException;
 }

@@ -28,6 +28,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class SkuDTO implements Serializable {
     /**
+     * 导入商品编号
+     */
+    private Integer productNo;
+    /**
      * 商品sku的id
      */
     private Integer skuId;
@@ -46,7 +50,7 @@ public class SkuDTO implements Serializable {
     /**
      * sku折扣
      */
-    private String skuRate;
+    private Integer skuRate;
     /**
      * sku状态 下架 上架
      */
@@ -71,4 +75,20 @@ public class SkuDTO implements Serializable {
      *是否默认
      */
     private String isDefault;
+    /**
+     * 商品名称
+     */
+    private String productName;
+    /**
+     *商家id
+     */
+    private Integer businessId;
+    /**
+     *运费
+     */
+    private BigDecimal freight;
+    /**
+     * 购买数量，计算订单金额时使用
+     */
+    private Integer buyCount;
 }

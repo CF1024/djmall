@@ -107,4 +107,15 @@ public class SkuGmApiImpl extends ServiceImpl<SkuGmMapper, SkuGmEntity> implemen
     public void addSkuGm(SkuGmDTO skuGmDTO) throws Exception, BusinessException {
         this.save(DozerUtil.map(skuGmDTO, SkuGmEntity.class));
     }
+
+    /**
+     * 单纯查数据
+     * @return List<SkuGmDTO>
+     * @throws Exception
+     * @throws BusinessException
+     */
+    @Override
+    public List<SkuGmDTO> findSkuGm() throws Exception, BusinessException {
+        return DozerUtil.mapList(baseMapper.findSkuGm(), SkuGmDTO.class);
+    }
 }

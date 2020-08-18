@@ -70,6 +70,14 @@ public class ProductVOReq implements Serializable {
      */
     private Integer praiseNumber;
     /**
+     *评论量
+     */
+    private Integer reviewsNumber;
+    /**
+     * 好评率
+     */
+    private Integer goodRate;
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;

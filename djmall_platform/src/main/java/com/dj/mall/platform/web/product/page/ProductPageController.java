@@ -63,8 +63,7 @@ public class ProductPageController {
     @GetMapping("toShow")
     public String toShow(ModelMap model) throws Exception {
         //商品类型集合
-        PageResult pageResult = skuGmApi.findAll(DozerUtil.map(SkuGmVOReq.class, SkuGmDTO.class));
-        model.put("productTypeList", DozerUtil.mapList(pageResult.getList(), SkuGmVOResp.class));
+        model.put("productTypeList", DozerUtil.mapList( skuGmApi.findSkuGm(), SkuGmVOResp.class));
         return "product/show";
     }
 
@@ -83,6 +82,8 @@ public class ProductPageController {
         model.put("sku", DozerUtil.mapList(skuApi.findSkuByProductId(id), SkuVOResp.class));
         //运费
         model.put("freight", DozerUtil.mapList(freightApi.findAll(), FreightVOResp.class));
+        //商品好评率
+        model.put("goodRate", productApi.findGoodRateByProductId(id));
         return "product/detail";
     }
 }

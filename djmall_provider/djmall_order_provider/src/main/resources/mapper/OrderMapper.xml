@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ 作者：CF
+  ~ 日期：2020-07-29 19:03
+  ~ 项目：djmall
+  ~ 模块：djmall_order_provider
+  ~ 类名：OrderMapper.xml
+  ~ 版权所有(C), 2020. 所有权利保留
+  -->
+
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dj.mall.order.mapper.OrderMapper">
+    <!--查找主订单的全部数据-->
+    <select id="findOrderAll" resultType="com.dj.mall.order.bo.OrderBO">
+        SELECT
+            o.order_no,
+            o.buyer_id,
+            o.total_pay_money,
+            o.total_freight,
+            o.total_buy_count,
+            o.create_time,
+            o.pay_type,
+            o.order_status,
+            bd.base_name AS payTypeShow,
+            bd2.base_name AS orderStatusShow,
+            GROUP_CONCAT(od.product_name) AS productNameShow
+        FROM
+            djmall_order o
+                LEFT JOIN djmall_dict_base_data bd ON o.pay_type = bd.base_code
+                LEFT JOIN djmall_dict_base_data bd2 ON o.order_status = bd2.base_code
+                LEFT JOIN djmall_order_detail od ON o.order_no = od.parent_order_no
+        WHERE
+            o.buyer_id = #{userId}
+          AND o.order_status = 'PENDING_PAYMENT'
+        GROUP BY
+            o.order_no
+    </select>
+    <!--根据用户id和订单状态查找子订单数据-->
+    <select id="getOrderInfoByUserIdAndOrderStatus" resultType="com.dj.mall.order.bo.OrderInfoBO">
+        SELECT
+            oi.order_no,
+            oi.parent_order_no,
+            oi.total_pay_money,
+            oi.total_freight,
+            oi.total_buy_count,
+            oi.pay_type,
+            oi.order_status,
+            oi.create_time,
+            oi.pay_time,
+            oi.remind_status,
+            oi.remind_time,
+            GROUP_CONCAT(
+                    od.product_name,
+                    ':',
+                    od.sku_info
+                ) productNameShow,
+            od.sku_rate AS skuRateShow,
+            bd.base_name AS payTypeShow,
+            bd2.base_name AS orderStatusShow,
+            (
+            SELECT
+                   (COUNT(0) - SUM(od.is_comment))
+            FROM
+                djmall_order_detail od
+            WHERE
+                od.child_order_no = oi.order_no
+            ) AS isAllComment
+        FROM
+            djmall_order_info oi
+                LEFT JOIN djmall_order_detail od ON oi.order_no = od.child_order_no
+                LEFT JOIN djmall_dict_base_data bd ON oi.pay_type = bd.base_code
+                LEFT JOIN djmall_dict_base_data bd2 ON oi.order_status = bd2.base_code
+        WHERE
+            <if test="orderStatus == 'TO_BE_DELIVERED'"> /*待发货 ： 已支付 已发货*/
+                oi.order_status IN ('PAID','SHIPPED')
+            </if>
+            <if test="orderStatus == 'COMPLETED'"> /*已完成： 已完成 确认收货*/
+                oi.order_status IN ('COMPLETED','CONFIRM_RECEIPT')
+            </if>
+            <if test="orderStatus == 'CANCELLED'"> /*已取消 ： 已取消*/
+                oi.order_status = #{orderStatus}
+            </if>
+            AND
+              oi.buyer_id = #{userId}
+        GROUP BY
+            oi.order_no
+    </select>
+
+    <resultMap id="orderToOrderDetail" type="com.dj.mall.order.bo.OrderBO">
+        <id column="order_no" property="orderNo"/>
+        <result column="receiver_name" property="receiverName"/>
+        <result column="receiver_phone" property="receiverPhone"/>
+        <result column="receiver_province" property="receiverProvince"/>
+        <result column="receiver_city" property="receiverCity"/>
+        <result column="receiver_county" property="receiverCounty"/>
+        <result column="receiver_detail" property="receiverDetail"/>
+        <result column="create_time" property="createTime"/>
+        <result column="pay_type" property="payType"/>
+        <result column="payTypeShow" property="payTypeShow"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="total_money" property="totalMoney"/>
+        <result column="total_freight" property="totalFreight"/>
+        <result column="total_pay_money" property="totalPayMoney"/>
+        <result column="order_status" property="orderStatus"/>
+        <result column="productName" property="productName" />
+        <collection property="detailList" ofType="com.dj.mall.order.entity.OrderDetailEntity" >
+            <result column="product_name" property="productName" />
+            <result column="sku_info" property="skuInfo"/>
+            <result column="buy_count" property="buyCount"/>
+            <result column="pay_money" property="payMoney"/>
+            <result column="sku_rate" property="skuRate"/>
+        </collection>
+    </resultMap>
+
+    <!--展示订单详情-->
+    <select id="findOrderByOrderNo" resultMap="orderToOrderDetail">
+        SELECT
+            o.order_no,
+            o.total_money,
+            o.total_pay_money,
+            o.total_freight,
+            o.pay_type,
+            o.receiver_province,
+            o.receiver_city,
+            o.receiver_county,
+            o.receiver_name,
+            o.receiver_phone,
+            o.receiver_detail,
+            o.order_status,
+            o.create_time,
+            o.pay_time,
+            od.product_name,
+            od.sku_info,
+            od.buy_count,
+            od.pay_money,
+            od.sku_rate,
+            bd.base_name AS payTypeShow
+        FROM
+            djmall_order o
+                LEFT JOIN djmall_order_detail od ON o.order_no = od.parent_order_no
+                LEFT JOIN djmall_dict_base_data bd ON o.pay_type = bd.base_code
+        WHERE
+            o.order_no = #{orderNo}
+    </select>
+
+    <resultMap id="orderInfoToOrderDetail" type="com.dj.mall.order.bo.OrderInfoBO">
+        <id column="order_no" property="orderNo"/>
+        <result column="receiver_name" property="receiverName"/>
+        <result column="receiver_phone" property="receiverPhone"/>
+        <result column="receiver_province" property="receiverProvince"/>
+        <result column="receiver_city" property="receiverCity"/>
+        <result column="receiver_county" property="receiverCounty"/>
+        <result column="receiver_detail" property="receiverDetail"/>
+        <result column="create_time" property="createTime"/>
+        <result column="pay_type" property="payType"/>
+        <result column="payTypeShow" property="payTypeShow"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="total_money" property="totalMoney"/>
+        <result column="total_freight" property="totalFreight"/>
+        <result column="total_pay_money" property="totalPayMoney"/>
+        <result column="order_status" property="orderStatus"/>
+        <result column="productName" property="productName" />
+        <collection property="detailList" ofType="com.dj.mall.order.entity.OrderDetailEntity" >
+            <result column="product_name" property="productName" />
+            <result column="sku_info" property="skuInfo"/>
+            <result column="buy_count" property="buyCount"/>
+            <result column="pay_money" property="payMoney"/>
+            <result column="sku_rate" property="skuRate"/>
+        </collection>
+    </resultMap>
+
+    <!--子订单商品详情-->
+    <select id="findOrderInfoByOrderNo" resultMap="orderInfoToOrderDetail">
+        SELECT
+            o.order_no,
+            o.total_money,
+            o.total_pay_money,
+            o.total_freight,
+            o.pay_type,
+            o.receiver_province,
+            o.receiver_city,
+            o.receiver_county,
+            o.receiver_name,
+            o.receiver_phone,
+            o.receiver_detail,
+            o.order_status,
+            o.create_time,
+            o.pay_time,
+            od.product_name,
+            od.sku_info,
+            od.buy_count,
+            od.pay_money,
+            od.sku_rate,
+            bd.base_name AS payTypeShow
+        FROM
+            djmall_order_info o
+                LEFT JOIN djmall_order_detail od ON o.order_no = od.child_order_no
+                LEFT JOIN djmall_dict_base_data bd ON o.pay_type = bd.base_code
+        WHERE
+            o.order_no = #{orderNo}
+    </select>
+
+    <!--修改sku库存-->
+    <update id="updateCount">
+        UPDATE djmall_product_sku sku
+            INNER JOIN djmall_order_detail od ON sku.id = od.sku_id
+        SET sku.sku_count = sku.sku_count + od.buy_count
+        WHERE
+            od.parent_order_no = #{order}
+    </update>
+
+    <!--admin展示-->
+    <select id="adminShow" resultType="com.dj.mall.order.bo.OrderInfoBO">
+        SELECT
+            oi.order_no,
+            oi.parent_order_no,
+            oi.total_money,
+            oi.total_pay_money,
+            oi.total_freight,
+            oi.total_buy_count,
+            oi.pay_type,
+            oi.receiver_province,
+            oi.receiver_city,
+            oi.receiver_county,
+            oi.receiver_name,
+            oi.receiver_phone,
+            oi.receiver_detail,
+            oi.order_status,
+            oi.create_time,
+            oi.pay_time,
+            oi.update_time,
+            oi.remind_status,
+            oi.remind_time,
+            od.product_name AS productName,
+            GROUP_CONCAT(od.sku_rate) AS skuRateShow,
+            bd.base_name AS payTypeShow,
+            bd2.base_name AS orderStatusShow,
+            au.nick_name AS nickNameShow,
+            au.user_phone AS userPhoneShow,
+            au2.nick_name AS businessNickNameShow,
+            GROUP_CONCAT(od.product_name) AS productNameShow
+        FROM
+            djmall_order_info oi
+                LEFT JOIN djmall_order_detail od ON oi.order_no = od.child_order_no
+                LEFT JOIN djmall_dict_base_data bd ON oi.pay_type = bd.base_code
+                LEFT JOIN djmall_dict_base_data bd2 ON oi.order_status = bd2.base_code
+                LEFT JOIN djmall_auth_user au ON oi.buyer_id = au.id
+                LEFT JOIN djmall_auth_user au2 ON oi.business_id = au2.id
+        <if test="order.roleId == 2">
+            WHERE
+                od.business_id = #{order.userId}
+        </if>
+        GROUP BY
+            oi.order_no
+    </select>
+    <select id="findAllIsCommentByChildOrderNo" resultType="java.lang.Integer">
+        SELECT
+            (
+                COUNT(0) - SUM(od.is_comment)
+                ) AS isComment
+        FROM
+            djmall_order_detail od
+        WHERE
+            od.child_order_no = #{orderNo}
+    </select>
+</mapper>

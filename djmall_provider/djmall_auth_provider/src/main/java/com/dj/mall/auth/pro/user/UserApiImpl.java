@@ -11,6 +11,7 @@ package com.dj.mall.auth.pro.user;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -38,11 +39,11 @@ import com.dj.mall.auth.service.user.UserRoleService;
 import com.dj.mall.cmpt.RedisApi;
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
-import com.dj.mall.model.contant.AuthConstant;
-import com.dj.mall.model.contant.DictConstant;
-import com.dj.mall.model.contant.ProductConstant;
-import com.dj.mall.model.contant.RedisConstant;
+import com.dj.mall.model.contant.*;
 import com.dj.mall.model.util.*;
+import com.dj.mall.product.api.sku.SkuApi;
+import com.dj.mall.product.dto.sku.SkuDTO;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -89,6 +90,8 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
      */
     @Autowired
     private UserAddressService userAddressService;
+    @Reference
+    private SkuApi skuApi;
 
     /**
      * 邮箱api
@@ -100,6 +103,11 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
      */
     @Reference
     private RedisApi redisApi;
+    /**
+     * rabbitMQ
+     */
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     /**
      * 用户登录
@@ -130,7 +138,11 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         }
         UserDTO userDTO = DozerUtil.map(user, UserDTO.class);
         //用户已关联角色
-        userDTO.setUserRole(userRoleService.getOne(new QueryWrapper<UserRole>().eq("user_id", userDTO.getUserId())).getRoleId());
+        UserRole userRole = userRoleService.getOne(new QueryWrapper<UserRole>().eq("user_id", userDTO.getUserId()));
+        if (AuthConstant.GENERAL_USER.equals(userRole.getRoleId())) {
+            throw new BusinessException("角色不匹配");
+        }
+        userDTO.setUserRole(userRole.getRoleId());
         //最后登录时间
         lastLoginTimeService.save(new LastLoginTime().toBuilder().userId(userDTO.getUserId()).lastLoginTime(LocalDateTime.now()).build());
         return userDTO;
@@ -189,22 +201,15 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         }
         getBaseMapper().insert(user);
 
-        //如果激活状态为：未激活 并且是商家 则发送邮件
-        if (DictConstant.NOT_ACTIVATE.equals(user.getUserStatus()) && AuthConstant.BUSINESS.equals(userDTO.getUserRole())) {
-            //邮箱验证
-            String mailHTML = "<html>"
-                    + "<META http-equiv=Content-Type content='text/html; charset=UTF-8'>"
-                    + "<body>"
-                    + "<a href='http://127.0.0.1:8081/admin/auth/user/toValidate/"+user.getId()+"'>马上验证邮箱</a><br />"
-                    + "如果您无法点击以上链接，请复制以下网址到浏览器里直接打开：<br />"
-                    + "http://127.0.0.1:8081/admin/auth/user/toValidate/"+user.getId()+"<br />"
-                    + "如果您没有注册，请忽略此邮件"
-                    + "</body>"
-                    + "</html>";
-            mailBoxApi.sendMailHTML(user.getUserEmail(), AuthConstant.ACTIVATE, mailHTML);
-        }
         //新增用户角色表用户以及角色的ID
         userRoleService.save(new UserRole().toBuilder().roleId(userDTO.getUserRole()).userId(user.getId()).build());
+        // 发送消息
+        JSONObject message = new JSONObject();
+        message.put("userId", user.getId());
+        message.put("userRole", userDTO.getUserRole());
+        message.put("userStatus", user.getUserStatus());
+        message.put("email", user.getUserEmail());
+        rabbitTemplate.convertAndSend("emailExchange", "emailQueue", message.toJSONString());
     }
 
     /**
@@ -535,14 +540,14 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
 
     /**
      * 根据id查
-     * @param id 地址id
-     * @return UserAddressDTO
+     * @param addressId 地址id
+     * @return AreaDTO
      * @throws Exception 异常
      * @throws BusinessException 自定义异常
      */
     @Override
-    public UserAddressDTO findAddressById(Integer id) throws Exception, BusinessException {
-        return DozerUtil.map(userAddressService.getById(id), UserAddressDTO.class);
+    public UserAddressDTO findAddressById(Integer addressId) throws Exception, BusinessException {
+        return DozerUtil.map(userAddressService.findAddressById(addressId), UserAddressDTO.class);
     }
 
     /**
@@ -595,6 +600,10 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
      */
     @Override
     public void addToShoppingCart(ShoppingCartDTO shoppingCartDTO, String TOKEN) throws Exception, BusinessException {
+        SkuDTO sku = skuApi.findSkuBySkuId(shoppingCartDTO.getSkuId());
+        if (AuthConstant.ZERO.equals(sku.getSkuCount()) || AuthConstant.ZERO > sku.getSkuCount()) {
+            throw new BusinessException("库存不足给您带来不便，请选择库存充足得商品");
+        }
         //得到当前登录用户 默认未选中
         UserDTO userDTO = redisApi.get(RedisConstant.USER_TOKEN + TOKEN);
         //查到购物车所有数据 判断购物车所有数据是否有跟skuId和用户id相同的数据 直接修改购买数量 如果购买数量大于200 直接返回购买最大额
@@ -607,7 +616,39 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
             }
         }
         shoppingCartDTO.setUserId(userDTO.getUserId());
-        shoppingCartDTO.setChecked(ProductConstant.NOT_CHECKED);
+        shoppingCartDTO.setChecked(ProductConstant.HAVE_CHECKED);
         shoppingCartService.save(DozerUtil.map(shoppingCartDTO, ShoppingCartEntity.class));
     }
+
+    /**
+     * 批量新增购物车
+     * @param cartList 购物车数据集合
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public void saveCartBatch(List<ShoppingCartDTO> cartList) throws Exception, BusinessException {
+        //根据用户id得到数据
+        List<ShoppingCartEntity> shoppingCartEntityList = shoppingCartService.list(new QueryWrapper<ShoppingCartEntity>().eq("user_id", cartList.get(0).getUserId()));
+        //新增 修改集合
+        List<ShoppingCartEntity> addList = new ArrayList<>();
+        List<ShoppingCartEntity> updateList = new ArrayList<>();
+        cartList.forEach(shoppingCartDTO ->{
+            for (ShoppingCartEntity shoppingCartEntity : shoppingCartEntityList) {
+                if (shoppingCartEntity.getSkuId().equals(shoppingCartDTO.getSkuId()) && shoppingCartEntity.getUserId().equals(shoppingCartDTO.getUserId())) {
+                    shoppingCartEntity.setQuantity(Math.min(shoppingCartEntity.getQuantity() + shoppingCartDTO.getQuantity(), ProductConstant.MAX_QUANTITY));
+                    updateList.add(shoppingCartEntity);
+                    return;
+                }
+            }
+            addList.add(DozerUtil.map(shoppingCartDTO, ShoppingCartEntity.class));
+        });
+        if (OrderConstant.ZERO < addList.size()) {
+            shoppingCartService.saveBatch(addList);
+        }
+        if (OrderConstant.ZERO < updateList.size()) {
+            shoppingCartService.saveBatch(updateList);
+        }
+    }
+
 }

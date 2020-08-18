@@ -23,7 +23,7 @@
             ps.product_status,
             ps.order_number,
             ps.praise_number,
-            pf.freight AS freightShow,
+            pf.freight,
             bd.base_name AS company,
             bd2.base_name AS productStatus
         FROM
@@ -48,46 +48,41 @@
         </where>
         GROUP BY ps.id DESC
     </select>
-
-    <!--<select id="findList" resultType="com.dj.mall.product.bo.spu.ProductBO">
+    <!--根据商品id查找全部商品评论-->
+    <select id="findReviewsByProductId" resultType="com.dj.mall.product.bo.reviews.ProductReviewsBO">
         SELECT
-        ps.id AS productId,
-        ps.product_name,
-        ps.product_describe,
-        ps.product_img,
-        ps.product_type,
-        ps.product_status,
-        ps.praise_number,
-        pf.freight AS freightShow,
-        bd.base_name AS company,
-        psk.sku_count AS skuCountShow,
-        psk.sku_price AS skuPriceShow,
-        psk.sku_rate AS skuRateShow
+            pr.id,
+            pr.reviewer_id,
+            pr.product_id,
+            pr.`comment`,
+            pr.reply_id,
+            pr.create_time,
+            pr.rate,
+            au.nick_name
         FROM
-        djmall_product_spu ps
-        LEFT JOIN djmall_dict_product_freight pf ON ps.freight_id = pf.id
-        LEFT JOIN djmall_dict_base_data bd ON pf.company = bd.base_code
-        LEFT JOIN djmall_product_sku psk ON psk.product_id = ps.id
-        <where>
-            psk.is_default = #{product.isDefault}
-            AND ps.product_status = #{product.productStatus}
-            <if test="product.productName != null and product.productName != ''">
-                <bind name="productNameLike" value="'%'+product.productName+'%'"/>
-                AND ps.product_name LIKE "%"#{productNameLike}"%"
-            </if>
-            <if test="product.skuPriceMin != null">
-                AND psk.sku_price &gt;= #{product.skuPriceMin}
-            </if>
-            <if test="product.skuPriceMax != null">
-                AND psk.sku_price &lt;= #{product.skuPriceMax}
-            </if>
-            <if test="product.productTypeList != null and product.productTypeList.size > 0">
-                AND ps.product_type IN
-                <foreach collection="product.productTypeList" item="productType" open="(" close=")" separator=",">
-                    #{productType}
-                </foreach>
-            </if>
-        </where>
-        GROUP BY ps.id DESC
-    </select>-->
+            djmall_product_reviews pr
+                LEFT JOIN djmall_auth_user au ON pr.reviewer_id = au.id
+        WHERE
+            pr.product_id = #{reviews.productId}
+            AND pr.reply_id = -1
+        <if test="reviews.commentType == 1">
+            AND pr.rate &gt; 3
+        </if>
+        <if test="reviews.commentType == 2">
+            AND pr.rate = 3
+        </if>
+        <if test="reviews.commentType == 3">
+            AND pr.rate &lt; 3
+        </if>
+    </select>
+
+    <!--好评率-->
+    <select id="findGoodRateByProductId" resultType="java.lang.Integer">
+        SELECT
+            (SUM(IF(pr.rate &gt; 3, 1, 0)) / COUNT(pr.rate)) * 100 AS goodRate
+        FROM
+            djmall_product_reviews pr
+        WHERE
+            pr.product_id = #{productId}
+    </select>
 </mapper>

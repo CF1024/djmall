@@ -22,4 +22,16 @@
         GROUP BY
             sg.product_type
     </select>
+
+    <select id="findSkuGm" resultType="com.dj.mall.dict.bo.sku.SkuGmBO">
+        SELECT
+            sg.id AS skuGmId,
+            sg.product_type,
+            GROUP_CONCAT(pa.attr_name) AS attrName
+        FROM
+            djmall_dict_product_sku_gm sg
+                LEFT JOIN djmall_dict_product_attr pa ON pa.id = sg.attr_id
+        GROUP BY
+            sg.product_type
+    </select>
 </mapper>

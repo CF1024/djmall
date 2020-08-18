@@ -32,6 +32,10 @@ import java.util.List;
 @NoArgsConstructor
 public class ProductDTO implements Serializable {
     /**
+     * 当前登录人
+     */
+    private Integer currentlyLoggedInUserId;
+    /**
      * 商品spu的id
      */
     private Integer productId;
@@ -72,6 +76,14 @@ public class ProductDTO implements Serializable {
      */
     private Integer praiseNumber;
     /**
+     *评论量
+     */
+    private Integer reviewsNumber;
+    /**
+     * 好评率
+     */
+    private Integer goodRate;
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;
@@ -98,7 +110,7 @@ public class ProductDTO implements Serializable {
     /**
      * 运费 展示商品
      */
-    private BigDecimal freightShow;
+    private BigDecimal freight;
     /**
      * 生成sku集合 新增商品
      */
@@ -107,8 +119,6 @@ public class ProductDTO implements Serializable {
      * 删除商品照片 修改商品
      */
     private String removeImg;
-
-    /*=========================商城========================*/
     /**
      * 最低价格 展示 价格查询
      */
@@ -122,19 +132,32 @@ public class ProductDTO implements Serializable {
      */
     private String isDefault;
     /**
-     * 库存 展示
-     */
-    private Integer skuCountShow;
-    /**
-     * 价格 展示
-     */
-    private BigDecimal skuPriceShow;
-    /**
-     *  折扣 展示
-     */
-    private String skuRateShow;
-    /**
      * 关键字
      */
     private String productKeywords;
+
+    /**
+     * 商品SKU ID
+     */
+    private Integer skuId;
+    /**
+     * SKU价格
+     */
+    private BigDecimal skuPrice;
+    /**
+     * sku库存
+     */
+    private Integer skuCount;
+    /**
+     * SKU折扣
+     */
+    private Integer skuRate;
+    /**
+     * SKU属性值名称
+     */
+    private String skuAttrValueNames;
+    /**
+     * 是否点赞 0 是 1 否
+     */
+    private Integer isLike;
 }

@@ -211,12 +211,12 @@ public interface UserApi {
 
     /**
      * 根据id查
-     * @param id 地址id
-     * @return UserAddressDTO
+     * @param addressId 地址id
+     * @return AreaDTO
      * @throws Exception 异常
      * @throws BusinessException 自定义异常
      */
-    UserAddressDTO findAddressById(Integer id) throws Exception, BusinessException;
+    UserAddressDTO findAddressById(Integer addressId) throws Exception, BusinessException;
 
     /**
      * 查全部数据
@@ -254,5 +254,11 @@ public interface UserApi {
      */
     void addToShoppingCart(ShoppingCartDTO shoppingCartDTO, String TOKEN) throws Exception, BusinessException;
 
-
+    /**
+     * 批量新增购物车
+     * @param cartList 购物车数据集合
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    void saveCartBatch(List<ShoppingCartDTO> cartList) throws Exception, BusinessException;
 }

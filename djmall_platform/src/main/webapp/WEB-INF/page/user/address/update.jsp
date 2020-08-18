@@ -18,7 +18,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>填写收货地址</title>
+    <title>修改收货地址</title>
     <link rel="stylesheet" href="<%=request.getContextPath()%>/static/layui/css/layui.css" media="all">
     <script type="text/javascript" src="<%=request.getContextPath()%>/static/js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/static/layer/layer.js"></script>
@@ -192,7 +192,7 @@
                 </select>
             </div>
 
-           <%-- <div class="layui-form-item">
+            <%--<div class="layui-form-item">
                 <label class="layui-form-label">省/市/县</label>
                 <select name="province" onclick="getCity(this.value)" id="province" class="form-control">
                     <option value="-1" >请选择</option>

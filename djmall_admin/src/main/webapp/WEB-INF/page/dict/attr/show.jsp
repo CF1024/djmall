@@ -51,8 +51,10 @@
                     var html = "";
                     for (var i = 0; i < data.data.length; i++) {
                         var attr = data.data[i];
+                        var initialValue = 1;
+                        var coding = initialValue + i;
                         html += "<tr>";
-                        html += "<td>" + attr.attrId +"</td>";
+                        html += "<td>" + coding +"</td>";
                         html += "<td>" + attr.attrName +"</td>";
                         html += attr.attrValue == null ? "<td>暂无属性值</td>":"<td>" + attr.attrValue +"</td>";
                         html += "<shiro:hasPermission name='RELATED_ATTR_VALUE_BTN'><td><a class='layui-btn layui-btn-normal layui-btn-xs' href='javascript:toRelatedAttrValue("+attr.attrId+")'>关联属性值</a></td></shiro:hasPermission>";

@@ -72,4 +72,21 @@ public interface SkuApi {
      * @throws BusinessException 业务处理异常
      */
     SkuDTO getSkuBySkuId(Integer skuId) throws Exception, BusinessException;
+
+    /**
+     * 根据购物车中的skuId获取对应sku商品集合
+     * @param skuIdList skuId集合
+     * @return List<ShoppingCartDTO>
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    List<SkuDTO> findSkuBySkuIds(List<Integer> skuIdList) throws Exception, BusinessException;
+
+    /**
+     * 批量修改商品sku库存
+     * @param skuList 商品sku集合
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    void updateSkuCountBatchByIds(List<SkuDTO> skuList) throws Exception, BusinessException;
 }

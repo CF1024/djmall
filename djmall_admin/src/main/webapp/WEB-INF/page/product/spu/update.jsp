@@ -131,8 +131,10 @@
                     var html = "";
                     for (var i = 0; i < data.data.length; i++) {
                         var sku = data.data[i];
+                        var initialValue = 1;
+                        var coding = initialValue + i;
                         html += "<tr>";
-                        html += "<td><input type = 'checkbox' name = 'ids' value = '"+sku.skuId+","+sku.skuStatus+","+sku.isDefault+"'>"+sku.skuId+"</td>";
+                        html += "<td><input type = 'checkbox' name = 'ids' value = '"+sku.skuId+","+sku.skuStatus+","+sku.isDefault+"'>"+ coding +"</td>";
                         html += "<td width='400px'>" + sku.skuAttrValueNames +"</td>";
                         html += "<td>" + sku.skuCount +"</td>";
                         html += "<td>" + sku.skuPrice +"</td>";
@@ -317,7 +319,7 @@
                     success: function (data) {
                         layer.close(index);
                         if(data.code !== 200){
-                            layer.msg(data.msg, {offset: '230px', icon:5, time:5000});
+                            layer.msg(data.msg, {offset: '230px', icon:5, time:2000});
                             return;
                         }
                         layer.msg(data.msg, {offset: '230px', icon: 6, time: 2000},
@@ -372,7 +374,7 @@
             <div class="layui-upload">
                 <div class="layui-upload-list">
                     <div class="divProductImg">
-                        <img src="http://qcxz8bvc2.bkt.clouddn.com/${product.productImg}" height="190px" width="190px">
+                        <img src="http://qeu5389un.bkt.clouddn.com/${product.productImg}" height="190px" width="190px">
                         <input type="hidden" name="removeImg" value="${product.productImg}">
                     </div>
                 </div>

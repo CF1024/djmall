@@ -12,7 +12,9 @@ package com.dj.mall.product.mapper.spu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dj.mall.product.bo.reviews.ProductReviewsBO;
 import com.dj.mall.product.bo.spu.ProductBO;
+import com.dj.mall.product.entity.reviews.ProductReviewsEntity;
 import com.dj.mall.product.entity.spu.ProductEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataAccessException;
@@ -35,11 +37,19 @@ public interface ProductMapper extends BaseMapper<ProductEntity> {
     IPage<ProductBO> findAll(@Param("page") Page<?> page, @Param("product") ProductBO productBO) throws DataAccessException;
 
     /**
-     * 商城展示
+     * 根据商品id查找全部商品评论
      * @param page 分页
-     * @param productBO 商品bo
-     * @return  IPage<ProductBO>
+     * @param productReviewsBO 商品评论bo
+     * @return Page<ProductReviewsEntity>
      * @throws DataAccessException 数据访问异常
      */
-    IPage<ProductBO> findList(@Param("page") Page<?> page, @Param("product") ProductBO productBO) throws DataAccessException;
+    IPage<ProductReviewsBO> findReviewsByProductId(@Param("page") Page<ProductReviewsEntity> page, @Param("reviews") ProductReviewsBO productReviewsBO) throws DataAccessException;
+
+    /**
+     * 计算好评率
+     * @param productId 商品id
+     * @return Integer
+     * @throws DataAccessException 数据访问异常
+     */
+    Integer findGoodRateByProductId(Integer productId) throws DataAccessException;
 }

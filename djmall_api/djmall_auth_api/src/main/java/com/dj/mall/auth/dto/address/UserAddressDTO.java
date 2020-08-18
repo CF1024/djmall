@@ -58,4 +58,17 @@ public class UserAddressDTO implements Serializable {
      */
     private String isDel;
 
+    /**
+     * 省
+     */
+    private String provinceShow;
+    /**
+     * 市
+     */
+    private String cityShow;
+    /**
+     * 县
+     */
+    private String countyShow;
+
 }

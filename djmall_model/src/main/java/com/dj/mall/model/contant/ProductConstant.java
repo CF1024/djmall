@@ -15,6 +15,10 @@ package com.dj.mall.model.contant;
  */
 public interface ProductConstant {
     /**
+     * 顶级回复id
+     */
+    Integer REPLY_PARENT = -1;
+    /**
      * session里的登录人的key
      */
     String SESSION_USER = "USER";
@@ -23,6 +27,10 @@ public interface ProductConstant {
      */
     Integer NOT_CHECKED = 1;
     /**
+     * 商品已选中
+     */
+    Integer HAVE_CHECKED = 0;
+    /**
      * 最大购买量 200
      */
     Integer MAX_QUANTITY = 200;
@@ -30,4 +38,24 @@ public interface ProductConstant {
      * 0
      */
     Integer ZERO = 0;
+    /**
+     * -1
+     */
+    String LOSE_ONE = "-1";
+    /**
+     * 用户token
+     */
+    String TOKEN = "TOKEN";
+    /**
+     * 点赞状态 0 已点赞
+     */
+    Integer IS_LIKE = 0;
+    /**
+     * 点赞状态 1 未点赞
+     */
+    Integer NOT_LIKE = 1;
+    /**
+     * 评论量+1
+     */
+    Integer REVIEWS_ONE = 1;
 }

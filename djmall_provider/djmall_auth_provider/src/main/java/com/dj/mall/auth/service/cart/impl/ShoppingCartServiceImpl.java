@@ -10,9 +10,12 @@
 package com.dj.mall.auth.service.cart.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dj.mall.auth.dto.cart.ShoppingCartDTO;
 import com.dj.mall.auth.entity.cart.ShoppingCartEntity;
 import com.dj.mall.auth.mapper.cart.ShoppingCartMapper;
 import com.dj.mall.auth.service.cart.ShoppingCartService;
+import com.dj.mall.model.base.BusinessException;
+import com.dj.mall.model.util.DozerUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -69,6 +70,22 @@ public class ProductBO implements Serializable {
      */
     private Integer praiseNumber;
     /**
+     *评论量
+     */
+    private Integer reviewsNumber;
+    /**
+     * 好评率
+     */
+    private Integer goodRate;
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+    /**
+     *修改时间
+     */
+    private LocalDateTime updateTime;
+    /**
      * 商品类型集合
      */
     private List<String> productTypeList;
@@ -79,31 +96,5 @@ public class ProductBO implements Serializable {
     /**
      * 运费
      */
-    private BigDecimal freightShow;
-
-    /*=========================商城========================*/
-    /**
-     * 最低价格 展示 价格查询
-     */
-    private BigDecimal skuPriceMin;
-    /**
-     * 最高价格 展示 价格查询
-     */
-    private BigDecimal skuPriceMax;
-    /**
-     * 是否默认：是 展示条件
-     */
-    private String isDefault;
-    /**
-     * 库存 展示
-     */
-    private Integer skuCountShow;
-    /**
-     * 价格 展示
-     */
-    private BigDecimal skuPriceShow;
-    /**
-     *  折扣 展示
-     */
-    private String skuRateShow;
+    private BigDecimal freight;
 }

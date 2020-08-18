@@ -87,6 +87,39 @@ public interface DictConstant {
      */
     String NOT_DEFAULT = "NOT_DEFAULT";
 
+    /**
+     * 支付类型
+     */
+    String PAYMENT_TYPES = "PAYMENT_TYPES";
+
+    /**
+     * 待支付
+     */
+    String PENDING_PAYMENT = "PENDING_PAYMENT";
+    /**
+     * 已取消
+     */
+    String CANCELLED = "CANCELLED";
+    /**
+     * 待发货
+     */
+    String TO_BE_DELIVERED = "TO_BE_DELIVERED";
+    /**
+     * 已发货
+     */
+    String SHIPPED = "SHIPPED";
+    /**
+     * 确认收货
+     */
+    String CONFIRM_RECEIPT = "CONFIRM_RECEIPT";
+    /**
+     * 已完成
+     */
+    String COMPLETED = "COMPLETED";
+    /**
+     * 已支付
+     */
+    String PAID = "PAID";
 
     //==============================运费==================================//
 

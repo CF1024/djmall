@@ -57,7 +57,7 @@
                 $("#hiddenRegister").show();
                 $("#hiddenLogout").hide();
             }  else if (token !== '' && nickName !== '') {
-                $("#login").html("<img src='http://qcxz8bvc2.bkt.clouddn.com/${user.userImg}' class='layui-nav-img'>" + nickName /*+ "<dl class='layui-nav-child'><dd><a href=''>基本资料</a></dd><dd><a href=''>安全设置</a></dd></dl>"*/);
+                $("#login").html("<img src='http://qeu5389un.bkt.clouddn.com/${user.userImg}' class='layui-nav-img'>" + nickName /*+ "<dl class='layui-nav-child'><dd><a href=''>基本资料</a></dd><dd><a href=''>安全设置</a></dd></dl>"*/);
                 $("#login").attr("href", "<%=request.getContextPath()%>/user/index/toIndex?TOKEN=" + getToken());
                 $("#hiddenRegister").hide();
                 $("#hiddenLogout").show();

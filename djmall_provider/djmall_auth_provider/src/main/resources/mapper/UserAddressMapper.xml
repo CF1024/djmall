@@ -35,4 +35,28 @@
         WHERE
             sa.user_id = #{userId} AND sa.is_del = 'NOT_DEL'
     </select>
+
+    <!--根据id查-->
+    <select id="findAddressById" resultType="com.dj.mall.auth.bo.address.UserAddressBO">
+        SELECT
+            sa.id,
+            sa.user_id,
+            sa.receiver_name,
+            sa.phone,
+            sa.province,
+            sa.city,
+            sa.county,
+            sa.is_del,
+            sa.detailed_address,
+            a1.area_name AS provinceShow,
+            a2.area_name AS cityShow,
+            a3.area_name AS countyShow
+        FROM
+            djmall_shipping_address sa
+                LEFT JOIN djmall_area a1 ON sa.province = a1.id
+                LEFT JOIN djmall_area a2 ON sa.city = a2.id
+                LEFT JOIN djmall_area a3 ON sa.county = a3.id
+        WHERE
+            sa.id = #{addressId}
+    </select>
 </mapper>

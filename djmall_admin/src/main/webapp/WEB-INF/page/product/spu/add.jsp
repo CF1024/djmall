@@ -102,7 +102,7 @@
         });
         //联动商品类型
         function loadSkuGmRelatedAttr(productType) {
-            var index = layer.load(0, {shade:0.5});
+            var index = layer.load(0, {offset: '230px', shade:0.5});
             $.get(
                 "<%=request.getContextPath()%>/product/spu/"+productType,
                 $("#fm").serialize(),
@@ -304,7 +304,7 @@
         $.validator.setDefaults({
             submitHandler: function () {
                 var formData = new FormData($("#fm")[0]);
-                var index = layer.load(0, {shade:0.5});
+                var index = layer.load(0, {offset: '230px', shade:0.5});
                 //七牛雲上传图片只能ajax提交
                 $.ajax({
                     url:'<%= request.getContextPath() %>/product/spu/',
@@ -316,7 +316,7 @@
                     success: function (data) {
                         layer.close(index);
                         if(data.code !== 200){
-                            layer.msg(data.msg, {offset: '230px', icon:5, time:5000});
+                            layer.msg(data.msg, {offset: '230px', icon:5, time:2000});
                             return;
                         }
                         layer.msg(data.msg, {offset: '230px', icon: 6, time: 2000},
@@ -356,7 +356,7 @@
             <label class="layui-form-label">图片</label>
             <div class="layui-upload">
                 <div class="divBtn">
-                <i class="layui-icon">&#xe67c;</i>上传图片
+                    <i class="layui-icon">&#xe67c;</i>上传图片
                     <input id="file" type="file" name="file"/>
                 </div><span id="fileError"></span>
                 <div class="layui-upload-list">

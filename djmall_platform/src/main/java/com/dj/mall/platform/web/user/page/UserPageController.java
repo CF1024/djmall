@@ -12,21 +12,24 @@ package com.dj.mall.platform.web.user.page;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.dj.mall.auth.api.cart.ShoppingCartApi;
 import com.dj.mall.auth.api.user.UserApi;
+import com.dj.mall.auth.dto.cart.ShoppingCartDTO;
 import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.cmpt.RedisApi;
 import com.dj.mall.dict.api.dict.BaseDataApi;
-import com.dj.mall.model.contant.AuthConstant;
-import com.dj.mall.model.contant.DictConstant;
-import com.dj.mall.model.contant.RedisConstant;
+import com.dj.mall.model.contant.*;
 import com.dj.mall.model.util.DozerUtil;
 import com.dj.mall.platform.vo.auth.address.AreaVoResp;
 import com.dj.mall.platform.vo.auth.address.UserAddressVoResp;
+import com.dj.mall.platform.vo.auth.cart.ShoppingCartVOReq;
 import com.dj.mall.platform.vo.auth.cart.ShoppingCartVOResp;
 import com.dj.mall.platform.vo.auth.user.UserVOResp;
 import com.dj.mall.platform.vo.dict.dict.BaseDataVOResp;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/user/")
@@ -110,15 +113,15 @@ public class UserPageController {
 
     /**
      * 根据id查
-     * @param id 地址id
+     * @param addressId 地址id
      * @param model ModelMap
      * @return 修改收货地址
      * @throws Exception 异常
      */
     @GetMapping("address/toUpdate")
-    public String toUpdate(Integer id, ModelMap model) throws Exception {
+    public String toUpdate(Integer addressId, ModelMap model) throws Exception {
         model.put("areaList", DozerUtil.mapList(userApi.findAreaAll(DictConstant.NOT_DEL), AreaVoResp.class));
-        model.put("address", DozerUtil.map(userApi.findAddressById(id), UserAddressVoResp.class));
+        model.put("address", DozerUtil.map(userApi.findAddressById(addressId), UserAddressVoResp.class));
         return "user/address/update";
     }
 
@@ -137,4 +140,19 @@ public class UserPageController {
         return "cart/show";
     }
 
+    /**
+     * 去结算 确认订单
+     * @param TOKEN 令牌密钥 用户唯一标识
+     * @param model ModelMap
+     * @return 确认订单
+     * @throws Exception 异常
+     */
+    @GetMapping("toConfirmOrder")
+    public String toConfirmOrder(String TOKEN, ModelMap model) throws Exception {
+        //购物车 收货地址 支付类型
+        model.put("cartList", DozerUtil.mapList(shoppingCartApi.findCartByToken(TOKEN), ShoppingCartVOResp.class));
+        model.put("addressList", DozerUtil.mapList(userApi.findAddressAll(TOKEN), UserAddressVoResp.class));
+        model.put("payTypeList", DozerUtil.mapList(baseDataApi.findBaseDataByParentCode(DictConstant.PAYMENT_TYPES), BaseDataVOResp.class));
+        return "cart/confirm_order";
+    }
 }

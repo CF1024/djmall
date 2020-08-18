@@ -53,7 +53,7 @@ public class ShoppingCartDTO implements Serializable {
     private Integer userId;
 
     /**
-     * 是否被选中 0：是 1：否
+     * 是否被选中 0：是 1：否  2立即购买
      */
     private Integer checked;
 

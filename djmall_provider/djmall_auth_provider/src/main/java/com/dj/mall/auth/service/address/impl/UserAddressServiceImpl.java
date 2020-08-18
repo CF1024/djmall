@@ -11,10 +11,13 @@ package com.dj.mall.auth.service.address.impl;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dj.mall.auth.dto.address.AreaDTO;
+import com.dj.mall.auth.dto.address.UserAddressDTO;
 import com.dj.mall.auth.entity.address.UserAddressEntity;
 import com.dj.mall.auth.mapper.address.UserAddressMapper;
 import com.dj.mall.auth.service.address.UserAddressService;
 import com.dj.mall.model.base.BusinessException;
+import com.dj.mall.model.util.DozerUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,5 +42,17 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
     @Override
     public List<UserAddressEntity> findAddressAll(Integer userId) throws Exception, BusinessException {
         return baseMapper.findAddressAllByUserId(userId);
+    }
+
+    /**
+     * 根据id查
+     * @param addressId 地址id
+     * @return AreaDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public UserAddressDTO findAddressById(Integer addressId) throws Exception, BusinessException {
+        return DozerUtil.map(baseMapper.findAddressById(addressId), UserAddressDTO.class);
     }
 }

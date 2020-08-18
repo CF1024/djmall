@@ -30,6 +30,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductVOReq implements Serializable {
+
+    /**
+     * 当前登录人
+     */
+    private Integer currentlyLoggedInUserId;
     /**
      * 商品spu的id
      */
@@ -70,6 +75,10 @@ public class ProductVOReq implements Serializable {
      *点赞量
      */
     private Integer praiseNumber;
+    /**
+     *评论量
+     */
+    private Integer reviewsNumber;
     /**
      * 创建时间
      */

@@ -64,4 +64,12 @@ public interface SkuGmApi {
      * @throws BusinessException
      */
     void addSkuGm(SkuGmDTO skuGmDTO) throws Exception, BusinessException;
+
+    /**
+     * 单纯查数据
+     * @return List<SkuGmDTO>
+     * @throws Exception
+     * @throws BusinessException
+     */
+    List<SkuGmDTO> findSkuGm() throws Exception, BusinessException;
 }

@@ -43,8 +43,10 @@
                     var html = "";
                     for (var i = 0; i < data.data.list.length; i++) {
                         var role = data.data.list[i];
+                        var initialValue = 1;
+                        var coding = initialValue + i;
                         html += "<tr>";
-                        html += "<td>" + role.roleId +"</td>";
+                        html += "<td>" + coding +"</td>";
                         html += "<td>" + role.roleName +"</td>";
                         html += "<td>";
                         html += "<shiro:hasPermission name='ROLE_RELATED_RESOURCE_BTN'><a class='layui-btn layui-btn-normal layui-btn-xs' href='javascript:toRelatedResource("+role.roleId+")'>关联资源</a></shiro:hasPermission>";

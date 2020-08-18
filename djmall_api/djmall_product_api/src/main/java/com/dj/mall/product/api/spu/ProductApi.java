@@ -11,8 +11,11 @@ package com.dj.mall.product.api.spu;
 
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
+import com.dj.mall.product.dto.reviews.ProductReviewsDTO;
 import com.dj.mall.product.dto.sku.SkuDTO;
 import com.dj.mall.product.dto.spu.ProductDTO;
+
+import java.util.List;
 
 /**
  * @author chengf
@@ -98,4 +101,60 @@ public interface ProductApi {
      * @throws BusinessException 业务处理异常
      */
     PageResult findList(ProductDTO productDTO) throws Exception, BusinessException;
+
+    /**
+     * 导入
+     * @param bytes 字节流
+     * @param userId 用户id
+     * @param fileName 文件名
+     * @throws Exception 异常
+     * @throws BusinessException 业务处理异常
+     */
+    void importProduct(byte[] bytes, Integer userId, String fileName) throws Exception, BusinessException;
+
+    /**
+     * 用户点赞
+     * @param productId 商品id
+     * @param isLike 是否点赞 0 是 1 否
+     * @param userId 用户id
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    void like(Integer productId, Integer isLike, Integer userId) throws Exception, BusinessException;
+
+    /**
+     * 新增评论
+     * @param productReviewsDTO 评论dto
+     * @param userId 评论人id
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    void addComment(ProductReviewsDTO productReviewsDTO, Integer userId) throws Exception, BusinessException;
+
+    /**
+     * 根据商品id查找全部商品评论
+     * @param productReviewsDTO 商品评论
+     * @return List<ProductReviewsDTO>
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    PageResult findReviewsByProductId(ProductReviewsDTO productReviewsDTO) throws Exception, BusinessException;
+
+    /**
+     * 新增回复
+     * @param productReviewsDTO 商品评论
+     * @param userId 商家id
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    void addReply(ProductReviewsDTO productReviewsDTO, Integer userId) throws Exception, BusinessException;
+
+    /**
+     * 好评率
+     * @param id 商品id
+     * @return Integer
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    Integer findGoodRateByProductId(Integer id) throws Exception, BusinessException;
 }

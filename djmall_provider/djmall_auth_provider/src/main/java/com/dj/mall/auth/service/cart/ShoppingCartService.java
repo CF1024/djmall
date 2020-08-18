@@ -10,7 +10,9 @@
 package com.dj.mall.auth.service.cart;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dj.mall.auth.dto.cart.ShoppingCartDTO;
 import com.dj.mall.auth.entity.cart.ShoppingCartEntity;
+import com.dj.mall.model.base.BusinessException;
 
 /**
  * @author chengf
@@ -18,4 +20,5 @@ import com.dj.mall.auth.entity.cart.ShoppingCartEntity;
  * 购物车
  */
 public interface ShoppingCartService extends IService<ShoppingCartEntity> {
+
 }

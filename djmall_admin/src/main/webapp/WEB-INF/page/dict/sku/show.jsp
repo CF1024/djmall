@@ -51,8 +51,10 @@
                     var html = "";
                     for (var i = 0; i < data.data.list.length; i++) {
                         var skuGm = data.data.list[i];
+                        var initialValue = 1;
+                        var coding = initialValue + i;
                         html += "<tr>";
-                        html += "<td>" + skuGm.skuGmId +"</td>";
+                        html += "<td>" + coding +"</td>";
                         html += "<td>" + skuGm.productType +"</td>";
                         html += skuGm.attrName == null ? "<td>暂无属性名</td>":"<td>" + skuGm.attrName +"</td>";
                         html += "<shiro:hasPermission name='RELATED_ATTR_BTN'><td><a class='layui-btn layui-btn-normal layui-btn-xs' href='javascript:toRelatedAttr(\""+skuGm.productType+"\")'>关联属性</a></td></shiro:hasPermission>";

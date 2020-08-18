@@ -11,7 +11,9 @@ package com.dj.mall.auth.mapper.address;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dj.mall.auth.bo.address.AreaBO;
 import com.dj.mall.auth.entity.address.AreaEntity;
+import org.springframework.dao.DataAccessException;
 
 /**
  * @author chengf

@@ -46,7 +46,7 @@ public class SkuVOResp implements Serializable {
     /**
      * sku折扣
      */
-    private String skuRate;
+    private Integer skuRate;
     /**
      * sku状态 下架 上架
      */

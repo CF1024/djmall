@@ -22,12 +22,39 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!--rabbit mq-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
         <!--quartz定时调度依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
 
+        <!--//=============================依赖API==================================//-->
+        <!--用户服务 20880-->
+        <dependency>
+            <groupId>com.dj.mall</groupId>
+            <artifactId>djmall_auth_api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!--Redis的api接口 20882-->
+        <dependency>
+            <groupId>com.dj.mall</groupId>
+            <artifactId>djmall_cmpt_api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!--订单的api接口 20885-->
+        <dependency>
+            <groupId>com.dj.mall</groupId>
+            <artifactId>djmall_order_api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!--model模块-->
         <dependency>
             <groupId>com.dj.mall</groupId>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ 作者：CF
+  ~ 日期：2020-07-30 17:48
+  ~ 项目：djmall
+  ~ 模块：djmall_product_provider
+  ~ 类名：SkuMapper.xml
+  ~ 版权所有(C), 2020. 所有权利保留
+  -->
+
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dj.mall.product.mapper.sku.SkuMapper">
+
+    <select id="findSkuBySkuIds" resultType="com.dj.mall.product.bo.sku.SkuBO">
+        SELECT
+            sku.id AS skuId,
+            sku.product_id,
+            sku.sku_price,
+            sku.sku_count,
+            sku.sku_rate,
+            sku.sku_status,
+            sku.sku_attr_ids,
+            sku.sku_attr_names,
+            sku.sku_attr_value_ids,
+            sku.sku_attr_value_names,
+            sku.is_default,
+            spu.product_name,
+            spu.user_id  AS businessId,
+            f.freight
+        FROM
+            djmall_product_sku sku
+                LEFT JOIN djmall_product_spu spu ON sku.product_id = spu.id
+                LEFT JOIN djmall_dict_product_freight f ON spu.freight_id = f.id
+        WHERE
+            sku.id IN
+                <foreach collection="list" item="skuId" open="(" close=")" separator=",">
+                    #{skuId}
+                </foreach>
+        ORDER BY FIELD(sku.id,
+                <foreach collection="list" item="skuId" separator=",">
+                    #{skuId}
+                </foreach>
+            )
+    </select>
+</mapper>

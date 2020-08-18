@@ -43,5 +43,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         interceptorRegistration.excludePathPatterns("/product/");
         interceptorRegistration.excludePathPatterns("/product/toProductDetails");
         interceptorRegistration.excludePathPatterns("/product/getSkuBySkuId");
+        interceptorRegistration.excludePathPatterns("/product/getCommentByProductId");
     }
 }

@@ -28,6 +28,9 @@
         <script type="text/javascript" src="<%=request.getContextPath()%>/static\js\cookie.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/static\js\token.js"></script>
     </head>
+    <style type="text/css">
+        #disable{height:12px;line-height:22px;padding:0 5px;font-size:12px}
+    </style>
     <script type="text/javascript">
         //是否登录
         $(function () {
@@ -47,21 +50,6 @@
                 $("#hiddenLogout").show();
             }
         })
-
-        // 去登陆
-        function toLogin() {
-            //iframe层
-            layer.open({
-                type: 2,
-                title: '登录',
-                shadeClose: true,
-                maxmin: true, //开启最大化最小化按钮
-                shade: 0.8,
-                offset: '230px',
-                area: ['460px', '60%'],
-                content: "<%=request.getContextPath()%>/user/toLogin"
-            });
-        }
 
         //退出登录
         function signOut() {
@@ -149,13 +137,15 @@
             }
             getTotal();
         }
-        //金额计算 修改选中状态
+
+        //金额计算
         function getTotal() {
             var ids = getIds();                         //购物车id集合
             var number = ids.length;                    //个数
-            var checkedLength = $("input[type='checkbox'][class='checkNum']").length;
-            var checkedSelect = $("input[type='checkbox'][class='checkNum']:checked").length;
-            if (number === 0) {
+            var checkedLength = $("input[type='checkbox'][class='checkNum']").length; //选中集合长度
+            var checkedSelect = $("input[type='checkbox'][class='checkNum']:checked").length; //已选中得值
+
+            if (number == 0) {
                 $("#total").hide();
                 $("#virtualTotal").show();
                 ids.push(-1);
@@ -181,6 +171,7 @@
                     $("#finalPrice").html(money.finalPrice);
                 })
         }
+
         function removeChecked() {
             var ids = getIds();                         //购物车id集合
             if (ids.length < 1) {
@@ -221,6 +212,29 @@
                 layer.close(index);
             });
         }
+
+        //去结算
+        function toConfirmOrder() {
+            if(!$(".checkNum").is(':checked')){
+                layer.msg("请选择要购买的商品再进行结算", {icon:6});
+                return;
+            }
+            window.location.href = "<%=request.getContextPath()%>/user/toConfirmOrder?TOKEN="+getToken();
+        }
+
+        //修改复选框是否选中
+        function updateChecked(cartId, checked) {
+            checked = checked == true ? 0 : 1;
+            token_post(
+                "<%=request.getContextPath()%>/user/cart/updateCart",
+                {"cartId":cartId, "_method":"PUT", "checked":checked},
+                function (data) {
+                    if (data.code != 200) {
+                        layer.alert(data.msg);
+                    }
+                }
+            )
+        }
     </script>
     <body>
     <div class="layui-layout layui-layout-admin">
@@ -238,7 +252,7 @@
                     <a href="<%=request.getContextPath()%>/product/toShow"  style="color: aqua"><i class="layui-icon layui-icon-home" style="font-size: 30px"></i>首页</a>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:toLogin()" id="login" style="color: violet"><i class="layui-icon layui-icon-username" style="font-size: 30px"></i>点我登录</a>
+                    <a href="<%=request.getContextPath()%>/user/toLogin" id="login" style="color: violet"><i class="layui-icon layui-icon-username" style="font-size: 30px"></i>点我登录</a>
                 </li>
                 <li class="layui-nav-item" id="hiddenRegister">
                     <a href="<%=request.getContextPath()%>/user/toRegister" style="color: tomato"><i class="layui-icon layui-icon-user" style="font-size: 30px"></i>注册</a>
@@ -266,7 +280,12 @@
                         <div class="layui-row layui-col-space5">
                             <div class="layui-col-md8">
                                 <div class="layui-col-md2" style="height: 200px">
-                                    <input type="checkbox" name="checked" class="checkNum" <c:if test="${cart.checked == 0}">checked</c:if> value="${cart.cartId}" onclick="getTotal()">
+                                    <c:if test="${cart.skuCount < 1}">
+                                        <input type="checkbox" id="disable" class="layui-btn layui-btn-xs layui-btn-disabled">
+                                    </c:if>
+                                    <c:if test="${cart.skuCount > 1}">
+                                        <input type="checkbox" name="checked" class="checkNum" <c:if test="${cart.checked == 0}">checked</c:if> value="${cart.cartId}" onchange="updateChecked(this.value, this.checked)" onclick="getTotal()">
+                                    </c:if>
                                 </div>
                                 <div class="layui-col-md5" style="height: 70px">
                                     名称：${cart.productName}
@@ -290,7 +309,7 @@
                             <div class="layui-col-md4">
                                 购买数量：
                                 <input type="button" value="-"  onclick="subCount(this, ${cart.skuCount})" class="layui-btn layui-btn-normal">
-                                <input type="number" name="quantity" id="quantity" value="${cart.quantity}" onmouseout="check_count(this, ${cart.skuCount})" max="200" min="1" style="width: 120px; height: 38px">
+                                <input type="number" name="quantity" id="quantity" value="${cart.quantity}" onkeyup="check_count(this, ${cart.skuCount})" max="200" min="1" style="width: 120px; height: 38px">
                                 <input type="button" value="+"  onclick="plusCount(this, ${cart.skuCount})" class="layui-btn layui-btn-normal">
                                 <div align="center">
                                     <br><span class="countSpan" style="color: #FF5722">货源充足</span><br><br>
@@ -312,6 +331,14 @@
             商品折后金额：<b><span id="totalDiscountedPrice">￥</span>元</b>，
             运费：<b><span id="totalFreight">￥</span></b><br/>
             应付总额：<b><span style="color: red; font-size: 21px" id="finalPrice">￥</span>元</b>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <label class="layui-form-label"></label>
+                <div style="position: fixed; left: 200px; bottom: 0px; width: 1010px;">
+                    <input type="button" value="去结算" onclick="toConfirmOrder()" class="layui-btn layui-btn-fluid layui-btn-radius layui-btn-normal">
+                </div>
+            </div>
         </div>
     </body>
 </html>

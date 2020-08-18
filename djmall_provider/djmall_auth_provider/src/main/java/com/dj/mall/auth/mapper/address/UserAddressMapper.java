@@ -11,6 +11,7 @@ package com.dj.mall.auth.mapper.address;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dj.mall.auth.bo.address.UserAddressBO;
 import com.dj.mall.auth.entity.address.UserAddressEntity;
 import org.springframework.dao.DataAccessException;
 
@@ -29,4 +30,12 @@ public interface UserAddressMapper extends BaseMapper<UserAddressEntity> {
      * @throws DataAccessException 异常
      */
     List<UserAddressEntity> findAddressAllByUserId(Integer userId) throws DataAccessException;
+
+    /**
+     *
+     * @param addressId
+     * @return
+     * @throws DataAccessException
+     */
+     UserAddressBO findAddressById(Integer addressId) throws DataAccessException;
 }

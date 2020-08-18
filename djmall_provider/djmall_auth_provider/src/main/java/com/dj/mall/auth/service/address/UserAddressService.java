@@ -10,6 +10,7 @@
 package com.dj.mall.auth.service.address;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dj.mall.auth.dto.address.UserAddressDTO;
 import com.dj.mall.auth.entity.address.UserAddressEntity;
 import com.dj.mall.model.base.BusinessException;
 
@@ -29,4 +30,13 @@ public interface UserAddressService extends IService<UserAddressEntity> {
      * @throws BusinessException 自定义异常
      */
     List<UserAddressEntity> findAddressAll(Integer userId) throws Exception, BusinessException;
+
+    /**
+     * 根据id查
+     * @param addressId 地址id
+     * @return AreaDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    UserAddressDTO findAddressById(Integer addressId) throws Exception, BusinessException;
 }

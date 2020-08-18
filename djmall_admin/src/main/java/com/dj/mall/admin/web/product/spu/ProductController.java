@@ -11,27 +11,43 @@ package com.dj.mall.admin.web.product.spu;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.dj.mall.admin.vo.dict.attr.AttrVOResp;
+import com.dj.mall.admin.vo.dict.sku.SkuGmVOResp;
+import com.dj.mall.admin.vo.product.reviews.ProductReviewsVOReq;
+import com.dj.mall.admin.vo.product.reviews.ProductReviewsVOResp;
 import com.dj.mall.admin.vo.product.spu.ProductVOReq;
 import com.dj.mall.admin.vo.product.spu.ProductVOResp;
 import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.dict.api.attr.AttrApi;
+import com.dj.mall.dict.api.sku.SkuGmApi;
+import com.dj.mall.dict.dto.sku.SkuGmDTO;
 import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.base.ResultModel;
 import com.dj.mall.model.contant.AuthConstant;
 import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.contant.PermissionsCode;
+import com.dj.mall.model.contant.ProductConstant;
 import com.dj.mall.model.util.DozerUtil;
 import com.dj.mall.product.api.spu.ProductApi;
+import com.dj.mall.product.dto.reviews.ProductReviewsDTO;
 import com.dj.mall.product.dto.spu.ProductDTO;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Objects;
-import java.util.UUID;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +68,11 @@ public class ProductController {
      */
     @Reference
     private ProductApi productApi;
+    /**
+     * skuGmApi
+     */
+    @Reference
+    private SkuGmApi skuGmApi;
 
     /**
      * 商品展示
@@ -106,12 +127,16 @@ public class ProductController {
     @RequiresPermissions(value = PermissionsCode.PRODUCT_ADD_BTN)
     public  ResultModel<Object> addProduct(ProductVOReq productVOReq, MultipartFile file, HttpSession session) throws Exception {
         Assert.notEmpty(productVOReq.getProductSkuList(), "请选择商品属性值并生成sku后再进行添加新的商品哟");
-        //图片UUID 当前登录用户 默认上架 排除空数据
+        //图片UUID 当前登录用户 默认上架 订单量 点赞量 评论量 创建时间  排除空数据
         String fileName = UUID.randomUUID().toString().replace("-", "") + Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
         UserDTO userDTO = (UserDTO) session.getAttribute(AuthConstant.SESSION_USER);
 
         productVOReq.setProductImg(fileName);
         productVOReq.setUserId(userDTO.getUserId());
+        productVOReq.setCreateTime(LocalDateTime.now());
+        productVOReq.setOrderNumber(ProductConstant.ZERO);
+        productVOReq.setPraiseNumber(ProductConstant.ZERO);
+        productVOReq.setReviewsNumber(ProductConstant.ZERO);
         productVOReq.setProductStatus(DictConstant.PRODUCT_STATUS_UP);
         productVOReq.setProductSkuList(productVOReq.getProductSkuList().stream().filter(sku -> !StringUtils.isEmpty(sku.getSkuAttrIds())).collect(Collectors.toList()));
 
@@ -173,5 +198,82 @@ public class ProductController {
     public ResultModel<Object> refactoringTheIndex() throws Exception {
         productApi.refactoringTheIndex();
         return new  ResultModel<>().success();
+    }
+
+    /**
+     * 下载导入模板
+     * @param response HttpServletResponse
+     * @throws Exception 异常
+     */
+    @GetMapping("toDownloadTheImportTemplate")
+    @RequiresPermissions(value = PermissionsCode.DOWNLOAD_THE_IMPORT_TEMPLATE_BTN)
+    public void toDownloadTheImportTemplate(HttpServletResponse response) throws Exception {
+        List<SkuGmVOResp> skuGmList = DozerUtil.mapList(skuGmApi.findSkuGm(), SkuGmVOResp.class);
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        skuGmList.forEach(skuGm -> {  
+            // 新建页
+            XSSFSheet sheet = workbook.createSheet(skuGm.getProductType());
+            sheet.setColumnWidth(1, 20*256);// 给商品描述设置10个汉字宽度
+            // 创建行
+            XSSFRow row = sheet.createRow(0);
+            // 新建第一列
+            XSSFCell cell = row.createCell(0);
+            // 设置值
+            cell.setCellValue("商品名");
+            row.createCell(1).setCellValue("商品描述");
+            row.createCell(2).setCellValue("SKU信息");
+            row.createCell(3).setCellValue("库存");
+            row.createCell(4).setCellValue("价格（元）");
+            row.createCell(5).setCellValue("折扣（%）");
+        });
+        OutputStream out = response.getOutputStream();
+        String fileName = "商品导入模板.xlsx";
+        String fileNameURL = URLEncoder.encode(fileName, "UTF-8");
+        response.setHeader("Content-disposition", "attachment;filename="+fileNameURL+";"+"filename*=utf-8''"+fileNameURL);
+        workbook.write(out);
+        out.close();
+    }
+
+    /**
+     * 导入
+     * @param userDTO 当前登录用户
+     * @param file 文件
+     * @return ResultModel
+     * @throws Exception 异常
+     */
+    @PostMapping("importProduct")
+    public ResultModel<Object> importProduct(@SessionAttribute(AuthConstant.SESSION_USER) UserDTO userDTO, MultipartFile file) throws Exception {
+        if (file == null || file.isEmpty()) {
+            return new ResultModel<>().error("上传文件不能为空");
+        }
+        String fileName = file.getOriginalFilename();
+        productApi.importProduct(file.getBytes(), userDTO.getUserId(), fileName);
+        return new ResultModel<>().success(true);
+    }
+
+    /**
+     * 查看评论
+     * @param productReviewsVOReq 商品评论 vo
+     * @return  评论数据
+     * @throws Exception 异常
+     */
+    @PostMapping("getCommentByProductId")
+    @RequiresPermissions(value = PermissionsCode.VIEW_COMMENTS_BTN)
+    public ResultModel<Object> getCommentByProductId(ProductReviewsVOReq productReviewsVOReq) throws Exception {
+        PageResult pageResult = productApi.findReviewsByProductId(DozerUtil.map(productReviewsVOReq, ProductReviewsDTO.class));
+        return new ResultModel<>().success(pageResult.toBuilder().list(DozerUtil.mapList(pageResult.getList(), ProductReviewsVOResp.class)).build());
+    }
+
+    /**
+     * 新增回复
+     * @param productReviewsVOReq 商品评论 vo
+     * @param userDTO 当前登录商家
+     * @return  ResultModel
+     * @throws Exception 异常
+     */
+    @PostMapping("addReply")
+    public ResultModel<Object> addReply(ProductReviewsVOReq productReviewsVOReq, @SessionAttribute(AuthConstant.SESSION_USER) UserDTO userDTO) throws Exception {
+        productApi.addReply(DozerUtil.map(productReviewsVOReq, ProductReviewsDTO.class), userDTO.getUserId());
+        return new ResultModel<>().success();
     }
 }

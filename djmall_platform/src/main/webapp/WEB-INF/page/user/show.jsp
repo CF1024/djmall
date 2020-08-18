@@ -198,7 +198,7 @@
             <div class="layui-upload">
                 <div class="layui-upload-list">
                     <div class="divProductImg">
-                        <img src="http://qcxz8bvc2.bkt.clouddn.com/${user.userImg}" class="imgStyle">
+                        <img src="http://qeu5389un.bkt.clouddn.com/${user.userImg}" class="imgStyle">
                         <input type="hidden" name="removeImg" value="${user.userImg}">
                     </div>
                 </div>

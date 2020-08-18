@@ -218,6 +218,13 @@ public interface PermissionsCode {
      */
     String PRODUCT_SKU_UPDATE_STATUS = "PRODUCT_SKU_UPDATE_STATUS";
 
-    //==============================商城==================================//
-
+    //==============================订单==================================//
+    /**
+     * 商品SKU_设为默认 按钮
+     */
+    String ORDER_MANAGE = "ORDER_MANAGE";
+    /**
+     * 商品SKU_上下架 按钮
+     */
+    String EXPORT_ORDER_BTN = "EXPORT_ORDER_BTN";
 }

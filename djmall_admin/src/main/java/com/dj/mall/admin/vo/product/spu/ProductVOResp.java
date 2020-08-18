@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -68,6 +69,14 @@ public class ProductVOResp implements Serializable {
      */
     private Integer praiseNumber;
     /**
+     *评论量
+     */
+    private Integer reviewsNumber;
+    /**
+     * 好评率
+     */
+    private Integer goodRate;
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;
@@ -82,5 +91,5 @@ public class ProductVOResp implements Serializable {
     /**
      * 运费
      */
-    private String freightShow;
+    private BigDecimal freight;
 }

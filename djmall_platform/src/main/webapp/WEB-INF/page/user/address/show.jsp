@@ -68,7 +68,16 @@
 
         //新增收货地址
         function toNewShippingAddress() {
-            window.location.href = "<%=request.getContextPath()%>/user/address/toNewShippingAddress?TOKEN="+getToken();
+            //iframe层
+            layer.open({
+                type: 2,
+                title: '新增收货地址',
+                shadeClose: true,
+                maxmin: true, //开启最大化最小化按钮
+                shade: 0.8,
+                area: ['800px', '50%'],
+                content: '<%=request.getContextPath()%>/user/address/toNewShippingAddress?TOKEN='+getToken()
+            });
         }
 
         //去修改
@@ -81,7 +90,7 @@
                 maxmin: true, //开启最大化最小化按钮
                 shade: 0.8,
                 area: ['800px', '50%'],
-                content: '<%=request.getContextPath()%>/user/address/toUpdate?TOKEN='+getToken()+"&id="+id
+                content: '<%=request.getContextPath()%>/user/address/toUpdate?TOKEN='+getToken()+"&addressId="+id
             });
         }
 

@@ -19,6 +19,8 @@
     <head>
         <title>Title</title>
         <link rel="stylesheet" href="<%=request.getContextPath()%>/static/layui/css/layui.css" media="all">
+        <script type="text/javascript" src="<%=request.getContextPath()%>/static/js/jquery-1.12.4.min.js"></script>
+        <script type="text/javascript" src="<%=request.getContextPath()%>/static/layer/layer.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/static/layui/layui.js"></script>
     </head>
     <script>
@@ -27,6 +29,26 @@
             var element = layui.element;
 
         });
+        $(function(){
+            show();
+        })
+
+        function show(){
+            $.get("<%=request.getContextPath()%>/order/showInform",
+                {},
+                function(data){
+                    //消息条数
+                    var numberOfMessages = data.data.length;
+                    //如果登录人是商户
+                    if('${USER.userRole}' == 2 && numberOfMessages > 0){
+                        layer.confirm('${USER.nickName}'+"您有"+numberOfMessages+"条待审核信息,是否前往处理",
+                            function(index){
+                                window.location.href="<%=request.getContextPath()%>/order/toShow";
+                                layer.close(index);
+                            });
+                    }
+                })
+        }
     </script>
     <body>
         <div class="layui-body" >

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ 作者：CF
+  ~ 日期：2020-08-17 11:05
+  ~ 项目：djmall
+  ~ 模块：djmall_product_provider
+  ~ 类名：ProductReviewsMapper.xml
+  ~ 版权所有(C), 2020. 所有权利保留
+  -->
+
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dj.mall.product.mapper.reviews.ProductReviewsMapper">
+
+    <select id="findReviewsByReplyId" resultType="com.dj.mall.product.bo.reviews.ProductReviewsBO">
+        SELECT
+            pr.id,
+            pr.reviewer_id,
+            pr.product_id,
+            pr.`comment`,
+            pr.reply_id,
+            pr.create_time,
+            pr.rate,
+            au.nick_name
+        FROM
+            djmall_product_reviews pr
+                LEFT JOIN djmall_auth_user au ON pr.reviewer_id = au.id
+        WHERE
+            pr.reply_id IN
+            <foreach collection="list" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </select>
+</mapper>

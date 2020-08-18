@@ -50,7 +50,7 @@ public class SkuBO implements Serializable {
     /**
      * sku折扣
      */
-    private String skuRate;
+    private Integer skuRate;
     /**
      * sku状态 下架 上架
      */
@@ -75,4 +75,16 @@ public class SkuBO implements Serializable {
      *是否默认
      */
     private String isDefault;
+    /**
+     * 商品名称
+     */
+    private String productName;
+    /**
+     *商家id
+     */
+    private Integer businessId;
+    /**
+     *运费
+     */
+    private BigDecimal freight;
 }

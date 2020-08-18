@@ -23,7 +23,6 @@
         <script type="text/javascript" src="<%=request.getContextPath()%>/static/js/jquery-1.12.4.min.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/static/layer/layer.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/static/layui/layui.js"></script>
-        <script type="text/javascript" src="<%=request.getContextPath()%>/static/layui/layui.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/static\js\cookie.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/static\js\token.js"></script>
     </head>
@@ -44,9 +43,9 @@
         });
 
         function show() {
-            var index = layer.load(0, {offset: '230px', shade:0.5});
+            var index = layer.load(0,{offset: '300px', shade:0.5});
             $.get(
-                "<%=request.getContextPath()%>/product/",
+                "<%=request.getContextPath()%>/product/?TOKEN="+getToken(),
                 $("#fm").serialize(),
                 function (data) {
                     layer.close(index);
@@ -59,14 +58,21 @@
                         var pro = data.data.list[i];
                         html += "<tr>";
                         html += "<td width='200px'><a  href='<%=request.getContextPath()%>/product/toProductDetails?id="+pro.productId+"' target='_blank' class='linkStyle' style='color: dodgerblue'>" + pro.productName +"</a></td>";
-                        html += "<td>" + pro.skuPriceShow +"</td>";
-                        html += "<td>" + pro.skuCountShow +"</td>";
+                        html += "<td>" + pro.skuPrice +"</td>";
+                        html += "<td>" + pro.skuCount +"</td>";
                         html += "<td>" + pro.productType +"</td>";
-                        html += pro.skuRateShow === "100" ? "<td>无折扣</td>" : "<td>"+ pro.skuRateShow +"%</td>";
-                        html += pro.freightShow === 0.00? "<td>"+ pro.company +"-包邮</td>" : "<td>" +pro.company +" - "+ pro.freightShow +"元</td>";
-                        html += "<td><img src='http://qcxz8bvc2.bkt.clouddn.com/"+pro.productImg+"' style='width: 70px; height: 70px'></td>";
+                        html += pro.skuRate === "100" ? "<td>无折扣</td>" : "<td>"+ pro.skuRate +"%</td>";
+                        html += pro.freight === 0.00? "<td>"+ pro.company +"-包邮</td>" : "<td>" +pro.company +" - "+ pro.freight +"元</td>";
+                        html += "<td><img src='http://qeu5389un.bkt.clouddn.com/"+pro.productImg+"' style='width: 70px; height: 70px'></td>";
                         html += "<td>" + pro.productDescribe +"</td>";
-                        html += pro.praiseNumber == null ? "<td>暂无点赞量</td>" : "<td>" + pro.praiseNumber +"</td>";
+                        html += "<td>";
+                        if (pro.isLike == 0) {
+                            html += "<i class='layui-icon layui-icon-heart-fill' style='font-size: 30px; color: red;' onclick='like("+pro.productId+"," + 1 +")'></i>";
+                        } else {
+                            html += "<i class='layui-icon layui-icon-heart' style='font-size: 30px; color: grey;' onclick='like("+pro.productId+"," + 0 +")'></i>";
+                        }
+                        html += "+" + pro.praiseNumber;
+                        html += "</td>";
                         html += "</tr>";
                     }
                     $("#tbd").html(html);
@@ -96,6 +102,22 @@
         function fuzzySearch() {
             $("#pageNo").val(1);
             show();
+        }
+
+        //点赞
+        function like(productId, isLike) {
+            var index = layer.load(0,{offset: '400px', shade:0.5});
+            token_post(
+                "<%=request.getContextPath()%>/product/like",
+                {"productId":productId, "isLike":isLike},
+                function (result) {
+                    if (result.code != 200) {
+                        layer.alert(result.msg, {offset: '300px', icon:5});
+                        return;
+                    }
+                    window.location.reload();
+                    layer.close(index);
+                });
         }
         //声明from模块，否则select、checkbox、radio等将无法显示，并且无法使用form相关功能
         layui.use(['form', 'element'], function () {

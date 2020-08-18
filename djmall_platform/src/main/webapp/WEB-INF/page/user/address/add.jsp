@@ -116,7 +116,7 @@
                         }
                         layer.msg(data.msg, {offset: '230px', icon: 6, time: 2000},
                             function(){
-                                window.location.href = "<%=request.getContextPath()%>/user/address/toShowAddress?TOKEN="+getToken();
+                                parent.location.reload();
                             }
                         );
                     }
@@ -157,7 +157,7 @@
             );
         }
         function toShowAddress() {
-            window.location.href = "<%=request.getContextPath()%>/user/address/toShowAddress?TOKEN="+getToken();
+            parent.location.reload();
         }
 
     </script>

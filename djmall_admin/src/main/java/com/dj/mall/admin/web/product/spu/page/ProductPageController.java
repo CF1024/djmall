@@ -73,8 +73,7 @@ public class ProductPageController {
     @RequiresPermissions(value = PermissionsCode.PRODUCT_MANAGE)
     public String toShow(ModelMap model) throws Exception {
         //商品类型集合
-        PageResult pageResult = skuGmApi.findAll(DozerUtil.map(SkuGmVOReq.class, SkuGmDTO.class));
-        model.put("productTypeList", DozerUtil.mapList(pageResult.getList(), SkuGmVOResp.class));
+        model.put("productTypeList", DozerUtil.mapList( skuGmApi.findSkuGm(), SkuGmVOResp.class));
         return "product/spu/show";
     }
 
@@ -90,8 +89,7 @@ public class ProductPageController {
         //运费集合
         model.put("freightList", DozerUtil.mapList(freightApi.findAll(), FreightVOResp.class));
         //商品类型集合
-        PageResult pageResult = skuGmApi.findAll(DozerUtil.map(SkuGmVOReq.class, SkuGmDTO.class));
-        model.put("productTypeList", DozerUtil.mapList(pageResult.getList(), SkuGmVOResp.class));
+        model.put("productTypeList", DozerUtil.mapList( skuGmApi.findSkuGm(), SkuGmVOResp.class));
         return "product/spu/add";
     }
 
@@ -109,5 +107,21 @@ public class ProductPageController {
         model.put("product", DozerUtil.map(productApi.findProductById(productId), ProductVOResp.class));
         model.put("freightList", DozerUtil.mapList(freightApi.findAll(), FreightVOResp.class));
         return "product/spu/update";
+    }
+
+    /**
+     * 去查看评论
+     * @param productId 商品id
+     * @param model  ModelMap
+     * @return 查看评论前台
+     * @throws Exception 异常
+     */
+    @GetMapping("toViewComments/{productId}")
+    @RequiresPermissions(value = PermissionsCode.VIEW_COMMENTS_BTN)
+    public String toViewComments(@PathVariable("productId") Integer productId, ModelMap model) throws Exception {
+        model.put("productId", productId);
+        //商品好评率
+        model.put("goodRate", productApi.findGoodRateByProductId(productId));
+        return "product/spu/comment";
     }
 }
