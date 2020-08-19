@@ -77,7 +77,7 @@
     </select>
 
     <!--好评率-->
-    <select id="findGoodRateByProductId" resultType="java.lang.Integer">
+     <select id="findGoodRateByProductId" resultType="java.lang.Integer">
         SELECT
             (SUM(IF(pr.rate &gt; 3, 1, 0)) / COUNT(pr.rate)) * 100 AS goodRate
         FROM

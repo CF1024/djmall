@@ -40,6 +40,7 @@ import com.dj.mall.cmpt.RedisApi;
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.contant.*;
+import com.dj.mall.model.statement.Statement;
 import com.dj.mall.model.util.*;
 import com.dj.mall.product.api.sku.SkuApi;
 import com.dj.mall.product.dto.sku.SkuDTO;
@@ -141,6 +142,9 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         UserRole userRole = userRoleService.getOne(new QueryWrapper<UserRole>().eq("user_id", userDTO.getUserId()));
         if (AuthConstant.GENERAL_USER.equals(userRole.getRoleId())) {
             throw new BusinessException("角色不匹配");
+        }
+        if (AuthConstant.DEFAULT_ROLE.equals(userRole.getRoleId())) {
+            throw new BusinessException("请联系管理员进行授权");
         }
         userDTO.setUserRole(userRole.getRoleId());
         //最后登录时间
@@ -649,6 +653,18 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
         if (OrderConstant.ZERO < updateList.size()) {
             shoppingCartService.saveBatch(updateList);
         }
+    }
+
+    /**
+     * 获取每日用户登录量
+     * @param january 一月
+     * @return List<Statement>
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public List<Statement> getUserLoginNum(Integer january) throws Exception, BusinessException {
+        return lastLoginTimeService.getUserLoginNum(january);
     }
 
 }

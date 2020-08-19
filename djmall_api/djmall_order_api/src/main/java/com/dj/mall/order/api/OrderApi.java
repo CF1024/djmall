@@ -10,6 +10,7 @@
 package com.dj.mall.order.api;
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
+import com.dj.mall.model.statement.Statement;
 import com.dj.mall.order.dto.OrderDTO;
 import com.dj.mall.order.dto.OrderDetailDTO;
 import com.dj.mall.order.dto.OrderInfoDTO;
@@ -148,4 +149,23 @@ public interface OrderApi {
      * @throws BusinessException 自定义异常
      */
     Integer findAllIsCommentByChildOrderNo(String orderNo) throws Exception, BusinessException;
+
+    /**
+     * 近七日订单总成交量
+     * @param roleId 当前登录用户id
+     * @return  List<Statement>
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    List<Statement> getOrderTotalVolume(Integer roleId, Integer userId) throws Exception, BusinessException;
+
+    /**
+     * 订单商品分类
+     * @param roleId 角色id
+     * @param userId 用户id
+     * @return  List<Statement>
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    List<Statement> getOrderStatusByProduct(Integer roleId, Integer userId) throws Exception, BusinessException;
 }

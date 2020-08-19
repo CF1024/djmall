@@ -12,6 +12,7 @@ package com.dj.mall.order.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dj.mall.model.statement.Statement;
 import com.dj.mall.order.bo.OrderBO;
 import com.dj.mall.order.bo.OrderInfoBO;
 import com.dj.mall.order.entity.OrderEntity;
@@ -85,4 +86,21 @@ public interface OrderMapper extends BaseMapper<OrderEntity> {
      * @throws DataAccessException 异常
      */
     Integer findAllIsCommentByChildOrderNo(String orderNo) throws DataAccessException;
+
+    /**
+     * 近七日订单总成交量
+     * @param roleId 当前登录用户id
+     * @return List<Statement>
+     * @throws DataAccessException 异常
+     */
+    List<Statement> getOrderTotalVolume(@Param("roleId") Integer roleId, @Param("userId") Integer userId) throws DataAccessException;
+
+    /**
+     * 订单商品分类
+     * @param roleId 角色
+     * @param userId 用户id
+     * @return  List<Statement>
+     * @throws DataAccessException 异常
+     */
+    List<Statement> getOrderStatusByProduct(@Param("roleId") Integer roleId, @Param("userId") Integer userId) throws DataAccessException;
 }

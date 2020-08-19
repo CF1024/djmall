@@ -12,12 +12,11 @@ package com.dj.mall.auth.api.user;
 import com.dj.mall.auth.dto.address.AreaDTO;
 import com.dj.mall.auth.dto.address.UserAddressDTO;
 import com.dj.mall.auth.dto.cart.ShoppingCartDTO;
-import com.dj.mall.auth.dto.resource.ResourceDTO;
-import com.dj.mall.auth.dto.role.RoleResourceDTO;
 import com.dj.mall.auth.dto.user.UserDTO;
 import com.dj.mall.auth.dto.user.UserTokenDTO;
 import com.dj.mall.model.base.BusinessException;
 import com.dj.mall.model.base.PageResult;
+import com.dj.mall.model.statement.Statement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -261,4 +260,13 @@ public interface UserApi {
      * @throws BusinessException 自定义异常
      */
     void saveCartBatch(List<ShoppingCartDTO> cartList) throws Exception, BusinessException;
+
+    /**
+     * 获取每日用户登录量
+     * @param january 一月
+     * @return List<Statement>
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    List<Statement> getUserLoginNum(Integer january) throws Exception, BusinessException;
 }

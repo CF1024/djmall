@@ -28,6 +28,7 @@ import com.dj.mall.model.base.PageResult;
 import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.contant.OrderConstant;
 import com.dj.mall.model.contant.RedisConstant;
+import com.dj.mall.model.statement.Statement;
 import com.dj.mall.model.util.DozerUtil;
 import com.dj.mall.model.util.VerifyCodeUtil;
 import com.dj.mall.order.api.OrderApi;
@@ -448,33 +449,6 @@ public class OrderApiImpl extends ServiceImpl<OrderMapper, OrderEntity> implemen
     }
 
     /**
-     * 修改订单评论状态
-     * @param detailIdList 明细订单id集合
-     * @param isComment 订单评论状态 1 已评论
-     * @throws Exception 异常
-     * @throws BusinessException 自定义异常
-     */
-    @Override
-    public void updateDetailComment(List<Integer> detailIdList, Integer isComment) throws Exception, BusinessException {
-        UpdateWrapper<OrderDetailEntity> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.set("is_comment", isComment);
-        updateWrapper.in("id", detailIdList);
-        orderDetailService.update(updateWrapper);
-    }
-
-    /**
-     * 根据子订单号查该订单得评论是否全部完成
-     * @param orderNo 子订单号
-     * @return  Integer
-     * @throws Exception 异常
-     * @throws BusinessException 自定义异常
-     */
-    @Override
-    public Integer findAllIsCommentByChildOrderNo(String orderNo) throws Exception, BusinessException {
-        return baseMapper.findAllIsCommentByChildOrderNo(orderNo);
-    }
-
-    /**
      * 创建sheet
      * @param workbook 工作簿
      * @param orderStatus 订单状态
@@ -561,4 +535,58 @@ public class OrderApiImpl extends ServiceImpl<OrderMapper, OrderEntity> implemen
             }
         }
     }
+
+    /**
+     * 修改订单评论状态
+     * @param detailIdList 明细订单id集合
+     * @param isComment 订单评论状态 1 已评论
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public void updateDetailComment(List<Integer> detailIdList, Integer isComment) throws Exception, BusinessException {
+        UpdateWrapper<OrderDetailEntity> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("is_comment", isComment);
+        updateWrapper.in("id", detailIdList);
+        orderDetailService.update(updateWrapper);
+    }
+
+    /**
+     * 根据子订单号查该订单得评论是否全部完成
+     * @param orderNo 子订单号
+     * @return  Integer
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public Integer findAllIsCommentByChildOrderNo(String orderNo) throws Exception, BusinessException {
+        return baseMapper.findAllIsCommentByChildOrderNo(orderNo);
+    }
+
+    /**
+     * 近七日订单总成交量
+     * @param roleId 当前登录用户id
+     * @return List<Statement>
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public List<Statement> getOrderTotalVolume(Integer roleId, Integer userId) throws Exception, BusinessException {
+        return baseMapper.getOrderTotalVolume(roleId, userId);
+    }
+
+    /**
+     * 订单商品分类
+     * @param roleId 角色
+     * @param userId 用户id
+     * @return  List<Statement>
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public List<Statement> getOrderStatusByProduct(Integer roleId, Integer userId) throws Exception, BusinessException {
+        return baseMapper.getOrderStatusByProduct(roleId, userId);
+    }
+
+
 }

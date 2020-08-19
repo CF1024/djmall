@@ -263,4 +263,36 @@
         WHERE
             od.child_order_no = #{orderNo}
     </select>
+    <!--近七日订单量-->
+    <select id="getOrderTotalVolume" resultType="com.dj.mall.model.statement.Statement">
+        SELECT
+            COUNT(o.pay_time) AS number,
+            DATE_FORMAT(o.pay_time, '%Y-%m-%d') AS days
+        FROM
+            djmall_order o
+                LEFT JOIN djmall_order_detail od ON o.order_no = od.parent_order_no
+        WHERE
+            o.pay_time IS NOT NULL
+          <if test="roleId == 2">
+              AND od.business_id = #{userId}
+          </if>
+        GROUP BY
+            DATE_FORMAT(o.pay_time, '%Y-%m-%d')
+    </select>
+    <!--订单商品分类-->
+    <select id="getOrderStatusByProduct" resultType="com.dj.mall.model.statement.Statement">
+        SELECT
+            COUNT(0) AS number,
+            od.product_name
+        FROM
+            djmall_order_detail od
+                LEFT JOIN djmall_order_info oi ON od.child_order_no = oi.order_no
+        WHERE
+            oi.order_status = 'COMPLETED'
+        <if test="roleId == 2">
+            AND od.business_id = #{userId}
+        </if>
+        GROUP BY
+            od.product_id
+    </select>
 </mapper>

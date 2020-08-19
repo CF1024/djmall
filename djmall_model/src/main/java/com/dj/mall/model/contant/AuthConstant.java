@@ -67,4 +67,8 @@ public interface AuthConstant {
      * 购物车选中状态为：1（未选中）
      */
     Integer CART_CHECKED_ONE = 1;
+    /**
+     * 默认角色
+     */
+    Integer DEFAULT_ROLE = 4;
 }

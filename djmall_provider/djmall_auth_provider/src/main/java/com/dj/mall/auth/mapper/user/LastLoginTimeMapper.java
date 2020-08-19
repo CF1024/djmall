@@ -11,10 +11,22 @@ package com.dj.mall.auth.mapper.user;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.dj.mall.auth.entity.user.LastLoginTime;
+import com.dj.mall.model.statement.Statement;
+import org.springframework.dao.DataAccessException;
+
+import java.util.List;
+
 /**
  * @author chengf
  * @date 2020/6/3 20:16
  * 最后登录时间mapper接口
  */
 public interface LastLoginTimeMapper extends BaseMapper<LastLoginTime> {
+    /**
+     * 获取每日用户登录量
+     * @param january 一月
+     * @return List<Statement>
+     * @throws DataAccessException
+     */
+    List<Statement> getUserLoginNum(Integer january) throws DataAccessException;
 }
