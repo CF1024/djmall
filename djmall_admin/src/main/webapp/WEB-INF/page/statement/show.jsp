@@ -40,6 +40,7 @@
                 }
             });
         });
+        //近七日登录用户量
         function getUserLoginNum() {
             $.get(
                 "<%=request.getContextPath() %>/statement/getUserLoginNum",
@@ -60,7 +61,7 @@
                     userLoginNumChart.clear();
                     var option = {
                         title: {
-                            subtext: '每日登录用户量'
+                            subtext: '近七日登录用户量'
                         },
                         tooltip: {},
                         legend: {
@@ -105,7 +106,7 @@
                     userLoginNum.clear();
                     var option = {
                         title: {
-                            subtext: '每日登录用户量'
+                            subtext: '近一月登录用户量'
                         },
                         tooltip: {},
                         legend: {
@@ -185,12 +186,10 @@
                         layer.msg(data.msg);
                         return;
                     }
-
                     var productNames = [];
                     for(var i = 0; i < data.data.length; i++){
                         productNames.push(data.data[i].productName);
                     }
-
                     var res=[];
                     $.each(data.data,function(key,v){
                         res.push({
@@ -198,15 +197,18 @@
                             name:v.productName
                         });
                     });
-
                     var orderStatus = echarts.init(document.getElementById('orderStatus'));
                     orderStatus.clear();
-
                     var option = {
                         title: {
                             text: '各商品订单比例',
                             subtext: '纯属真实',
-                            left: 'center'
+                            left: 'center',
+                            textStyle: {
+                                fontSize: 30,
+                                color: "rgba(225, 0, 255, 1)",
+                                fontStyle: "italic"
+                            },
                         },
                         tooltip: {
                             trigger: 'item',
@@ -222,15 +224,9 @@
                                 name: '各商品订单比例',
                                 type: 'pie',
                                 radius: '55%',
+                                roseType: 'angle',
                                 center: ['50%', '60%'],
                                 data:res,
-                                //  data: [
-                                //     {value: data.data[0].echarsCount, name: data.data[0].productName},
-                                //     {value: data.data[1].echarsCount, name: data.data[1].productName},
-                                //     {value: data.data[2].echarsCount, name: data.data[2].productName},
-                                //     {value: data.data[3].echarsCount, name: data.data[3].productName},
-                                //     {value: data.data[4].echarsCount, name: data.data[4].productName}
-                                // ],
                                 emphasis: {
                                     itemStyle: {
                                         shadowBlur: 10,
