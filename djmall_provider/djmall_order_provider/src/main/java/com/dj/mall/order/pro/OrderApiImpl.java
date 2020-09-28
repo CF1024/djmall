@@ -29,6 +29,7 @@ import com.dj.mall.model.contant.DictConstant;
 import com.dj.mall.model.contant.OrderConstant;
 import com.dj.mall.model.contant.RedisConstant;
 import com.dj.mall.model.statement.Statement;
+import com.dj.mall.model.util.AliPayUtils;
 import com.dj.mall.model.util.DozerUtil;
 import com.dj.mall.model.util.VerifyCodeUtil;
 import com.dj.mall.order.api.OrderApi;
@@ -56,12 +57,14 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -133,9 +136,13 @@ public class OrderApiImpl extends ServiceImpl<OrderMapper, OrderEntity> implemen
      * @throws BusinessException 自定义异常
      */
     @Override
-    public void addOrder(OrderDTO orderDTO, String TOKEN) throws Exception, BusinessException {
+    public String addOrder(OrderDTO orderDTO, String TOKEN) throws Exception, BusinessException {
+        if (orderDTO.getAddressId() == null) {
+            throw new BusinessException("请填写收货地址~");
+        }
         //根据购物车中的skuId获取对应sku商品集合
         List<SkuDTO> skuList = skuApi.findSkuBySkuIds(orderDTO.getSkuIdList());
+
         for (int i = 0; i < skuList.size(); i++) {
             //商品sku AND 购买数量
             SkuDTO sku = skuList.get(i);
@@ -159,6 +166,7 @@ public class OrderApiImpl extends ServiceImpl<OrderMapper, OrderEntity> implemen
         List<OrderInfoEntity> orderInfoList = new ArrayList<>();
         //明细订单
         List<OrderDetailEntity> orderDetailList = new ArrayList<>();
+
         //主订单赋值
         order.setOrderNo(generateOrderNo());
         order.setBuyerId(userAddress.getUserId());
@@ -254,6 +262,8 @@ public class OrderApiImpl extends ServiceImpl<OrderMapper, OrderEntity> implemen
             Integer[] ids = new Integer[cartIdList.size()];
             shoppingCartApi.deleteCartById(cartIdList.toArray(ids));
         }
+        //String 订单号 商品应付总金额 商品名集合
+        return order.getOrderNo();
     }
 
     /**
@@ -321,13 +331,18 @@ public class OrderApiImpl extends ServiceImpl<OrderMapper, OrderEntity> implemen
      * @throws BusinessException 自定义异常
      */
     @Override
-    public void updateStatus(String orderNo, String orderStatus) throws Exception, BusinessException {
+    public void updateStatus(String orderNo, String orderStatus, String aliPayTradeNo) throws Exception, BusinessException {
         //修改子订单状态
         UpdateWrapper<OrderInfoEntity> orderInfoUpdateWrapper = new UpdateWrapper<>();
-        if (DictConstant.CANCELLED.equals(orderStatus)) {
+        if (orderStatus.equals(DictConstant.PAID) || DictConstant.CANCELLED.equals(orderStatus)) {
             //修改主订单状态
             UpdateWrapper<OrderEntity> updateWrapper = new UpdateWrapper<OrderEntity>().eq("order_no", orderNo);
             updateWrapper.set("order_status", orderStatus);
+            //修改支付时间 支付宝交易号
+            OrderEntity orderEntity = this.getById(orderNo);
+            if (orderStatus.equals(DictConstant.PAID) && DictConstant.PENDING_PAYMENT.equals(orderEntity.getOrderStatus())) {
+                updateWrapper.set("pay_time", LocalDateTime.now()).set("alipay_trade_no", aliPayTradeNo);
+            }
             update(updateWrapper);
             //取消订单修改库存
             if (DictConstant.CANCELLED.equals(orderStatus)) {
@@ -338,6 +353,10 @@ public class OrderApiImpl extends ServiceImpl<OrderMapper, OrderEntity> implemen
             orderInfoUpdateWrapper.eq("order_no", orderNo);
         }
         orderInfoUpdateWrapper.set("order_status", orderStatus);
+        //修改支付时间 支付宝交易号
+        if (orderStatus.equals(DictConstant.PAID)) {
+            orderInfoUpdateWrapper.set("pay_time", LocalDateTime.now()).set("alipay_trade_no", aliPayTradeNo);
+        }
         orderInfoService.update(orderInfoUpdateWrapper);
     }
 

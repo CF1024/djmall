@@ -57,7 +57,7 @@ public class OrderController {
      */
     @PutMapping("updateStatus")
     public ResultModel<Object> updateStatus(String orderNo, String orderStatus) throws Exception {
-        orderApi.updateStatus(orderNo, orderStatus);
+        orderApi.updateStatus(orderNo, orderStatus,null);
         return new ResultModel<>().success(true);
     }
 

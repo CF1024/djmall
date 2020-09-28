@@ -251,7 +251,7 @@ public interface UserApi {
      * @throws Exception 异常
      * @throws BusinessException 自定义异常
      */
-    void addToShoppingCart(ShoppingCartDTO shoppingCartDTO, String TOKEN) throws Exception, BusinessException;
+    Integer addToShoppingCart(ShoppingCartDTO shoppingCartDTO, String TOKEN, Integer buyNow) throws Exception, BusinessException;
 
     /**
      * 批量新增购物车

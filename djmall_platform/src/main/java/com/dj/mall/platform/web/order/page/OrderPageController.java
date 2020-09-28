@@ -85,4 +85,13 @@ public class OrderPageController {
         model.put("productList", DozerUtil.mapList(orderApi.findOrderDetailByChildOrderNo(orderNo), OrderDetailVoResp.class));
         return "order/comment";
     }
+
+    /**
+     * 支付宝同步回调
+     * @return 回调前台 success
+     */
+    @RequestMapping("aliPaySuccess")
+    public String aliPaySuccess(){
+        return "order/aliPaySuccess";
+    }
 }

@@ -71,4 +71,8 @@ public interface AuthConstant {
      * 默认角色
      */
     Integer DEFAULT_ROLE = 4;
+    /**
+     * 立即购买
+     */
+    Integer BUY_NOW = 2;
 }

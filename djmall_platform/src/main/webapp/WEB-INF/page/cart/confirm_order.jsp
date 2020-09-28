@@ -133,7 +133,7 @@
         }
 
         //确认订单
-        function confirmOrder() {
+       function confirmOrder() {
             var index = layer.load(0, {shade:0.5});
             token_post(
                 "<%=request.getContextPath()%>/order/addOrder?TOKEN="+getToken(),
@@ -144,10 +144,9 @@
                         layer.msg(data.msg, {offset: '230px', icon:5, time:5000});
                         return;
                     }
-                    layer.msg(data.msg, {offset: '230px', icon: 6, time: 2000},
-                        function(){
-                            window.location.href = "<%=request.getContextPath()%>/user/index/toIndex?TOKEN="+getToken();
-                    });
+                    //去支付链接
+                    window.location.href = "<%=request.getContextPath()%>/order/toPay?TOKEN="+getToken() +"&orderNo="+data.msg;
+
                 })
         }
 

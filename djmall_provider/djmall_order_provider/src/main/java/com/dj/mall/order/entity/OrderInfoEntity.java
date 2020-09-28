@@ -138,4 +138,8 @@ public class OrderInfoEntity implements Serializable {
      * 提醒时间
      */
     private LocalDateTime remindTime;
+    /**
+     * 支付宝交易号
+     */
+    private String alipayTradeNo;
 }

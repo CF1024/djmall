@@ -39,4 +39,12 @@ public interface ShoppingCartMapper extends BaseMapper<ShoppingCartEntity> {
      * @throws DataAccessException 异常
      */
     List<ShoppingCartBO> findPriceByCartId(@Param("ids") ArrayList<Integer> ids) throws DataAccessException;
+
+    /**
+     * 根据购物车id查
+     * @param cartId 购物车id查
+     * @return 购物车BO
+     * @throws DataAccessException 异常
+     */
+    ShoppingCartBO findCartByCartId(Integer cartId) throws DataAccessException;
 }

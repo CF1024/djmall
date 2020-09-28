@@ -42,12 +42,17 @@ function getToken() {
 }
 
 // 去登录
-function toLogin() {
+function toAlertLogin() {
+    //iframe层
     layer.open({
-        type:2,
-        content : "/user/toLogin",
-        title : '登录',
-        shade : 0.6
+        type: 2,
+        title: '登录',
+        shadeClose: true,
+        maxmin: true, //开启最大化最小化按钮
+        shade: 0.8,
+        offset: '230px',
+        area: ['460px', '60%'],
+        content: "/user/toAlertLogin"
     });
 }
 
@@ -63,8 +68,7 @@ $.ajaxSetup({
                 alert("服务器系统内部错误");
                 break;
             case(666):
-                alert("未登录");
-                logout();
+                toAlertLogin();
                 break;
             case(403):
                 alert("当前用户没有权限");
@@ -88,8 +92,7 @@ $.ajaxSetup({
                 alert("服务器系统内部错误");
                 break;
             case(666):
-                alert("未登录");
-                logout();
+                toAlertLogin();
                 break;
             case(403):
                 alert("当前用户没有权限");

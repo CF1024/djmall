@@ -31,10 +31,15 @@ public class OrderConsumer {
     @RabbitHandler
     @RabbitListener(queues = "orderDlxQueue")
     public void process(Message message) throws Exception {
-        String orderNo = new String(message.getBody(), StandardCharsets.UTF_8);
-        OrderDTO order = orderApi.findOrderByOrderNo(orderNo);
-        if (order.getOrderStatus().equals(DictConstant.PENDING_PAYMENT)) {
-            orderApi.updateStatus(orderNo, DictConstant.CANCELLED);
+        try {
+            String orderNo = new String(message.getBody(), StandardCharsets.UTF_8);
+            OrderDTO order = orderApi.findOrderByOrderNo(orderNo);
+            if (null!= order.getOrderStatus() && DictConstant.PENDING_PAYMENT.equals(order.getOrderStatus())) {
+                orderApi.updateStatus(orderNo, DictConstant.CANCELLED, null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 }

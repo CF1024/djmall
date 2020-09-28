@@ -25,6 +25,10 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class OrderInfoVoReq implements Serializable {
     /**
+     * 支付宝交易号
+     */
+    private String alipayTradeNo;
+    /**
      * 用户id
      */
     private Integer userId;

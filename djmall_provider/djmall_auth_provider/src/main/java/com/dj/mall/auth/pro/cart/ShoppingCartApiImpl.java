@@ -122,4 +122,16 @@ public class ShoppingCartApiImpl extends ServiceImpl<ShoppingCartMapper, Shoppin
     public void deleteCartById(Integer[] ids) throws Exception, BusinessException {
       this.removeByIds(Arrays.asList(ids));
     }
+
+    /**
+     * 根据购物车id查
+     * @param cartId 购物车id查
+     * @return ShoppingCartDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    @Override
+    public ShoppingCartDTO findCartByCartId(Integer cartId) throws Exception, BusinessException {
+        return DozerUtil.map(baseMapper.findCartByCartId(cartId), ShoppingCartDTO.class);
+    }
 }

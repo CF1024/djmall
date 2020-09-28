@@ -156,6 +156,6 @@ public class OrderBO implements Serializable {
     /**
      * 支付宝交易号
      */
-    private String aLiPayTradeNo;
+    private String alipayTradeNo;
 
 }

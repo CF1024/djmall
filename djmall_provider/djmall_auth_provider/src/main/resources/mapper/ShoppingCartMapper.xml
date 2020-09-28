@@ -57,4 +57,25 @@
             #{id}
         </foreach>
     </select>
+    <select id="findCartByCartId" resultType="com.dj.mall.auth.bo.cart.ShoppingCartBO">
+        SELECT
+            sc.id AS cartId,
+            sc.user_id,
+            sc.sku_id,
+            sc.product_id,
+            sc.quantity,
+            sc.checked,
+            spu.product_name AS productName,
+            sku.sku_price AS skuPrice,
+            sku.sku_attr_value_names AS skuAttrValueNames,
+            sku.sku_rate AS skuRate,
+            sku.sku_count AS skuCount,
+            pf.freight AS freight
+        FROM
+            djmall_auth_shopping_cart sc
+                LEFT JOIN djmall_product_spu spu ON sc.product_id = spu.id
+                LEFT JOIN djmall_product_sku sku ON sc.sku_id = sku.id
+                LEFT JOIN djmall_dict_product_freight pf ON spu.freight_id = pf.id
+        WHERE sc.id = #{cartId}
+    </select>
 </mapper>

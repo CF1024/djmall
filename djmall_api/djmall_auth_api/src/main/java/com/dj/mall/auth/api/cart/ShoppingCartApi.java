@@ -54,4 +54,13 @@ public interface ShoppingCartApi {
      * @throws BusinessException 自定义异常
      */
     void deleteCartById(Integer[] ids) throws Exception, BusinessException;
+
+    /**
+     * 根据购物车id查
+     * @param cartId 购物车id查
+     * @return ShoppingCartDTO
+     * @throws Exception 异常
+     * @throws BusinessException 自定义异常
+     */
+    ShoppingCartDTO findCartByCartId(Integer cartId) throws Exception, BusinessException;
 }

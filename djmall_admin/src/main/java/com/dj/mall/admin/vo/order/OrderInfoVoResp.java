@@ -27,6 +27,10 @@ import java.util.List;
 @Accessors(chain = true)
 public class OrderInfoVoResp implements Serializable {
     /**
+     * 支付宝交易号
+     */
+    private String alipayTradeNo;
+    /**
      * 商户昵称
      */
     private String businessNickNameShow;

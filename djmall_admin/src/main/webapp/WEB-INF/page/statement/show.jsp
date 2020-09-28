@@ -32,7 +32,11 @@
             var element = layui.element;
             element.on('tab(filter)', function(data){
                 if (data.index == 0) {
-                    getUserLoginNum();
+                    if (${USER.userRole == 1}) {
+                        getUserLoginNum();
+                    } else {
+                        layer.msg("无权限", {icon:4});
+                    }
                 } else if (data.index == 1) {
                     getOrderTotalVolume();
                 } else if (data.index == 2) {
@@ -224,7 +228,6 @@
                                 name: '各商品订单比例',
                                 type: 'pie',
                                 radius: '55%',
-                                roseType: 'angle',
                                 center: ['50%', '60%'],
                                 data:res,
                                 emphasis: {
@@ -250,9 +253,11 @@
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item">
-                    <input type="button" value="近七日用户登录量" onclick="getUserLoginNum(1)" class="layui-btn layui-btn-normal">
-                    <input type="button" value="近一月用户登录量" onclick="getUserLoginJanuaryNum(1)" class="layui-btn layui-btn-normal"><br/>
-                    <div id="userLoginNum" style="width:49%;height:450px;float:left"></div>
+                    <c:if test="${USER.userRole == 1}">
+                        <input type="button" value="近七日用户登录量" onclick="getUserLoginNum(1)" class="layui-btn layui-btn-normal">
+                        <input type="button" value="近一月用户登录量" onclick="getUserLoginJanuaryNum(1)" class="layui-btn layui-btn-normal"><br/>
+                        <div id="userLoginNum" style="width:49%;height:450px;float:left"></div>
+                    </c:if>
                 </div>
                 <div class="layui-tab-item">
                     <div id="orderTotalVolume" style="width: 600px;height:400px;"></div>

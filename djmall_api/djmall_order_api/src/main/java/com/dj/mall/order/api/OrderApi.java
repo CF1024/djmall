@@ -16,6 +16,7 @@ import com.dj.mall.order.dto.OrderDetailDTO;
 import com.dj.mall.order.dto.OrderInfoDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author chengf
@@ -30,7 +31,7 @@ public interface OrderApi {
      * @throws Exception 异常
      * @throws BusinessException 自定义异常
      */
-    void addOrder(OrderDTO orderDTO, String TOKEN) throws Exception, BusinessException;
+    String addOrder(OrderDTO orderDTO, String TOKEN) throws Exception, BusinessException;
 
     /**
      * 查找主订单的全部数据
@@ -78,7 +79,7 @@ public interface OrderApi {
      * @throws Exception 异常
      * @throws BusinessException 自定义异常
      */
-    void updateStatus(String orderNo, String orderStatus) throws Exception, BusinessException;
+    void updateStatus(String orderNo, String orderStatus, String aliPayTradeNo) throws Exception, BusinessException;
 
     /**
      * 提醒发货

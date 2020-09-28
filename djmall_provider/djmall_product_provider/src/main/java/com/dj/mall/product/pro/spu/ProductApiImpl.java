@@ -570,7 +570,7 @@ public class ProductApiImpl extends ServiceImpl<ProductMapper, ProductEntity> im
         //判断该订单下所有商品是否全部已评论，是的话修改状态为已完成
         Integer isAllComment = orderApi.findAllIsCommentByChildOrderNo(productReviewsDTO.getOrderNo());
         if (ProductConstant.ZERO.equals(isAllComment)) {
-            orderApi.updateStatus(productReviewsDTO.getOrderNo(), DictConstant.COMPLETED);
+            orderApi.updateStatus(productReviewsDTO.getOrderNo(), DictConstant.COMPLETED, null);
         }
 
         //修改商品表的评论数量

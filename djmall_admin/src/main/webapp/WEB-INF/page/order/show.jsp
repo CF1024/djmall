@@ -56,10 +56,8 @@
                         html += "<td>" + order.businessNickNameShow + "</td>";
                         </c:if>
                         html += "<td>" + order.totalBuyCount +"</td>";
-                        html += order.skuRateShow=="100"?"<td>无折扣</td>":"<td>" + order.skuRateShow +"</td>";
                         html += "<td>" + order.totalPayMoney +"元</td>";
                         html += "<td>" + order.payTypeShow +"</td>";
-                        html += order.totalFreight == '0.00'?"<td>包邮</td>":"<td>" + order.totalFreight +"元</td>";
                         html += "<td>";
                         html += order.receiverName+"-"+order.receiverPhone+"-"+order.receiverProvince+order.receiverCity+order.receiverCounty+order.receiverDetail;
                         html += "</td>";
@@ -165,10 +163,8 @@
                     <th>商家</th>
                 </c:if>
                 <th>购买数量</th>
-                <th>折扣</th>
                 <th>付款金额（包含邮费）</th>
                 <th>支付方式</th>
-                <th>邮费</th>
                 <th>收货人信息</th>
                 <th>下单人</th>
                 <th>下单人电话</th>

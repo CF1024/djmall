@@ -113,6 +113,6 @@ public class OrderVoResp implements Serializable {
     /**
      * 支付宝交易号
      */
-    private String aLiPayTradeNo;
+    private String alipayTradeNo;
 
 }

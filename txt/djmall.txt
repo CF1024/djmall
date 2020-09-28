@@ -1,0 +1,108 @@
+<input type="hidden" name="_method" value="POST"/>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+                                ?userName='+$("#userName").val()
+                                http://localhost:8081/admin/auth/user/toLogin
+
+
+http://archive.kernel.org/centos-vault/6.5/isos/x86_64/
+
+order(主) order_info(子) order_detail(明细) 都是一对多的关系
+1.  父订单表  子订单表  多个字段重复 不理解（方便查询，不用连表）
+2.  父订单的状态 只有两种状态待支付、已支付、已取消 子订单有所有状态都有。 比如同时买了两个商家的物品 一个发货一个没发货（父订单只是为了织人全部子订单而已）。
+3.  子订单表 的 商品id 字段 是用来做什么的（方便查询，统计，商品订单数）
+4.  一个商家 两种物品的运费 分别是 15 元   那买这个商家两个物品 需要计算两份运费？[都可以，看你怎么定，按商品ID分运费也可以]	。（购买商品超过15元 免运费是不解决这种情况，你也可以相同sku的不同数量只涉及一次运费，同一个商品的不同sku涉及多次运费，或者直接同一个product_id多个sku也是一个运费）
+5.  父订单和子订单的创建时间和支付时间应该是一模一样的吗 子订单表只留一个 更新时间行吗（可以）。
+6.  父订单表理解为确认下单的时候 订单里所有商家所有商品的汇总。  子订单理解为此时各个商家有几个商家就几个子订单。  明细理解为子订单里 全部商品（以sku不同划分）
+
+子订单拆分，按照商户的拆的话，子订单表里的product_id 可以去掉。按照商品分的话，就不需要。自己选，做订单的时候，一定要考虑批量操作，避免循环数据库，无论是查还是存。
+
+ 订单代码问题
+1、金额计算全部使用BigDecimal。
+2、从创建订单、到库存更新，以及购物车删除都应该在一个事务中。
+3、
+一些数据筛选的方式可以优化成stream的形式。
+4、对象之间可以直接用Dozer转换，不用Builder那么多属性，单独属性可以单独设置。
+
+待收货和已完成的这个列表，都是已order_info为主的，不是detail表为主。原型上只是订单号一样而已，不要理解错了。detail表的展示，只是在订单详情中展示。原型好久没有更新了，折扣字段可以先去掉
+
+Solr改造查询（周六）
+
+自主
+订单的全部功能{包括 提醒 评论 再次购买。。。} 周四检查代码
+点赞，评论（周五）
+
+2019.3.1
+-server
+-Xms128m
+-Xmx512m
+-XX:ReservedCodeCacheSize=240m
+-XX:+UseConcMarkSweepGC
+-XX:SoftRefLRUPolicyMSPerMB=50
+-ea
+-XX:CICompilerCount=2
+-Dsun.io.useCanonPrefixCache=false
+-Djava.net.preferIPv4Stack=true
+-Djdk.http.auth.tunneling.disabledSchemes=""
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:-OmitStackTraceInFastThrow
+-Djdk.attach.allowAttachSelf=true
+-Dkotlinx.coroutines.debug=off
+-Djdk.module.illegalAccess.silent=true
+
+idea64.exe.vmoptions
+
+-Xms128m
+-Xmx750m
+-XX:ReservedCodeCacheSize=240m
+-XX:+UseConcMarkSweepGC
+-XX:SoftRefLRUPolicyMSPerMB=50
+-ea
+-XX:CICompilerCount=2
+-Dsun.io.useCanonPrefixCache=false
+-Djava.net.preferIPv4Stack=true
+-Djdk.http.auth.tunneling.disabledSchemes=""
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:-OmitStackTraceInFastThrow
+-Djdk.attach.allowAttachSelf=true
+-Dkotlinx.coroutines.debug=off
+-Djdk.module.illegalAccess.silent=true
+
+2020.1.2
+-server
+-Xms128m
+-Xmx512m
+-XX:ReservedCodeCacheSize=240m
+-XX:+UseConcMarkSweepGC
+-XX:SoftRefLRUPolicyMSPerMB=50
+-ea
+-XX:CICompilerCount=2
+-Dsun.io.useCanonPrefixCache=false
+-Djdk.http.auth.tunneling.disabledSchemes=""
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:-OmitStackTraceInFastThrow
+-Djdk.attach.allowAttachSelf=true
+-Dkotlinx.coroutines.debug=off
+-Djdk.module.illegalAccess.silent=true
+
+
+-Xms128m
+-Xmx750m
+-XX:ReservedCodeCacheSize=240m
+-XX:+UseConcMarkSweepGC
+-XX:SoftRefLRUPolicyMSPerMB=50
+-ea
+-XX:CICompilerCount=2
+-Dsun.io.useCanonPrefixCache=false
+-Djdk.http.auth.tunneling.disabledSchemes=""
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:-OmitStackTraceInFastThrow
+-Djdk.attach.allowAttachSelf=true
+-Dkotlinx.coroutines.debug=off
+-Djdk.module.illegalAccess.silent=true
+
+
+
+买家：phmvhf1902@sandbox.com
+
+卖家：ofkrrk0375@sandbox.com
+

@@ -58,7 +58,7 @@ public class ProductController {
     @GetMapping
     public ResultModel<Object> show(ProductVOReq productVOReq, String TOKEN) throws Exception {
         //得到当前登录用户id
-        if (!StringUtils.isEmpty(TOKEN)) {
+        if (!StringUtils.isEmpty(TOKEN) && !TOKEN.equals("undefined")) {
             UserDTO user = redisApi.get(RedisConstant.USER_TOKEN + TOKEN);
             productVOReq.setCurrentlyLoggedInUserId(user.getUserId());
         }

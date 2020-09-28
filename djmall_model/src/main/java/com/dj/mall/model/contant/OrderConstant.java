@@ -45,4 +45,8 @@ public interface OrderConstant {
      * 未提醒状态
      */
     Integer NOT_REMIND_STATUS = 1;
+    /**
+     * 负一
+     */
+    Integer MINUS_ONE = -1;
 }

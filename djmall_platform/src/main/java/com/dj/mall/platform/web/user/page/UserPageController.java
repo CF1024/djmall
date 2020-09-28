@@ -77,6 +77,15 @@ public class UserPageController {
     }
 
     /**
+     * 以弹窗形式弹出登录页
+     * @return 弹窗形式登录前台页面
+     */
+    @GetMapping("toAlertLogin")
+    public String toAlertLogin() {
+        return "user/alert_login";
+    }
+
+    /**
      * 展示个人信息
      * @param TOKEN  令牌密钥 用户唯一标识
      * @param model ModelMap
@@ -154,5 +163,21 @@ public class UserPageController {
         model.put("addressList", DozerUtil.mapList(userApi.findAddressAll(TOKEN), UserAddressVoResp.class));
         model.put("payTypeList", DozerUtil.mapList(baseDataApi.findBaseDataByParentCode(DictConstant.PAYMENT_TYPES), BaseDataVOResp.class));
         return "cart/confirm_order";
+    }
+
+    /**
+     * 去结算 确认订单 立即购买
+     * @param TOKEN 令牌密钥 用户唯一标识
+     * @param model ModelMap
+     * @return 确认订单
+     * @throws Exception 异常
+     */
+    @GetMapping("toConfirmOrderBuyNow")
+    public String toConfirmOrderBuyNow(String TOKEN, Integer cartId, ModelMap model) throws Exception {
+        //购物车 收货地址 支付类型
+        model.put("cart", DozerUtil.map(shoppingCartApi.findCartByCartId(cartId), ShoppingCartVOResp.class));
+        model.put("addressList", DozerUtil.mapList(userApi.findAddressAll(TOKEN), UserAddressVoResp.class));
+        model.put("payTypeList", DozerUtil.mapList(baseDataApi.findBaseDataByParentCode(DictConstant.PAYMENT_TYPES), BaseDataVOResp.class));
+        return "cart/confirm_order_buy_now";
     }
 }

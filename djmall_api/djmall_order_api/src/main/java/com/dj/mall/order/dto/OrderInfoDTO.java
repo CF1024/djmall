@@ -26,6 +26,10 @@ import java.util.List;
 @Accessors(chain = true)
 public class OrderInfoDTO implements Serializable {
     /**
+     * 支付宝交易号
+     */
+    private String aLiPayTradeNo;
+    /**
      * 全部评论 条
      */
     private Integer isAllComment;

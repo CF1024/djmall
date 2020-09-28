@@ -82,7 +82,6 @@
                         html += "<td>" + order.totalBuyCount +"</td>";
                         html += "<td>" + order.totalPayMoney +"元</td>";
                         html += "<td>" + order.payTypeShow +"</td>";
-                        html += order.totalFreight == 0.00 ? "<td>包邮</td>":"<td>" + order.totalFreight +"元</td>";
                         html += "<td>" + order.createTime +"</td>";
                         html += "<td>";
                         html += order.orderStatusShow;
@@ -123,10 +122,8 @@
                         html += "<td><a href='<%=request.getContextPath()%>/order/toOrderInfoDetails?TOKEN="+getToken()+"&orderNo="+order.orderNo+"'>" + order.orderNo + "</a></td>";
                         html += "<td>" + order.productNameShow + "</td>";
                         html += "<td>" + order.totalBuyCount + "</td>";
-                        html += order.skuRateShow == '100' ? "<td>无折扣</td>":"<td>" + order.skuRateShow + "%</td>";
                         html += "<td>" + order.totalPayMoney + "元</td>";
                         html += "<td>" + order.payTypeShow + "</td>";
-                        html += order.totalFreight == 0.00 ? "<td>包邮</td>":"<td>" + order.totalFreight +"元</td>";
                         html += "<td>" + order.createTime + "</td>";
                         html += order.payTime == null ? "<td>暂无</td>":"<td>" + order.payTime + "</td>";
                         html += "<td>";
@@ -138,7 +135,7 @@
                             }
                         } else if (order.orderStatus == "SHIPPED") {
                             html += "<a href='javascript:confirmReceipt(\""+order.orderNo+"\")'>确认收货</a>";
-                        } else if (order.orderStatus === "CONFIRM_RECEIPT") {
+                        } else if (order.orderStatus == "CONFIRM_RECEIPT") {
                             if (order.isAllComment > 0){
                                 html += "<a href='javascript:toComment(\""+order.orderNo+"\")'>评价晒单</a> | ";
                             }
@@ -179,23 +176,9 @@
             getOrderInfo(index, orderStatus);
         }
 
-
         //去支付
         function pay(orderNo) {
-            var index = layer.load(0, {offset: '300px', shade:0.5});
-            token_post(
-                "<%=request.getContextPath()%>/order/toPay?TOKEN="+getToken() +"&orderNo="+orderNo,
-                {"orderNo":orderNo, "orderStatus":"CANCELED","_method":"PUT"},
-                function (data) {
-                    layer.close(index);
-                    if (data.code != 200) {
-                        layer.alert(data.msg);
-                        return;
-                    }
-                    window.location.reload();
-                }
-            );
-           //parent.window.location.href = "<%=request.getContextPath()%>/order/toPay?TOKEN="+getToken() +"&orderNo="+orderNo;
+           parent.window.location.href = "<%=request.getContextPath()%>/order/toPay?TOKEN="+getToken() +"&orderNo="+orderNo;
         }
 
         //取消订单
@@ -292,7 +275,6 @@
                             <th>购买数量</th>
                             <th>付款金额（包含邮费）</th>
                             <th>支付方式</th>
-                            <th>邮费</th>
                             <th>下单时间</th>
                             <th>订单状态</th>
                         </tr>
@@ -310,10 +292,8 @@
                             <th>订单号</th>
                             <th>商品信息</th>
                             <th>购买数量</th>
-                            <th>折扣</th>
                             <th>付款金额（包含邮费）</th>
                             <th>支付方式</th>
-                            <th>邮费</th>
                             <th>下单时间</th>
                             <th>付款时间</th>
                             <th>订单状态</th>
@@ -331,10 +311,8 @@
                             <th>订单号</th>
                             <th>商品信息</th>
                             <th>购买数量</th>
-                            <th>折扣</th>
                             <th>付款金额（包含邮费）</th>
                             <th>支付方式</th>
-                            <th>邮费</th>
                             <th>下单时间</th>
                             <th>付款时间</th>
                             <th>订单状态</th>
@@ -351,10 +329,8 @@
                             <th>订单号</th>
                             <th>商品信息</th>
                             <th>购买数量</th>
-                            <th>折扣</th>
                             <th>付款金额（包含邮费）</th>
                             <th>支付方式</th>
-                            <th>邮费</th>
                             <th>下单时间</th>
                             <th>付款时间</th>
                             <th>订单状态</th>

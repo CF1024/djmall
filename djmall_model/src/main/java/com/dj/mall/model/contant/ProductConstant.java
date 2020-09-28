@@ -31,6 +31,10 @@ public interface ProductConstant {
      */
     Integer HAVE_CHECKED = 0;
     /**
+     * 立即购买商品已选中
+     */
+    Integer HAVE_CHECKED_BUY_NOW = 2;
+    /**
      * 最大购买量 200
      */
     Integer MAX_QUANTITY = 200;

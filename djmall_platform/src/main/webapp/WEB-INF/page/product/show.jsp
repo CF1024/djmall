@@ -170,20 +170,6 @@
             window.location.href = "<%=request.getContextPath()%>/user/cart/toMyShoppingCart?TOKEN="+getToken();
         }
 
-        // 去登陆
-        /*function toLogin() {
-          //iframe层
-          layer.open({
-              type: 2,
-              title: '登录',
-              shadeClose: true,
-              maxmin: true, //开启最大化最小化按钮
-              shade: 0.8,
-              offset: '230px',
-              area: ['460px', '60%'],
-              content: "<%--<%=request.getContextPath()%>--%>/user/toLogin"
-          });
-        }*/
     </script>
     <body>
         <div class="layui-layout layui-layout-admin">

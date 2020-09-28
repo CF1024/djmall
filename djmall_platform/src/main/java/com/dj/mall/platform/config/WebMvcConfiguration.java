@@ -32,6 +32,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         interceptorRegistration.excludePathPatterns("/static/**");
         // 放过请求 用户
         interceptorRegistration.excludePathPatterns("/user/toLogin");
+        interceptorRegistration.excludePathPatterns("/user/toAlertLogin");
         interceptorRegistration.excludePathPatterns("/user/login");
         interceptorRegistration.excludePathPatterns("/user/toRegister");
         interceptorRegistration.excludePathPatterns("/user/");
@@ -44,5 +45,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         interceptorRegistration.excludePathPatterns("/product/toProductDetails");
         interceptorRegistration.excludePathPatterns("/product/getSkuBySkuId");
         interceptorRegistration.excludePathPatterns("/product/getCommentByProductId");
+        //支付宝 同步异步
+        interceptorRegistration.excludePathPatterns("/order/aliPaySuccess");
+        interceptorRegistration.excludePathPatterns("/order/aliPayCallBack");
     }
 }

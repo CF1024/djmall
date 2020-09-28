@@ -133,7 +133,7 @@
                 $(".countSpan").text("无货");
                 $("#quantity").val(1);
                 /*$("#cartBtn").attr("disabled", "true");*/
-                /*$("#buyBtn").attr("disabled", "true");*/
+               /* $("#buyBtn").attr("disabled", "true");*/
             } else if (skuCount < quantity) {               //库存不足
                 $(".countSpan").text("库存不足");
                 $("#quantity").val(skuCount);
@@ -147,7 +147,7 @@
 
         //加入购物车
         function addToShoppingCart() {
-            var index = layer.load(0,{shade:0.5});
+            var index = layer.load(0,{offset: '230px', shade:0.5});
             token_post(
                 "<%=request.getContextPath()%>/user/cart/addToShoppingCart?TOKEN="+getToken(),
                 $("#fm").serialize(),
@@ -166,10 +166,10 @@
         }
 
         //立即购买
-        function buyNow() {
-            var index = layer.load(0,{shade:0.5});
+        function buyNow(obj) {
+            var index = layer.load(0,{offset: '230px', shade:0.5});
             token_post(
-                "<%=request.getContextPath()%>/user/cart/addToShoppingCart?TOKEN="+getToken(),
+                "<%=request.getContextPath()%>/user/cart/addToShoppingCart?TOKEN="+getToken()+"&buyNow="+obj,
                 $("#fm").serialize(),
                 function (data) {
                     layer.close(index);
@@ -177,7 +177,7 @@
                         layer.msg(data.msg, {offset: '230px', icon: 5, time: 2000})
                         return;
                     }
-                    window.location.href = "<%=request.getContextPath()%>/user/toConfirmOrder?TOKEN="+getToken();
+                    window.location.href = "<%=request.getContextPath()%>/user/toConfirmOrderBuyNow?TOKEN="+getToken()+"&cartId="+data.data;
                 }
             )
         }
@@ -278,7 +278,7 @@
                                 <input type="button" value="加入购物车" onclick="addToShoppingCart()" id="cartBtn" class="layui-btn layui-btn-normal">
                             </div>
                             <div class="layui-col-md6" style="height: 70px">
-                                <input type="button" value="立即购买" onclick="buyNow()" id="buyBtn" class="layui-btn layui-btn-normal">
+                                <input type="button" value="立即购买" onclick="buyNow(2)" id="buyBtn" class="layui-btn layui-btn-normal">
                             </div>
                         </div>
                     </div>

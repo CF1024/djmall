@@ -603,25 +603,32 @@ public class UserApiImpl extends ServiceImpl<UserMapper, User> implements UserAp
      * @throws BusinessException 自定义异常
      */
     @Override
-    public void addToShoppingCart(ShoppingCartDTO shoppingCartDTO, String TOKEN) throws Exception, BusinessException {
+    public Integer addToShoppingCart(ShoppingCartDTO shoppingCartDTO, String TOKEN, Integer buyNow) throws Exception, BusinessException {
         SkuDTO sku = skuApi.findSkuBySkuId(shoppingCartDTO.getSkuId());
         if (AuthConstant.ZERO.equals(sku.getSkuCount()) || AuthConstant.ZERO > sku.getSkuCount()) {
             throw new BusinessException("库存不足给您带来不便，请选择库存充足得商品");
         }
         //得到当前登录用户 默认未选中
         UserDTO userDTO = redisApi.get(RedisConstant.USER_TOKEN + TOKEN);
-        //查到购物车所有数据 判断购物车所有数据是否有跟skuId和用户id相同的数据 直接修改购买数量 如果购买数量大于200 直接返回购买最大额
+        shoppingCartDTO.setUserId(userDTO.getUserId());
+        shoppingCartDTO.setChecked(ProductConstant.NOT_CHECKED);
+        //如果状态不为空 并且为2：立即购买
+        if (null != buyNow && AuthConstant.BUY_NOW.equals(buyNow)) {
+            shoppingCartDTO.setChecked(ProductConstant.HAVE_CHECKED_BUY_NOW);
+        }
+        //查到购物车所有数据 判断购物车所有数据是否有跟skuId和用户id相同的数据以及是否为选中状态为 立即购买做准备 直接修改购买数量 如果购买数量大于200 直接返回购买最大额
         List<ShoppingCartEntity> shoppingCartEntityList = shoppingCartService.list();
         for (ShoppingCartEntity shoppingCartEntity : shoppingCartEntityList) {
-            if (shoppingCartEntity.getSkuId().equals(shoppingCartDTO.getSkuId()) && shoppingCartEntity.getUserId().equals(userDTO.getUserId())) {
+            if (shoppingCartEntity.getSkuId().equals(shoppingCartDTO.getSkuId()) && shoppingCartEntity.getUserId().equals(userDTO.getUserId())
+                    && ProductConstant.NOT_CHECKED.equals(shoppingCartDTO.getChecked())) {
                 shoppingCartEntity.setQuantity(Math.min(shoppingCartEntity.getQuantity() + shoppingCartDTO.getQuantity(), ProductConstant.MAX_QUANTITY));
                 shoppingCartService.updateById(shoppingCartEntity);
-                return;
+                break;
             }
         }
-        shoppingCartDTO.setUserId(userDTO.getUserId());
-        shoppingCartDTO.setChecked(ProductConstant.HAVE_CHECKED);
-        shoppingCartService.save(DozerUtil.map(shoppingCartDTO, ShoppingCartEntity.class));
+        ShoppingCartEntity cartEntity = DozerUtil.map(shoppingCartDTO, ShoppingCartEntity.class);
+        shoppingCartService.save(cartEntity);
+        return cartEntity.getId();
     }
 
     /**

@@ -75,6 +75,7 @@ public class UserController {
         return new ResultModel<>().success("注册成功");
     }
 
+
     /**
      * 普通用户登录
      * @param userName 用户名
@@ -90,6 +91,12 @@ public class UserController {
         return new ResultModel<>().success(userTokenDTO);
     }
 
+    @PostMapping("sendCode")
+    public ResultModel<Object> sendCode(String userPhone) throws Exception {
+        Assert.hasText(userPhone, "手机号不能为空");
+        userApi.sendCode(userPhone);
+        return new ResultModel<>().success();
+    }
     /**
      * 退出登录
      * @param TOKEN token
@@ -194,9 +201,9 @@ public class UserController {
      * @throws Exception 异常
      */
     @PostMapping("cart/addToShoppingCart")
-    public ResultModel<Object> addToShoppingCart(ShoppingCartVOReq shoppingCartVOReq, String TOKEN) throws Exception {
-        userApi.addToShoppingCart(DozerUtil.map(shoppingCartVOReq, ShoppingCartDTO.class), TOKEN);
-        return new ResultModel<>().success("添加购物车成功");
+    public ResultModel<Object> addToShoppingCart(ShoppingCartVOReq shoppingCartVOReq, String TOKEN, Integer buyNow) throws Exception {
+        Integer cartId = userApi.addToShoppingCart(DozerUtil.map(shoppingCartVOReq, ShoppingCartDTO.class), TOKEN, buyNow);
+        return new ResultModel<>().success(cartId);
     }
 
     /**
